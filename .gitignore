@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+
+# Home Assistant test instance created by scripts/develop
+config/*
+!config/configuration.yaml
