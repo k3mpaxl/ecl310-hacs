@@ -32,11 +32,33 @@ number entity takes its range and step from the library's datapoint metadata, so
 the bounds the UI enforces are the ones the controller accepts, and an invalid
 value is refused before a register is written.
 
-## Verified against
+## Where the register map comes from
 
-A **Danfoss ECL Comfort 310**, order number 087H3040, application key
-**A237.1 V04**, software 1.56, over Modbus/TCP on unit 1. A full poll is ten
-block reads and takes about 130 ms.
+Danfoss's own manual gives every setting's parameter ID and every input's
+sensor number, but never a register address or a write behaviour - only
+`11179` (`Sommer-Aus`) or `S1`, not what happens on Modbus. The Danfoss ECL
+Tool's configuration YAML export pins down the block layout: which holding
+register a parameter or sensor lives at, and the state/override/manual
+triplet each relay has.
+
+Neither source says how those registers *behave*. That came from testing
+against a live controller - a Danfoss ECL Comfort 310, order number 087H3040,
+application key A237.1 V04, software 1.56, over Modbus/TCP on unit 1:
+
+* **Write patterns.** Which register in a group actually has to be written
+  for a change to take effect, and which registers only look writable - the
+  state register answers a write with a Modbus exception, the override
+  register is the one that works.
+* **Relay functions.** What each relay's override, state and manual register
+  actually does: manual reflects what was forced at the controller's own
+  display, outranks the override, and cannot be cleared over Modbus; the
+  override takes effect within a couple of seconds and is not time-limited.
+* **Wiring, not just addressing.** The parameter tables say a relay or sensor
+  slot exists; they don't say a pump is plugged into it. Which relay drives
+  which physical output, and which sensor input is actually connected, was
+  confirmed by switching outputs and watching the plant respond.
+
+A full poll is ten block reads and takes about 130 ms.
 
 ## Requirements
 
