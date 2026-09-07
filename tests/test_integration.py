@@ -86,12 +86,16 @@ async def test_the_controller_is_a_device_with_two_sub_devices(
     entry = await setup_entry(hass, connections)
     registry = dr.async_get(hass)
 
-    controller = registry.async_get_device({(DOMAIN, entry.entry_id)})
+    controller = registry.async_get_device_by_identifier(
+        (DOMAIN, entry.entry_id), entry.entry_id
+    )
     assert controller is not None
     assert controller.manufacturer == "Danfoss"
 
     for sub_id, name in (("heating", "Heating circuit"), ("hot_water", "Hot water")):
-        device = registry.async_get_device({(DOMAIN, f"{entry.entry_id}_{sub_id}")})
+        device = registry.async_get_device_by_identifier(
+            (DOMAIN, f"{entry.entry_id}_{sub_id}"), entry.entry_id
+        )
         assert device is not None
         assert device.via_device_id == controller.id
         assert device.name == name
@@ -219,7 +223,9 @@ async def test_the_sub_devices_are_named_in_the_users_language(
     registry = dr.async_get(hass)
 
     for sub_id, name in (("heating", "Heizkreis"), ("hot_water", "Warmwasser")):
-        device = registry.async_get_device({(DOMAIN, f"{entry.entry_id}_{sub_id}")})
+        device = registry.async_get_device_by_identifier(
+            (DOMAIN, f"{entry.entry_id}_{sub_id}"), entry.entry_id
+        )
         assert device is not None
         assert device.name == name
 
