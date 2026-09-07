@@ -1,0 +1,51 @@
+name: Vendored library check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "custom_components/ecl310/ecl310_modbus/**"
+      - ".github/workflows/library-sync.yml"
+
+permissions:
+  contents: read
+
+env:
+  # The upstream the vendored copy is taken from.
+  LIBRARY_REPO: k3mpaxl/ecl310-modbus
+  LIBRARY_REF: main
+
+jobs:
+  compare:
+    name: Compare against upstream
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Checkout the library
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ env.LIBRARY_REPO }}
+          ref: ${{ env.LIBRARY_REF }}
+          path: .library
+          persist-credentials: false
+
+      - name: Compare the vendored copy with upstream
+        run: |
+          if ! diff -r --exclude=__pycache__ \
+              .library/src/ecl310_modbus \
+              custom_components/ecl310/ecl310_modbus; then
+            echo "::error::The vendored library differs from ${LIBRARY_REPO}@${LIBRARY_REF}."
+            echo "Re-vendor it with:"
+            echo "  scripts/vendor-library"
+            exit 1
+          fi
+          echo "The vendored library matches upstream."

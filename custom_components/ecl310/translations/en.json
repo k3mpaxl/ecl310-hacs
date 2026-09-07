@@ -1,0 +1,337 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "This controller is already configured."
+    },
+    "error": {
+      "cannot_connect": "Failed to connect. Check that the controller is reachable on this address, port and unit, and that the framing matches your gateway."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "framer": "Framing",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Modbus unit"
+        },
+        "data_description": {
+          "framer": "Use \"socket\" for a controller reached directly over Modbus TCP, and \"rtu\" for a transparent serial gateway that forwards Modbus RTU frames.",
+          "host": "The hostname or IP address of the controller or its Modbus gateway.",
+          "port": "The TCP port the Modbus interface listens on.",
+          "unit_id": "The controller's Modbus station address, set under 'Modbus-Adresse' in the controller's system menu."
+        },
+        "description": "Enter the network details of the controller or of the Modbus gateway it is connected to."
+      }
+    }
+  },
+  "device": {
+    "heating_circuit": {
+      "name": "Heating circuit"
+    },
+    "hot_water": {
+      "name": "Hot water"
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "circulation_pump": {
+        "name": "Circulation pump"
+      },
+      "heating_pump": {
+        "name": "Heating circuit pump"
+      },
+      "relay": {
+        "name": "Relay {number}"
+      },
+      "storage_charge_pump": {
+        "name": "Storage charge pump"
+      },
+      "triac": {
+        "name": "Triac {number}"
+      }
+    },
+    "climate": {
+      "heating_circuit": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "comfort": "Constant comfort",
+              "frost_protection": "Frost protection",
+              "manual": "Manual",
+              "scheduled": "Scheduled",
+              "setback": "Constant setback"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "charge_difference": {
+        "name": "Charging difference"
+      },
+      "circulation_frost_temperature": {
+        "name": "Circulation pump frost temperature"
+      },
+      "curve_at_0": {
+        "name": "Curve at 0 °C"
+      },
+      "curve_at_15": {
+        "name": "Curve at 15 °C"
+      },
+      "curve_at_5": {
+        "name": "Curve at 5 °C"
+      },
+      "curve_at_minus_15": {
+        "name": "Curve at -15 °C"
+      },
+      "curve_at_minus_30": {
+        "name": "Curve at -30 °C"
+      },
+      "curve_at_minus_5": {
+        "name": "Curve at -5 °C"
+      },
+      "disinfection_duration": {
+        "name": "Disinfection duration"
+      },
+      "disinfection_temperature": {
+        "name": "Disinfection temperature"
+      },
+      "heat_curve": {
+        "name": "Heat curve"
+      },
+      "heating_frost_protection_temperature": {
+        "name": "Frost protection temperature"
+      },
+      "heating_return_limit": {
+        "name": "Return temperature limit"
+      },
+      "hot_water_frost_protection_temperature": {
+        "name": "Frost protection temperature"
+      },
+      "hot_water_return_limit": {
+        "name": "Return temperature limit"
+      },
+      "hot_water_setback_setpoint": {
+        "name": "Setback temperature"
+      },
+      "max_charge_temperature": {
+        "name": "Maximum charging temperature"
+      },
+      "max_flow_temperature": {
+        "name": "Maximum flow temperature"
+      },
+      "min_flow_temperature": {
+        "name": "Minimum flow temperature"
+      },
+      "pump_post_run": {
+        "name": "Pump post-run"
+      },
+      "setback_setpoint": {
+        "name": "Setback temperature"
+      },
+      "start_difference": {
+        "name": "Start difference"
+      },
+      "stop_difference": {
+        "name": "Stop difference"
+      },
+      "summer_cut_off": {
+        "name": "Summer cut-off"
+      }
+    },
+    "select": {
+      "circulation_pump_override": {
+        "name": "Circulation pump override",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      },
+      "heating_pump_override": {
+        "name": "Heating circuit pump override",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      },
+      "storage_charge_pump_override": {
+        "name": "Storage charge pump override",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      }
+    },
+    "sensor": {
+      "circulation_pump_manual": {
+        "name": "Circulation pump manual control",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      },
+      "flow_temperature": {
+        "name": "Flow temperature"
+      },
+      "heating_mode": {
+        "name": "Operating mode",
+        "state": {
+          "comfort": "Constant comfort",
+          "frost_protection": "Frost protection",
+          "manual": "Manual",
+          "scheduled": "Scheduled",
+          "setback": "Constant setback"
+        }
+      },
+      "heating_pump_manual": {
+        "name": "Heating circuit pump manual control",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      },
+      "heating_state": {
+        "name": "Circuit status",
+        "state": {
+          "comfort": "Comfort",
+          "pre_comfort": "Pre-comfort",
+          "pre_setback": "Pre-setback",
+          "setback": "Setback"
+        }
+      },
+      "hot_water_mode": {
+        "name": "Operating mode",
+        "state": {
+          "comfort": "Constant comfort",
+          "frost_protection": "Frost protection",
+          "manual": "Manual",
+          "scheduled": "Scheduled",
+          "setback": "Constant setback"
+        }
+      },
+      "hot_water_state": {
+        "name": "Circuit status",
+        "state": {
+          "comfort": "Comfort",
+          "pre_comfort": "Pre-comfort",
+          "pre_setback": "Pre-setback",
+          "setback": "Setback"
+        }
+      },
+      "outdoor_temperature": {
+        "name": "Outdoor temperature"
+      },
+      "return_temperature": {
+        "name": "Return temperature"
+      },
+      "storage_charge_pump_manual": {
+        "name": "Storage charge pump manual control",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      },
+      "storage_temperature": {
+        "name": "Storage temperature"
+      }
+    },
+    "switch": {
+      "disinfection_friday": {
+        "name": "Disinfection on Friday"
+      },
+      "disinfection_monday": {
+        "name": "Disinfection on Monday"
+      },
+      "disinfection_saturday": {
+        "name": "Disinfection on Saturday"
+      },
+      "disinfection_sunday": {
+        "name": "Disinfection on Sunday"
+      },
+      "disinfection_thursday": {
+        "name": "Disinfection on Thursday"
+      },
+      "disinfection_tuesday": {
+        "name": "Disinfection on Tuesday"
+      },
+      "disinfection_wednesday": {
+        "name": "Disinfection on Wednesday"
+      },
+      "hot_water_priority": {
+        "name": "Hot water priority"
+      },
+      "pump_off_in_setback": {
+        "name": "Pump off during setback"
+      }
+    },
+    "time": {
+      "disinfection_start": {
+        "name": "Disinfection start"
+      },
+      "friday_start": {
+        "name": "Friday period {period} start"
+      },
+      "friday_stop": {
+        "name": "Friday period {period} end"
+      },
+      "monday_start": {
+        "name": "Monday period {period} start"
+      },
+      "monday_stop": {
+        "name": "Monday period {period} end"
+      },
+      "saturday_start": {
+        "name": "Saturday period {period} start"
+      },
+      "saturday_stop": {
+        "name": "Saturday period {period} end"
+      },
+      "sunday_start": {
+        "name": "Sunday period {period} start"
+      },
+      "sunday_stop": {
+        "name": "Sunday period {period} end"
+      },
+      "thursday_start": {
+        "name": "Thursday period {period} start"
+      },
+      "thursday_stop": {
+        "name": "Thursday period {period} end"
+      },
+      "tuesday_start": {
+        "name": "Tuesday period {period} start"
+      },
+      "tuesday_stop": {
+        "name": "Tuesday period {period} end"
+      },
+      "wednesday_start": {
+        "name": "Wednesday period {period} start"
+      },
+      "wednesday_stop": {
+        "name": "Wednesday period {period} end"
+      }
+    },
+    "water_heater": {
+      "hot_water": {
+        "state": {
+          "comfort": "Constant comfort",
+          "frost_protection": "Frost protection",
+          "manual": "Manual",
+          "scheduled": "Scheduled",
+          "setback": "Constant setback"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "manual_mode_not_settable": {
+      "message": "Manual mode cannot be set from Home Assistant. At the controller it deactivates every control loop and the frost protection, refuses the output override, and puts all circuits into manual - so it is chosen at the controller itself."
+    }
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "heating_pump": {
+        "default": "mdi:pump",
+        "state": {
+          "off": "mdi:pump-off"
+        }
+      },
+      "storage_charge_pump": {
+        "default": "mdi:pump",
+        "state": {
+          "off": "mdi:pump-off"
+        }
+      },
+      "circulation_pump": {
+        "default": "mdi:pump",
+        "state": {
+          "off": "mdi:pump-off"
+        }
+      },
+      "triac": {
+        "default": "mdi:electric-switch",
+        "state": {
+          "on": "mdi:electric-switch-closed"
+        }
+      },
+      "relay": {
+        "default": "mdi:electric-switch",
+        "state": {
+          "on": "mdi:electric-switch-closed"
+        }
+      }
+    },
+    "number": {
+      "setback_setpoint": {
+        "default": "mdi:thermometer-low"
+      },
+      "summer_cut_off": {
+        "default": "mdi:weather-sunny-off"
+      },
+      "min_flow_temperature": {
+        "default": "mdi:thermometer-chevron-down"
+      },
+      "max_flow_temperature": {
+        "default": "mdi:thermometer-chevron-up"
+      },
+      "disinfection_temperature": {
+        "default": "mdi:bacteria-outline"
+      },
+      "heat_curve": {
+        "default": "mdi:chart-bell-curve-cumulative"
+      },
+      "curve_at_minus_30": {
+        "default": "mdi:chart-line"
+      },
+      "curve_at_minus_15": {
+        "default": "mdi:chart-line"
+      },
+      "curve_at_minus_5": {
+        "default": "mdi:chart-line"
+      },
+      "curve_at_0": {
+        "default": "mdi:chart-line"
+      },
+      "curve_at_5": {
+        "default": "mdi:chart-line"
+      },
+      "curve_at_15": {
+        "default": "mdi:chart-line"
+      },
+      "heating_return_limit": {
+        "default": "mdi:thermometer-chevron-down"
+      },
+      "heating_frost_protection_temperature": {
+        "default": "mdi:snowflake-thermometer"
+      },
+      "pump_post_run": {
+        "default": "mdi:timer-sand"
+      },
+      "hot_water_setback_setpoint": {
+        "default": "mdi:thermometer-low"
+      },
+      "hot_water_return_limit": {
+        "default": "mdi:thermometer-chevron-down"
+      },
+      "max_charge_temperature": {
+        "default": "mdi:thermometer-chevron-up"
+      },
+      "charge_difference": {
+        "default": "mdi:delta"
+      },
+      "start_difference": {
+        "default": "mdi:delta"
+      },
+      "stop_difference": {
+        "default": "mdi:delta"
+      },
+      "disinfection_duration": {
+        "default": "mdi:timer-outline"
+      },
+      "circulation_frost_temperature": {
+        "default": "mdi:snowflake-alert"
+      },
+      "hot_water_frost_protection_temperature": {
+        "default": "mdi:snowflake-thermometer"
+      }
+    },
+    "select": {
+      "heating_pump_override": {
+        "default": "mdi:pump",
+        "state": {
+          "auto": "mdi:autorenew"
+        }
+      },
+      "storage_charge_pump_override": {
+        "default": "mdi:pump",
+        "state": {
+          "auto": "mdi:autorenew"
+        }
+      },
+      "circulation_pump_override": {
+        "default": "mdi:pump",
+        "state": {
+          "auto": "mdi:autorenew"
+        }
+      }
+    },
+    "sensor": {
+      "heating_mode": {
+        "default": "mdi:radiator"
+      },
+      "heating_state": {
+        "default": "mdi:calendar-clock"
+      },
+      "hot_water_mode": {
+        "default": "mdi:water-boiler"
+      },
+      "hot_water_state": {
+        "default": "mdi:calendar-clock"
+      },
+      "heating_pump_manual": {
+        "default": "mdi:hand-back-right"
+      },
+      "storage_charge_pump_manual": {
+        "default": "mdi:hand-back-right"
+      },
+      "circulation_pump_manual": {
+        "default": "mdi:hand-back-right"
+      }
+    },
+    "switch": {
+      "pump_off_in_setback": {
+        "default": "mdi:pump-off"
+      },
+      "hot_water_priority": {
+        "default": "mdi:water-thermometer"
+      },
+      "disinfection_monday": {
+        "default": "mdi:bacteria-outline"
+      },
+      "disinfection_tuesday": {
+        "default": "mdi:bacteria-outline"
+      },
+      "disinfection_wednesday": {
+        "default": "mdi:bacteria-outline"
+      },
+      "disinfection_thursday": {
+        "default": "mdi:bacteria-outline"
+      },
+      "disinfection_friday": {
+        "default": "mdi:bacteria-outline"
+      },
+      "disinfection_saturday": {
+        "default": "mdi:bacteria-outline"
+      },
+      "disinfection_sunday": {
+        "default": "mdi:bacteria-outline"
+      }
+    },
+    "time": {
+      "monday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "monday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "tuesday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "tuesday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "wednesday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "wednesday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "thursday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "thursday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "friday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "friday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "saturday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "saturday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "sunday_start": {
+        "default": "mdi:calendar-clock"
+      },
+      "sunday_stop": {
+        "default": "mdi:calendar-clock"
+      },
+      "disinfection_start": {
+        "default": "mdi:bacteria-outline"
+      }
+    }
+  }
+}

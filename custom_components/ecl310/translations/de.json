@@ -1,0 +1,337 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Dieser Regler ist bereits eingerichtet."
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen. Prüfe, ob der Regler unter dieser Adresse, diesem Port und dieser Modbus-Adresse erreichbar ist und ob das Framing zum Gateway passt."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "framer": "Framing",
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Modbus-Adresse"
+        },
+        "data_description": {
+          "framer": "„socket“ für einen Regler, der direkt über Modbus TCP erreichbar ist, „rtu“ für ein transparentes serielles Gateway, das Modbus-RTU-Telegramme weiterreicht.",
+          "host": "Hostname oder IP-Adresse des Reglers oder seines Modbus-Gateways.",
+          "port": "TCP-Port, auf dem die Modbus-Schnittstelle lauscht.",
+          "unit_id": "Die Modbus-Stationsadresse des Reglers, im Systemmenü des Reglers unter „Modbus-Adresse“ eingestellt."
+        },
+        "description": "Netzwerkdaten des Reglers eingeben – oder des Modbus-Gateways, an dem er hängt."
+      }
+    }
+  },
+  "device": {
+    "heating_circuit": {
+      "name": "Heizkreis"
+    },
+    "hot_water": {
+      "name": "Warmwasser"
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "circulation_pump": {
+        "name": "Zirkulationspumpe"
+      },
+      "heating_pump": {
+        "name": "Heizkreispumpe"
+      },
+      "relay": {
+        "name": "Relais {number}"
+      },
+      "storage_charge_pump": {
+        "name": "Speicherladepumpe"
+      },
+      "triac": {
+        "name": "Triac {number}"
+      }
+    },
+    "climate": {
+      "heating_circuit": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "comfort": "Komfortbetrieb",
+              "frost_protection": "Frostschutzbetrieb",
+              "manual": "Handbetrieb",
+              "scheduled": "Wochenprogramm",
+              "setback": "Sparbetrieb"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "charge_difference": {
+        "name": "Ladedifferenz"
+      },
+      "circulation_frost_temperature": {
+        "name": "Frostschutz Zirkulationspumpe"
+      },
+      "curve_at_0": {
+        "name": "Kennlinie bei 0 °C"
+      },
+      "curve_at_15": {
+        "name": "Kennlinie bei 15 °C"
+      },
+      "curve_at_5": {
+        "name": "Kennlinie bei 5 °C"
+      },
+      "curve_at_minus_15": {
+        "name": "Kennlinie bei -15 °C"
+      },
+      "curve_at_minus_30": {
+        "name": "Kennlinie bei -30 °C"
+      },
+      "curve_at_minus_5": {
+        "name": "Kennlinie bei -5 °C"
+      },
+      "disinfection_duration": {
+        "name": "Desinfektionsdauer"
+      },
+      "disinfection_temperature": {
+        "name": "Desinfektionstemperatur"
+      },
+      "heat_curve": {
+        "name": "Heizkurve"
+      },
+      "heating_frost_protection_temperature": {
+        "name": "Frostschutztemperatur"
+      },
+      "heating_return_limit": {
+        "name": "Rücklaufbegrenzung"
+      },
+      "hot_water_frost_protection_temperature": {
+        "name": "Frostschutztemperatur"
+      },
+      "hot_water_return_limit": {
+        "name": "Rücklaufbegrenzung"
+      },
+      "hot_water_setback_setpoint": {
+        "name": "Spartemperatur"
+      },
+      "max_charge_temperature": {
+        "name": "Maximale Ladetemperatur"
+      },
+      "max_flow_temperature": {
+        "name": "Maximale Vorlauftemperatur"
+      },
+      "min_flow_temperature": {
+        "name": "Minimale Vorlauftemperatur"
+      },
+      "pump_post_run": {
+        "name": "Pumpennachlauf"
+      },
+      "setback_setpoint": {
+        "name": "Spartemperatur"
+      },
+      "start_difference": {
+        "name": "Startdifferenz"
+      },
+      "stop_difference": {
+        "name": "Stoppdifferenz"
+      },
+      "summer_cut_off": {
+        "name": "Sommerabschaltung"
+      }
+    },
+    "select": {
+      "circulation_pump_override": {
+        "name": "Zirkulationspumpe Übersteuerung",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        }
+      },
+      "heating_pump_override": {
+        "name": "Heizkreispumpe Übersteuerung",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        }
+      },
+      "storage_charge_pump_override": {
+        "name": "Speicherladepumpe Übersteuerung",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        }
+      }
+    },
+    "sensor": {
+      "circulation_pump_manual": {
+        "name": "Zirkulationspumpe Handbetrieb",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        }
+      },
+      "flow_temperature": {
+        "name": "Vorlauftemperatur"
+      },
+      "heating_mode": {
+        "name": "Betriebsart",
+        "state": {
+          "comfort": "Komfortbetrieb",
+          "frost_protection": "Frostschutzbetrieb",
+          "manual": "Handbetrieb",
+          "scheduled": "Wochenprogramm",
+          "setback": "Sparbetrieb"
+        }
+      },
+      "heating_pump_manual": {
+        "name": "Heizkreispumpe Handbetrieb",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        }
+      },
+      "heating_state": {
+        "name": "Kreisstatus",
+        "state": {
+          "comfort": "Komfort",
+          "pre_comfort": "Vorkomfort",
+          "pre_setback": "Vorsparen",
+          "setback": "Sparen"
+        }
+      },
+      "hot_water_mode": {
+        "name": "Betriebsart",
+        "state": {
+          "comfort": "Komfortbetrieb",
+          "frost_protection": "Frostschutzbetrieb",
+          "manual": "Handbetrieb",
+          "scheduled": "Wochenprogramm",
+          "setback": "Sparbetrieb"
+        }
+      },
+      "hot_water_state": {
+        "name": "Kreisstatus",
+        "state": {
+          "comfort": "Komfort",
+          "pre_comfort": "Vorkomfort",
+          "pre_setback": "Vorsparen",
+          "setback": "Sparen"
+        }
+      },
+      "outdoor_temperature": {
+        "name": "Außentemperatur"
+      },
+      "return_temperature": {
+        "name": "Rücklauftemperatur"
+      },
+      "storage_charge_pump_manual": {
+        "name": "Speicherladepumpe Handbetrieb",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        }
+      },
+      "storage_temperature": {
+        "name": "Speichertemperatur"
+      }
+    },
+    "switch": {
+      "disinfection_friday": {
+        "name": "Desinfektion Freitag"
+      },
+      "disinfection_monday": {
+        "name": "Desinfektion Montag"
+      },
+      "disinfection_saturday": {
+        "name": "Desinfektion Samstag"
+      },
+      "disinfection_sunday": {
+        "name": "Desinfektion Sonntag"
+      },
+      "disinfection_thursday": {
+        "name": "Desinfektion Donnerstag"
+      },
+      "disinfection_tuesday": {
+        "name": "Desinfektion Dienstag"
+      },
+      "disinfection_wednesday": {
+        "name": "Desinfektion Mittwoch"
+      },
+      "hot_water_priority": {
+        "name": "Warmwasser-Vorrang"
+      },
+      "pump_off_in_setback": {
+        "name": "Pumpe aus im Sparbetrieb"
+      }
+    },
+    "time": {
+      "disinfection_start": {
+        "name": "Desinfektionsbeginn"
+      },
+      "friday_start": {
+        "name": "Freitag Zeitraum {period} Beginn"
+      },
+      "friday_stop": {
+        "name": "Freitag Zeitraum {period} Ende"
+      },
+      "monday_start": {
+        "name": "Montag Zeitraum {period} Beginn"
+      },
+      "monday_stop": {
+        "name": "Montag Zeitraum {period} Ende"
+      },
+      "saturday_start": {
+        "name": "Samstag Zeitraum {period} Beginn"
+      },
+      "saturday_stop": {
+        "name": "Samstag Zeitraum {period} Ende"
+      },
+      "sunday_start": {
+        "name": "Sonntag Zeitraum {period} Beginn"
+      },
+      "sunday_stop": {
+        "name": "Sonntag Zeitraum {period} Ende"
+      },
+      "thursday_start": {
+        "name": "Donnerstag Zeitraum {period} Beginn"
+      },
+      "thursday_stop": {
+        "name": "Donnerstag Zeitraum {period} Ende"
+      },
+      "tuesday_start": {
+        "name": "Dienstag Zeitraum {period} Beginn"
+      },
+      "tuesday_stop": {
+        "name": "Dienstag Zeitraum {period} Ende"
+      },
+      "wednesday_start": {
+        "name": "Mittwoch Zeitraum {period} Beginn"
+      },
+      "wednesday_stop": {
+        "name": "Mittwoch Zeitraum {period} Ende"
+      }
+    },
+    "water_heater": {
+      "hot_water": {
+        "state": {
+          "comfort": "Komfortbetrieb",
+          "frost_protection": "Frostschutzbetrieb",
+          "manual": "Handbetrieb",
+          "scheduled": "Wochenprogramm",
+          "setback": "Sparbetrieb"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "manual_mode_not_settable": {
+      "message": "Der Handbetrieb lässt sich nicht von Home Assistant aus setzen. Am Regler deaktiviert er sämtliche Regelungen und den Frostschutz, verweigert die Ausgangs-Übersteuerung und versetzt alle Kreise in den Handbetrieb - er wird deshalb nur am Gerät selbst gewählt."
+    }
+  }
+}

@@ -1,0 +1,30 @@
+# A deliberately small development instance: enough for the user interface,
+# the config flow and this integration, and nothing else.
+#
+# `default_config:` is what a real installation uses, but it pulls in camera,
+# stream, bluetooth, cloud, usb, dhcp and ssdp. Those want native libraries
+# (libturbojpeg, ffmpeg) that a plain `pip install homeassistant` does not
+# bring, and this integration uses none of them - so leaving it out is the
+# difference between an instance that starts and one that does not.
+
+# https://www.home-assistant.io/integrations/homeassistant/
+homeassistant:
+  debug: true
+
+# The user interface. Pulls in http, auth, onboarding, websocket_api and
+# lovelace on its own.
+frontend:
+
+# Settings -> Devices & services, where the integration is added.
+config:
+
+# Recorded history, so the temperatures can be seen as a graph.
+history:
+
+# https://www.home-assistant.io/integrations/logger/
+logger:
+  default: info
+  logs:
+    custom_components.ecl310: debug
+    ecl310_modbus: debug
+    modbus_connection: debug

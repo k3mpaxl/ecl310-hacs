@@ -1,0 +1,24 @@
+name: "Feature request"
+description: "Suggest a datapoint or feature for the integration"
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: request
+    attributes:
+      label: What would you like to see?
+    validations:
+      required: true
+
+  - type: textarea
+    id: datapoint
+    attributes:
+      label: Which ECL parameter or sensor does it need?
+      description: |
+        If you are asking for a datapoint, give the parameter ID or sensor
+        number the ECL manual prints for it (for example 11179 "Sommer-Aus",
+        or S7), and the value range the controller accepts.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?

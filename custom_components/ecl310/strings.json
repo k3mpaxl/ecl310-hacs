@@ -1,0 +1,337 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Enter the network details of the controller or of the Modbus gateway it is connected to.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "unit_id": "Modbus unit",
+          "framer": "Framing"
+        },
+        "data_description": {
+          "host": "The hostname or IP address of the controller or its Modbus gateway.",
+          "port": "The TCP port the Modbus interface listens on.",
+          "unit_id": "The controller's Modbus station address, set under 'Modbus-Adresse' in the controller's system menu.",
+          "framer": "Use \"socket\" for a controller reached directly over Modbus TCP, and \"rtu\" for a transparent serial gateway that forwards Modbus RTU frames."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect. Check that the controller is reachable on this address, port and unit, and that the framing matches your gateway."
+    },
+    "abort": {
+      "already_configured": "This controller is already configured."
+    }
+  },
+  "device": {
+    "heating_circuit": {
+      "name": "Heating circuit"
+    },
+    "hot_water": {
+      "name": "Hot water"
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "heating_pump": {
+        "name": "Heating circuit pump"
+      },
+      "storage_charge_pump": {
+        "name": "Storage charge pump"
+      },
+      "circulation_pump": {
+        "name": "Circulation pump"
+      },
+      "triac": {
+        "name": "Triac {number}"
+      },
+      "relay": {
+        "name": "Relay {number}"
+      }
+    },
+    "climate": {
+      "heating_circuit": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "manual": "[%key:component::ecl310::entity::sensor::heating_mode::state::manual%]",
+              "scheduled": "[%key:component::ecl310::entity::sensor::heating_mode::state::scheduled%]",
+              "comfort": "[%key:component::ecl310::entity::sensor::heating_mode::state::comfort%]",
+              "setback": "[%key:component::ecl310::entity::sensor::heating_mode::state::setback%]",
+              "frost_protection": "[%key:component::ecl310::entity::sensor::heating_mode::state::frost_protection%]"
+            }
+          }
+        }
+      }
+    },
+    "number": {
+      "setback_setpoint": {
+        "name": "Setback temperature"
+      },
+      "summer_cut_off": {
+        "name": "Summer cut-off"
+      },
+      "min_flow_temperature": {
+        "name": "Minimum flow temperature"
+      },
+      "max_flow_temperature": {
+        "name": "Maximum flow temperature"
+      },
+      "disinfection_temperature": {
+        "name": "Disinfection temperature"
+      },
+      "heat_curve": {
+        "name": "Heat curve"
+      },
+      "curve_at_minus_30": {
+        "name": "Curve at -30 °C"
+      },
+      "curve_at_minus_15": {
+        "name": "Curve at -15 °C"
+      },
+      "curve_at_minus_5": {
+        "name": "Curve at -5 °C"
+      },
+      "curve_at_0": {
+        "name": "Curve at 0 °C"
+      },
+      "curve_at_5": {
+        "name": "Curve at 5 °C"
+      },
+      "curve_at_15": {
+        "name": "Curve at 15 °C"
+      },
+      "heating_return_limit": {
+        "name": "Return temperature limit"
+      },
+      "heating_frost_protection_temperature": {
+        "name": "Frost protection temperature"
+      },
+      "pump_post_run": {
+        "name": "Pump post-run"
+      },
+      "hot_water_setback_setpoint": {
+        "name": "Setback temperature"
+      },
+      "hot_water_return_limit": {
+        "name": "Return temperature limit"
+      },
+      "max_charge_temperature": {
+        "name": "Maximum charging temperature"
+      },
+      "charge_difference": {
+        "name": "Charging difference"
+      },
+      "start_difference": {
+        "name": "Start difference"
+      },
+      "stop_difference": {
+        "name": "Stop difference"
+      },
+      "disinfection_duration": {
+        "name": "Disinfection duration"
+      },
+      "circulation_frost_temperature": {
+        "name": "Circulation pump frost temperature"
+      },
+      "hot_water_frost_protection_temperature": {
+        "name": "Frost protection temperature"
+      }
+    },
+    "select": {
+      "heating_pump_override": {
+        "name": "Heating circuit pump override",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        }
+      },
+      "storage_charge_pump_override": {
+        "name": "Storage charge pump override",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        }
+      },
+      "circulation_pump_override": {
+        "name": "Circulation pump override",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        }
+      }
+    },
+    "sensor": {
+      "outdoor_temperature": {
+        "name": "Outdoor temperature"
+      },
+      "flow_temperature": {
+        "name": "Flow temperature"
+      },
+      "return_temperature": {
+        "name": "Return temperature"
+      },
+      "storage_temperature": {
+        "name": "Storage temperature"
+      },
+      "heating_mode": {
+        "name": "Operating mode",
+        "state": {
+          "manual": "Manual",
+          "scheduled": "Scheduled",
+          "comfort": "Constant comfort",
+          "setback": "Constant setback",
+          "frost_protection": "Frost protection"
+        }
+      },
+      "heating_state": {
+        "name": "Circuit status",
+        "state": {
+          "setback": "Setback",
+          "pre_comfort": "Pre-comfort",
+          "comfort": "Comfort",
+          "pre_setback": "Pre-setback"
+        }
+      },
+      "hot_water_mode": {
+        "name": "Operating mode",
+        "state": {
+          "manual": "[%key:component::ecl310::entity::sensor::heating_mode::state::manual%]",
+          "scheduled": "[%key:component::ecl310::entity::sensor::heating_mode::state::scheduled%]",
+          "comfort": "[%key:component::ecl310::entity::sensor::heating_mode::state::comfort%]",
+          "setback": "[%key:component::ecl310::entity::sensor::heating_mode::state::setback%]",
+          "frost_protection": "[%key:component::ecl310::entity::sensor::heating_mode::state::frost_protection%]"
+        }
+      },
+      "hot_water_state": {
+        "name": "Circuit status",
+        "state": {
+          "setback": "[%key:component::ecl310::entity::sensor::heating_state::state::setback%]",
+          "pre_comfort": "[%key:component::ecl310::entity::sensor::heating_state::state::pre_comfort%]",
+          "comfort": "[%key:component::ecl310::entity::sensor::heating_state::state::comfort%]",
+          "pre_setback": "[%key:component::ecl310::entity::sensor::heating_state::state::pre_setback%]"
+        }
+      },
+      "heating_pump_manual": {
+        "name": "Heating circuit pump manual control",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        }
+      },
+      "storage_charge_pump_manual": {
+        "name": "Storage charge pump manual control",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        }
+      },
+      "circulation_pump_manual": {
+        "name": "Circulation pump manual control",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        }
+      }
+    },
+    "switch": {
+      "pump_off_in_setback": {
+        "name": "Pump off during setback"
+      },
+      "hot_water_priority": {
+        "name": "Hot water priority"
+      },
+      "disinfection_monday": {
+        "name": "Disinfection on Monday"
+      },
+      "disinfection_tuesday": {
+        "name": "Disinfection on Tuesday"
+      },
+      "disinfection_wednesday": {
+        "name": "Disinfection on Wednesday"
+      },
+      "disinfection_thursday": {
+        "name": "Disinfection on Thursday"
+      },
+      "disinfection_friday": {
+        "name": "Disinfection on Friday"
+      },
+      "disinfection_saturday": {
+        "name": "Disinfection on Saturday"
+      },
+      "disinfection_sunday": {
+        "name": "Disinfection on Sunday"
+      }
+    },
+    "time": {
+      "monday_start": {
+        "name": "Monday period {period} start"
+      },
+      "monday_stop": {
+        "name": "Monday period {period} end"
+      },
+      "tuesday_start": {
+        "name": "Tuesday period {period} start"
+      },
+      "tuesday_stop": {
+        "name": "Tuesday period {period} end"
+      },
+      "wednesday_start": {
+        "name": "Wednesday period {period} start"
+      },
+      "wednesday_stop": {
+        "name": "Wednesday period {period} end"
+      },
+      "thursday_start": {
+        "name": "Thursday period {period} start"
+      },
+      "thursday_stop": {
+        "name": "Thursday period {period} end"
+      },
+      "friday_start": {
+        "name": "Friday period {period} start"
+      },
+      "friday_stop": {
+        "name": "Friday period {period} end"
+      },
+      "saturday_start": {
+        "name": "Saturday period {period} start"
+      },
+      "saturday_stop": {
+        "name": "Saturday period {period} end"
+      },
+      "sunday_start": {
+        "name": "Sunday period {period} start"
+      },
+      "sunday_stop": {
+        "name": "Sunday period {period} end"
+      },
+      "disinfection_start": {
+        "name": "Disinfection start"
+      }
+    },
+    "water_heater": {
+      "hot_water": {
+        "state": {
+          "manual": "[%key:component::ecl310::entity::sensor::heating_mode::state::manual%]",
+          "scheduled": "[%key:component::ecl310::entity::sensor::heating_mode::state::scheduled%]",
+          "comfort": "[%key:component::ecl310::entity::sensor::heating_mode::state::comfort%]",
+          "setback": "[%key:component::ecl310::entity::sensor::heating_mode::state::setback%]",
+          "frost_protection": "[%key:component::ecl310::entity::sensor::heating_mode::state::frost_protection%]"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "manual_mode_not_settable": {
+      "message": "Manual mode cannot be set from Home Assistant. At the controller it deactivates every control loop and the frost protection, refuses the output override, and puts all circuits into manual - so it is chosen at the controller itself."
+    }
+  }
+}

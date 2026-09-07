@@ -1,0 +1,72 @@
+name: "Bug report"
+description: "Report a problem with the Danfoss ECL Comfort 310 integration"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening an issue, please download the integration's diagnostics
+        (Settings → Devices & services → ECL Comfort 310 → ⋮ → Download
+        diagnostics). It contains the raw register map, which is what makes a
+        decoding problem reproducible without your hardware.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Integration version
+    validations:
+      required: true
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+    validations:
+      required: true
+
+  - type: input
+    id: controller
+    attributes:
+      label: Controller and application key
+      description: 'For example: ECL Comfort 310 with application key A237.1'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: link
+    attributes:
+      label: How is the controller connected?
+      options:
+        - Modbus TCP, directly to the controller
+        - Modbus RTU through a serial gateway (framing "rtu")
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Paste or attach the downloaded diagnostics.
+      render: json
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      render: text

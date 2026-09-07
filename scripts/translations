@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Build ``translations/en.json`` and check every other language against it.
+
+Home Assistant core resolves ``[%key:...%]`` references when it publishes an
+integration's translations. Nothing does that for a custom integration, so a
+copy of ``strings.json`` would ship those references to the frontend verbatim.
+This script expands them, writes the result as the English translation, and
+verifies that the other languages carry exactly the same keys - no leftovers
+from a renamed entity, no untranslated ones.
+
+    scripts/translations           rewrite en.json, then check the rest
+    scripts/translations --check   change nothing, fail if anything is stale
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+
+COMPONENT = "ecl310"
+ROOT = Path(__file__).resolve().parent.parent / "custom_components" / COMPONENT
+STRINGS = ROOT / "strings.json"
+TRANSLATIONS = ROOT / "translations"
+
+REFERENCE = re.compile(r"^\[%key:([^%]+)%\]$")
+
+
+def resolve(value: object, root: dict, seen: tuple[str, ...] = ()) -> object:
+    """Expand ``[%key:...%]`` references, depth first."""
+    if isinstance(value, dict):
+        return {key: resolve(item, root, seen) for key, item in value.items()}
+    if not isinstance(value, str) or not (match := REFERENCE.match(value)):
+        return value
+
+    path = match.group(1)
+    if path in seen:
+        raise SystemExit(f"circular reference: {' -> '.join([*seen, path])}")
+
+    prefix, _, rest = path.partition("::")
+    if prefix != "component":
+        raise SystemExit(f"cannot resolve {value}: only component:: is supported")
+    component, _, rest = rest.partition("::")
+    if component != COMPONENT:
+        raise SystemExit(f"cannot resolve {value}: refers to another integration")
+
+    target: object = root
+    for step in rest.split("::"):
+        if not isinstance(target, dict) or step not in target:
+            raise SystemExit(f"dangling reference: {value}")
+        target = target[step]
+    return resolve(target, root, (*seen, path))
+
+
+def keys(value: object, prefix: str = "") -> set[str]:
+    """Every leaf path in a translation tree."""
+    if not isinstance(value, dict):
+        return {prefix}
+    return {key for name, item in value.items() for key in keys(item, f"{prefix}.{name}")}
+
+
+def dump(path: Path, data: dict) -> str:
+    return json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
+
+
+def main() -> int:
+    check = "--check" in sys.argv[1:]
+    strings = json.loads(STRINGS.read_text(encoding="utf-8"))
+    english = dump(TRANSLATIONS / "en.json", resolve(strings, strings))
+
+    target = TRANSLATIONS / "en.json"
+    if not target.exists() or target.read_text(encoding="utf-8") != english:
+        if check:
+            print("en.json is out of date; run scripts/translations", file=sys.stderr)
+            return 1
+        target.write_text(english, encoding="utf-8")
+        print(f"wrote {target.relative_to(ROOT.parent.parent)}")
+
+    expected = keys(json.loads(english))
+    failed = False
+    for path in sorted(TRANSLATIONS.glob("*.json")):
+        if path.name == "en.json":
+            continue
+        found = keys(json.loads(path.read_text(encoding="utf-8")))
+        for label, difference in (("missing", expected - found), ("unknown", found - expected)):
+            for key in sorted(difference):
+                print(f"{path.name}: {label} {key.lstrip('.')}", file=sys.stderr)
+                failed = True
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

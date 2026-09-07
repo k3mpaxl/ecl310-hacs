@@ -1,0 +1,4 @@
+-r requirements_lint.txt
+colorlog==6.10.1
+homeassistant==2026.9.1
+modbus-connection[tmodbus]>=4.10.0,<5
