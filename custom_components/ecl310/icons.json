@@ -138,15 +138,6 @@
       },
       "hot_water_state": {
         "default": "mdi:calendar-clock"
-      },
-      "heating_pump_manual": {
-        "default": "mdi:hand-back-right"
-      },
-      "storage_charge_pump_manual": {
-        "default": "mdi:hand-back-right"
-      },
-      "circulation_pump_manual": {
-        "default": "mdi:hand-back-right"
       }
     },
     "switch": {

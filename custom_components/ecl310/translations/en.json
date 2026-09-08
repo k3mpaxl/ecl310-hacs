@@ -166,14 +166,6 @@
       }
     },
     "sensor": {
-      "circulation_pump_manual": {
-        "name": "Circulation pump manual control",
-        "state": {
-          "auto": "Automatic",
-          "off": "Forced off",
-          "on": "Forced on"
-        }
-      },
       "flow_temperature": {
         "name": "Flow temperature"
       },
@@ -185,14 +177,6 @@
           "manual": "Manual",
           "scheduled": "Scheduled",
           "setback": "Constant setback"
-        }
-      },
-      "heating_pump_manual": {
-        "name": "Heating circuit pump manual control",
-        "state": {
-          "auto": "Automatic",
-          "off": "Forced off",
-          "on": "Forced on"
         }
       },
       "heating_state": {
@@ -228,14 +212,6 @@
       },
       "return_temperature": {
         "name": "Return temperature"
-      },
-      "storage_charge_pump_manual": {
-        "name": "Storage charge pump manual control",
-        "state": {
-          "auto": "Automatic",
-          "off": "Forced off",
-          "on": "Forced on"
-        }
       },
       "storage_temperature": {
         "name": "Storage temperature"

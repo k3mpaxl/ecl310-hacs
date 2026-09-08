@@ -58,7 +58,8 @@ application key A237.1 V04, software 1.56, over Modbus/TCP on unit 1:
   which physical output, and which sensor input is actually connected, was
   confirmed by switching outputs and watching the plant respond.
 
-A full poll is ten block reads and takes about 130 ms.
+A full poll is 22 block reads and takes about 200 ms. The two weekly programs
+are 14 further reads, about 100 ms, fetched on their own slower cadence.
 
 ## Requirements
 
@@ -146,8 +147,9 @@ cannot be written over Modbus.
 * **The controller's own display outranks the override.** If someone puts an
   output into manual mode at the ECL itself, that wins, and the override
   register then says what was asked for rather than what the output is doing.
-  Modbus cannot clear it; only the controller can. The matching *Handbetrieb*
-  sensor (diagnostic, off by default) is what shows this.
+  Modbus cannot clear it; only the controller can. There is no entity for it -
+  the diagnostics download carries registers `4025`…`4030` raw, which is where
+  to look when an override appears to do nothing.
 * **An unconnected sensor input reads as 192.00 °C**, the controller's
   no-sensor value. Those entities report *unknown* instead.
 * **Sensor assignment follows application key A237/A337.** If your controller

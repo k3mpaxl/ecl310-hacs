@@ -215,30 +215,6 @@
           "comfort": "[%key:component::ecl310::entity::sensor::heating_state::state::comfort%]",
           "pre_setback": "[%key:component::ecl310::entity::sensor::heating_state::state::pre_setback%]"
         }
-      },
-      "heating_pump_manual": {
-        "name": "Heating circuit pump manual control",
-        "state": {
-          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
-          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
-          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
-        }
-      },
-      "storage_charge_pump_manual": {
-        "name": "Storage charge pump manual control",
-        "state": {
-          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
-          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
-          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
-        }
-      },
-      "circulation_pump_manual": {
-        "name": "Circulation pump manual control",
-        "state": {
-          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
-          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
-          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
-        }
       }
     },
     "switch": {

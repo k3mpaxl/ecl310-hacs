@@ -20,22 +20,15 @@ from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import (
-    COMPONENT_HEATING,
-    COMPONENT_HOT_WATER,
-    COMPONENT_OUTPUTS,
-    COMPONENT_SENSORS,
-)
+from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_SENSORS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import CircuitState, Ecl310, OperatingMode, OutputControl
-from .ecl310_modbus.configurations import RELAY_ASSIGNMENTS
+from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
 from .entity import Ecl310Entity
 
 PARALLEL_UPDATES = 0
 
 _MODE_OPTIONS = [mode.name.lower() for mode in OperatingMode]
 _STATE_OPTIONS = [state.name.lower() for state in CircuitState]
-_CONTROL_OPTIONS = [control.name.lower() for control in OutputControl]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -72,8 +65,6 @@ def _enum(
     component: str,
     options: list[str],
     value_fn: Callable[[Ecl310], float | IntEnum | None],
-    *,
-    enabled: bool = True,
 ) -> Ecl310SensorDescription:
     """Describe a discrete controller state."""
     return Ecl310SensorDescription(
@@ -84,23 +75,6 @@ def _enum(
         device_class=SensorDeviceClass.ENUM,
         options=options,
         entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=enabled,
-    )
-
-
-def _manual(key: str, number: int) -> Ecl310SensorDescription:
-    """Describe what the controller's own display forced a relay to.
-
-    This outranks the override the select platform writes and cannot be
-    cleared over Modbus, so it is the answer to "why did nothing happen".
-    Off by default: on a controller nobody has touched it always reads auto.
-    """
-    return _enum(
-        f"{key}_manual",
-        COMPONENT_OUTPUTS,
-        _CONTROL_OPTIONS,
-        lambda device, n=number: device.outputs.relay_manual(n),
-        enabled=False,
     )
 
 
@@ -150,7 +124,6 @@ SENSORS: tuple[Ecl310SensorDescription, ...] = (
         _STATE_OPTIONS,
         lambda device: device.hot_water.state,
     ),
-    *(_manual(assignment.key, assignment.number) for assignment in RELAY_ASSIGNMENTS),
 )
 
 

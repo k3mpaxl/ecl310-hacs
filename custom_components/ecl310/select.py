@@ -8,8 +8,9 @@ regulation, hold it off, or hold it on. That is a select, not a switch.
 An override holds until it is released - nothing times it out. And an operator
 standing at the ECL outranks Modbus: while an output is in manual mode at the
 controller's own display, the override register says what was asked for rather
-than what the output is doing, which is what the matching diagnostic sensor is
-for.
+than what the output is doing. The library reads those manual registers and the
+diagnostics download carries them, which is where to look if an override seems
+to do nothing.
 """
 
 from __future__ import annotations

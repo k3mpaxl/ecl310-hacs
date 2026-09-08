@@ -166,14 +166,6 @@
       }
     },
     "sensor": {
-      "circulation_pump_manual": {
-        "name": "Zirkulationspumpe Handbetrieb",
-        "state": {
-          "auto": "Automatik",
-          "off": "Dauerhaft aus",
-          "on": "Dauerhaft ein"
-        }
-      },
       "flow_temperature": {
         "name": "Vorlauftemperatur"
       },
@@ -185,14 +177,6 @@
           "manual": "Handbetrieb",
           "scheduled": "Wochenprogramm",
           "setback": "Sparbetrieb"
-        }
-      },
-      "heating_pump_manual": {
-        "name": "Heizkreispumpe Handbetrieb",
-        "state": {
-          "auto": "Automatik",
-          "off": "Dauerhaft aus",
-          "on": "Dauerhaft ein"
         }
       },
       "heating_state": {
@@ -228,14 +212,6 @@
       },
       "return_temperature": {
         "name": "Rücklauftemperatur"
-      },
-      "storage_charge_pump_manual": {
-        "name": "Speicherladepumpe Handbetrieb",
-        "state": {
-          "auto": "Automatik",
-          "off": "Dauerhaft aus",
-          "on": "Dauerhaft ein"
-        }
       },
       "storage_temperature": {
         "name": "Speichertemperatur"
