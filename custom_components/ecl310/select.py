@@ -76,7 +76,12 @@ class Ecl310Select(Ecl310Entity, SelectEntity):
         self, coordinator: Ecl310Coordinator, description: Ecl310SelectDescription
     ) -> None:
         """Initialize the select."""
-        super().__init__(coordinator, description.key, description.component)
+        super().__init__(
+            coordinator,
+            description.key,
+            description.component,
+            (f"relay_{description.relay}_override",),
+        )
         self.entity_description = description
 
     @property

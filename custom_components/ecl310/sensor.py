@@ -36,6 +36,7 @@ class Ecl310SensorDescription(SensorEntityDescription):
     """Describes a sensor reading one attribute of one sub-system."""
 
     component: str
+    field: str
     value_fn: Callable[[Ecl310], float | IntEnum | None]
 
 
@@ -46,11 +47,12 @@ def _temperature(
     *,
     diagnostic: bool = False,
 ) -> Ecl310SensorDescription:
-    """Describe a measured temperature."""
+    """Describe a measured temperature, read from the field its key names."""
     return Ecl310SensorDescription(
         key=key,
         translation_key=key,
         component=component,
+        field=key,
         value_fn=value_fn,
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -63,6 +65,7 @@ def _temperature(
 def _enum(
     key: str,
     component: str,
+    field: str,
     options: list[str],
     value_fn: Callable[[Ecl310], float | IntEnum | None],
 ) -> Ecl310SensorDescription:
@@ -71,6 +74,7 @@ def _enum(
         key=key,
         translation_key=key,
         component=component,
+        field=field,
         value_fn=value_fn,
         device_class=SensorDeviceClass.ENUM,
         options=options,
@@ -103,24 +107,28 @@ SENSORS: tuple[Ecl310SensorDescription, ...] = (
     _enum(
         "heating_mode",
         COMPONENT_HEATING,
+        "mode",
         _MODE_OPTIONS,
         lambda device: device.heating.mode,
     ),
     _enum(
         "heating_state",
         COMPONENT_HEATING,
+        "state",
         _STATE_OPTIONS,
         lambda device: device.heating.state,
     ),
     _enum(
         "hot_water_mode",
         COMPONENT_HOT_WATER,
+        "mode",
         _MODE_OPTIONS,
         lambda device: device.hot_water.mode,
     ),
     _enum(
         "hot_water_state",
         COMPONENT_HOT_WATER,
+        "state",
         _STATE_OPTIONS,
         lambda device: device.hot_water.state,
     ),
@@ -148,7 +156,9 @@ class Ecl310Sensor(Ecl310Entity, SensorEntity):
         self, coordinator: Ecl310Coordinator, description: Ecl310SensorDescription
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator, description.key, description.component)
+        super().__init__(
+            coordinator, description.key, description.component, (description.field,)
+        )
         self.entity_description = description
 
     @property

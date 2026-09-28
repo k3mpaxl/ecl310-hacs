@@ -25,6 +25,9 @@ async def async_get_config_entry_diagnostics(
     diagnostics: dict[str, Any] = {
         "updated": coordinator.data.updated,
         "failed": {name: str(error) for name, error in coordinator.data.failed.items()},
+        "refused": {
+            name: sorted(coordinator.refused(name)) for name in coordinator.data.updated
+        },
     }
     try:
         diagnostics["registers"] = await coordinator.device.async_read_raw()

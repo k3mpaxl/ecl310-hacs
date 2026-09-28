@@ -55,7 +55,12 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
 
     def __init__(self, coordinator: Ecl310Coordinator) -> None:
         """Initialize the water heater, bounded by the setpoint's own domain."""
-        super().__init__(coordinator, key="water_heater", component=COMPONENT_HOT_WATER)
+        super().__init__(
+            coordinator,
+            key="water_heater",
+            component=COMPONENT_HOT_WATER,
+            fields=("mode", "setpoint"),
+        )
         setpoint = self._metadata("setpoint").number
         if setpoint is not None:
             if setpoint.min_value is not None:

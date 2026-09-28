@@ -142,7 +142,12 @@ class Ecl310Time(Ecl310Entity, TimeEntity):
         self, coordinator: Ecl310Coordinator, description: Ecl310TimeDescription
     ) -> None:
         """Initialize the entity."""
-        super().__init__(coordinator, description.key, description.component)
+        super().__init__(
+            coordinator,
+            description.key,
+            description.component,
+            (description.attribute,),
+        )
         self.entity_description = description
 
     @property
@@ -187,7 +192,12 @@ class Ecl310DisinfectionStart(Ecl310Entity, TimeEntity):
 
     def __init__(self, coordinator: Ecl310Coordinator) -> None:
         """Initialize the entity."""
-        super().__init__(coordinator, DISINFECTION_START.key, COMPONENT_HOT_WATER)
+        super().__init__(
+            coordinator,
+            DISINFECTION_START.key,
+            COMPONENT_HOT_WATER,
+            ("disinfection_start",),
+        )
 
     @property
     def native_value(self) -> time | None:

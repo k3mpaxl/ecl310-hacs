@@ -38,6 +38,7 @@ class Ecl310SwitchDescription(SwitchEntityDescription):
     """Describes a switch reading and writing one datapoint."""
 
     component: str
+    field: str
     value_fn: Callable[[Ecl310], bool | None]
     set_fn: Callable[[Ecl310Coordinator, bool], Awaitable[None]]
 
@@ -49,6 +50,7 @@ def _disinfection_day(day: int) -> Ecl310SwitchDescription:
         key=f"disinfection_{name}",
         translation_key=f"disinfection_{name}",
         component=COMPONENT_HOT_WATER,
+        field="disinfection_days",
         entity_category=EntityCategory.CONFIG,
         value_fn=lambda device, index=day: _day_is_set(device, index),
         set_fn=lambda coordinator, on, index=day: _set_day(coordinator, index, on=on),
@@ -80,6 +82,7 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
         key="pump_off_in_setback",
         translation_key="pump_off_in_setback",
         component=COMPONENT_HEATING,
+        field="pump_off_in_setback",
         entity_category=EntityCategory.CONFIG,
         value_fn=lambda device: device.heating.pump_off_in_setback,
         set_fn=lambda coordinator, on: cast(
@@ -90,6 +93,7 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
         key="hot_water_priority",
         translation_key="hot_water_priority",
         component=COMPONENT_HEATING,
+        field="hot_water_priority",
         entity_category=EntityCategory.CONFIG,
         value_fn=lambda device: device.heating.hot_water_priority,
         set_fn=lambda coordinator, on: cast(
@@ -121,7 +125,9 @@ class Ecl310Switch(Ecl310Entity, SwitchEntity):
         self, coordinator: Ecl310Coordinator, description: Ecl310SwitchDescription
     ) -> None:
         """Initialize the switch."""
-        super().__init__(coordinator, description.key, description.component)
+        super().__init__(
+            coordinator, description.key, description.component, (description.field,)
+        )
         self.entity_description = description
 
     @property

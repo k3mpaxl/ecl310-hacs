@@ -151,7 +151,12 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
         self, coordinator: Ecl310Coordinator, description: Ecl310NumberDescription
     ) -> None:
         """Initialize the number entity from the datapoint metadata."""
-        super().__init__(coordinator, description.key, description.component)
+        super().__init__(
+            coordinator,
+            description.key,
+            description.component,
+            (description.attribute,),
+        )
         self.entity_description = description
 
         number = self._metadata(description.attribute).number
