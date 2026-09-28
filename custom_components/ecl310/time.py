@@ -159,11 +159,13 @@ class Ecl310Time(Ecl310Entity, TimeEntity):
     async def async_set_value(self, value: time) -> None:
         """Write the boundary, then re-read the program it belongs to."""
         description = self.entity_description
-        await self._schedule.async_set_boundary(
-            description.day,
-            description.period,
-            from_hours_minutes(value.hour, value.minute),
-            stop=description.stop,
+        await self._async_write(
+            self._schedule.async_set_boundary(
+                description.day,
+                description.period,
+                from_hours_minutes(value.hour, value.minute),
+                stop=description.stop,
+            )
         )
         await self.coordinator.async_refresh_schedules()
 
@@ -196,7 +198,9 @@ class Ecl310DisinfectionStart(Ecl310Entity, TimeEntity):
     async def async_set_value(self, value: time) -> None:
         """Write the start, rounded down to the half hour."""
         water = cast(HotWater, self._subsystem)
-        await water.async_set_disinfection_start_time(
-            value.hour, HALF_HOUR if value.minute >= HALF_HOUR else 0
+        await self._async_write(
+            water.async_set_disinfection_start_time(
+                value.hour, HALF_HOUR if value.minute >= HALF_HOUR else 0
+            )
         )
         await self.coordinator.async_request_refresh()

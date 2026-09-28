@@ -6,7 +6,6 @@ metadata, so the bounds shown in the UI are the ones the controller accepts.
 
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from homeassistant.components.number import (
@@ -21,7 +20,6 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import Ecl310
 from .ecl310_modbus.subsystems.heating_circuit import CURVE_POINTS
 from .entity import Ecl310Entity
 
@@ -30,17 +28,20 @@ PARALLEL_UPDATES = 1
 
 @dataclass(frozen=True, kw_only=True)
 class Ecl310NumberDescription(NumberEntityDescription):
-    """Describes a writable numeric datapoint."""
+    """Describes a writable numeric datapoint.
+
+    The entity writes ``attribute`` on its sub-system directly: the library
+    validates the value against the datapoint's own domain, so there is no
+    setter to name here.
+    """
 
     component: str
     attribute: str
-    set_fn: Callable[[Ecl310, float], Awaitable[None]]
 
 
-def _setting(  # noqa: PLR0913 one argument per column of the table below
+def _setting(
     component: str,
     attribute: str,
-    set_fn: Callable[[Ecl310, float], Awaitable[None]],
     *,
     key: str | None = None,
     unit: str | None = None,
@@ -58,7 +59,6 @@ def _setting(  # noqa: PLR0913 one argument per column of the table below
         translation_key=key,
         component=component,
         attribute=attribute,
-        set_fn=set_fn,
         device_class=device_class,
         native_unit_of_measurement=unit,
         mode=NumberMode.BOX,
@@ -67,148 +67,64 @@ def _setting(  # noqa: PLR0913 one argument per column of the table below
 
 
 def _temperature_setting(
-    component: str,
-    attribute: str,
-    set_fn: Callable[[Ecl310, float], Awaitable[None]],
-    *,
-    key: str | None = None,
+    component: str, attribute: str, *, key: str | None = None
 ) -> Ecl310NumberDescription:
     """Describe a writable temperature setting."""
     return _setting(
         component,
         attribute,
-        set_fn,
         key=key,
         unit=UnitOfTemperature.CELSIUS,
         device_class=NumberDeviceClass.TEMPERATURE,
     )
 
 
-def _curve_point(outdoor: int) -> Ecl310NumberDescription:
-    """Describe one point of the heat curve."""
-    attribute = f"curve_at_{str(outdoor).replace('-', 'minus_')}"
-    return _temperature_setting(
-        COMPONENT_HEATING,
-        attribute,
-        lambda device, value, at=outdoor: device.heating.async_set_curve_point(
-            at, value
-        ),
-    )
-
-
 NUMBERS: tuple[Ecl310NumberDescription, ...] = (
-    _temperature_setting(
-        COMPONENT_HEATING,
-        "setback_setpoint",
-        lambda device, value: device.heating.async_set_setback_setpoint(value),
-    ),
-    _temperature_setting(
-        COMPONENT_HEATING,
-        "summer_cut_off",
-        lambda device, value: device.heating.async_set_summer_cut_off(value),
-    ),
-    _temperature_setting(
-        COMPONENT_HEATING,
-        "min_flow_temperature",
-        lambda device, value: device.heating.async_set_min_flow_temperature(value),
-    ),
-    _temperature_setting(
-        COMPONENT_HEATING,
-        "max_flow_temperature",
-        lambda device, value: device.heating.async_set_max_flow_temperature(value),
-    ),
-    _temperature_setting(
-        COMPONENT_HOT_WATER,
-        "disinfection_temperature",
-        lambda device, value: device.hot_water.async_set_disinfection_temperature(
-            value
-        ),
-    ),
+    _temperature_setting(COMPONENT_HEATING, "setback_setpoint"),
+    _temperature_setting(COMPONENT_HEATING, "summer_cut_off"),
+    _temperature_setting(COMPONENT_HEATING, "min_flow_temperature"),
+    _temperature_setting(COMPONENT_HEATING, "max_flow_temperature"),
+    _temperature_setting(COMPONENT_HOT_WATER, "disinfection_temperature"),
     # --- the heat curve and its six points ---------------------------------
-    _setting(
-        COMPONENT_HEATING,
-        "heat_curve",
-        lambda device, value: device.heating.async_set_heat_curve(value),
+    _setting(COMPONENT_HEATING, "heat_curve"),
+    *(
+        _temperature_setting(COMPONENT_HEATING, attribute)
+        for attribute in CURVE_POINTS.values()
     ),
-    *(_curve_point(outdoor) for outdoor in CURVE_POINTS),
     # --- the remaining heating settings ------------------------------------
-    _temperature_setting(
-        COMPONENT_HEATING,
-        "return_limit",
-        lambda device, value: device.heating.async_set_return_limit(value),
-        key="heating_return_limit",
-    ),
+    _temperature_setting(COMPONENT_HEATING, "return_limit", key="heating_return_limit"),
     _temperature_setting(
         COMPONENT_HEATING,
         "frost_protection_temperature",
-        lambda device, value: device.heating.async_set_frost_protection_temperature(
-            value
-        ),
         key="heating_frost_protection_temperature",
     ),
     _setting(
         COMPONENT_HEATING,
         "pump_post_run",
-        lambda device, value: device.heating.async_set_pump_post_run(value),
         unit=UnitOfTime.MINUTES,
         device_class=NumberDeviceClass.DURATION,
     ),
     # --- hot water ---------------------------------------------------------
     _temperature_setting(
-        COMPONENT_HOT_WATER,
-        "setback_setpoint",
-        lambda device, value: device.hot_water.async_set_setback_setpoint(value),
-        key="hot_water_setback_setpoint",
+        COMPONENT_HOT_WATER, "setback_setpoint", key="hot_water_setback_setpoint"
     ),
     _temperature_setting(
-        COMPONENT_HOT_WATER,
-        "return_limit",
-        lambda device, value: device.hot_water.async_set_return_limit(value),
-        key="hot_water_return_limit",
+        COMPONENT_HOT_WATER, "return_limit", key="hot_water_return_limit"
     ),
-    _temperature_setting(
-        COMPONENT_HOT_WATER,
-        "max_charge_temperature",
-        lambda device, value: device.hot_water.async_set_max_charge_temperature(value),
-    ),
-    _setting(
-        COMPONENT_HOT_WATER,
-        "charge_difference",
-        lambda device, value: device.hot_water.async_set_charge_difference(value),
-        unit=UnitOfTemperature.KELVIN,
-    ),
-    _setting(
-        COMPONENT_HOT_WATER,
-        "start_difference",
-        lambda device, value: device.hot_water.async_set_start_difference(value),
-        unit=UnitOfTemperature.KELVIN,
-    ),
-    _setting(
-        COMPONENT_HOT_WATER,
-        "stop_difference",
-        lambda device, value: device.hot_water.async_set_stop_difference(value),
-        unit=UnitOfTemperature.KELVIN,
-    ),
+    _temperature_setting(COMPONENT_HOT_WATER, "max_charge_temperature"),
+    _setting(COMPONENT_HOT_WATER, "charge_difference", unit=UnitOfTemperature.KELVIN),
+    _setting(COMPONENT_HOT_WATER, "start_difference", unit=UnitOfTemperature.KELVIN),
+    _setting(COMPONENT_HOT_WATER, "stop_difference", unit=UnitOfTemperature.KELVIN),
     _setting(
         COMPONENT_HOT_WATER,
         "disinfection_duration",
-        lambda device, value: device.hot_water.async_set_disinfection_duration(value),
         unit=UnitOfTime.MINUTES,
         device_class=NumberDeviceClass.DURATION,
     ),
-    _temperature_setting(
-        COMPONENT_HOT_WATER,
-        "circulation_frost_temperature",
-        lambda device, value: device.hot_water.async_set_circulation_frost_temperature(
-            value
-        ),
-    ),
+    _temperature_setting(COMPONENT_HOT_WATER, "circulation_frost_temperature"),
     _temperature_setting(
         COMPONENT_HOT_WATER,
         "frost_protection_temperature",
-        lambda device, value: device.hot_water.async_set_frost_protection_temperature(
-            value
-        ),
         key="hot_water_frost_protection_temperature",
     ),
 )
@@ -238,7 +154,7 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
         super().__init__(coordinator, description.key, description.component)
         self.entity_description = description
 
-        number = self._subsystem.require_metadata_for(description.attribute).number
+        number = self._metadata(description.attribute).number
         if number is not None:
             if number.min_value is not None:
                 self._attr_native_min_value = float(number.min_value)
@@ -254,5 +170,7 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Write a new setpoint."""
-        await self.entity_description.set_fn(self.coordinator.device, value)
+        await self._async_write(
+            self._subsystem.write(self.entity_description.attribute, value)
+        )
         await self.coordinator.async_request_refresh()

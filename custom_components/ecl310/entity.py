@@ -10,11 +10,14 @@ which is only known once the parent exists, so the entities cannot describe
 that relationship themselves.
 """
 
+from collections.abc import Awaitable
 from typing import cast
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from modbus_connection import ModbusError
 
 from .const import (
     COMPONENT_HEATING,
@@ -24,7 +27,7 @@ from .const import (
     DOMAIN,
 )
 from .coordinator import Ecl310Coordinator
-from .ecl310_modbus import DeviceInformation, Ecl310Component
+from .ecl310_modbus import DatapointMetadata, DeviceInformation, Ecl310Component
 
 # Sub-devices, keyed by the library sub-system they read from: the suffix that
 # makes their identifier, and the key their name is translated under.
@@ -90,3 +93,30 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
         """The library sub-system object this entity reads from."""
         subsystem = getattr(self.coordinator.device, self._component)
         return cast(Ecl310Component, subsystem)
+
+    def _metadata(self, attribute: str) -> DatapointMetadata:
+        """Return the library's metadata for one of this sub-system's datapoints."""
+        return self._subsystem.require_metadata_for(attribute)
+
+    async def _async_write(self, write: Awaitable[None]) -> None:
+        """Await a write, turning what it raises into a Home Assistant error.
+
+        A value outside the controller's domain is the caller's mistake and
+        becomes a ``ServiceValidationError``; a controller that refuses or does
+        not answer becomes a ``HomeAssistantError``. Both carry a translated
+        message instead of a traceback.
+        """
+        try:
+            await write
+        except ValueError as err:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_value",
+                translation_placeholders={"error": str(err)},
+            ) from err
+        except ModbusError as err:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="write_failed",
+                translation_placeholders={"error": str(err)},
+            ) from err

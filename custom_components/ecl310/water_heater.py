@@ -18,8 +18,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .climate import SETTABLE
-from .const import COMPONENT_HOT_WATER, DOMAIN
+from .const import COMPONENT_HOT_WATER, DOMAIN, SETTABLE_MODES
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import HotWater, OperatingMode
 from .entity import Ecl310Entity
@@ -30,10 +29,8 @@ OPERATIONS: dict[str, OperatingMode] = {
     mode.name.lower(): mode for mode in OperatingMode
 }
 
-#: The modes that may be chosen. Manual is left out for the reasons the
-#: climate platform sets out: it disables every control loop and the frost
-#: protection, and it takes all circuits with it.
-SETTABLE_OPERATIONS: list[str] = [mode.name.lower() for mode in SETTABLE]
+#: The modes that may be chosen; see ``SETTABLE_MODES`` for why manual is not.
+SETTABLE_OPERATIONS: list[str] = [mode.name.lower() for mode in SETTABLE_MODES]
 
 
 async def async_setup_entry(
@@ -56,13 +53,17 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
         | WaterHeaterEntityFeature.OPERATION_MODE
     )
 
-    _attr_min_temp = 40
-    _attr_max_temp = 65
-    _attr_target_temperature_step = 0.5
-
     def __init__(self, coordinator: Ecl310Coordinator) -> None:
-        """Initialize the water heater."""
+        """Initialize the water heater, bounded by the setpoint's own domain."""
         super().__init__(coordinator, key="water_heater", component=COMPONENT_HOT_WATER)
+        setpoint = self._metadata("setpoint").number
+        if setpoint is not None:
+            if setpoint.min_value is not None:
+                self._attr_min_temp = float(setpoint.min_value)
+            if setpoint.max_value is not None:
+                self._attr_max_temp = float(setpoint.max_value)
+            if setpoint.step is not None:
+                self._attr_target_temperature_step = float(setpoint.step)
 
     @property
     def _hot_water(self) -> HotWater:
@@ -97,16 +98,16 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Write a new hot water setpoint."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
-            await self._hot_water.async_set_setpoint(temperature)
+            await self._async_write(self._hot_water.async_set_setpoint(temperature))
             await self.coordinator.async_request_refresh()
 
     async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Write the hot water operating mode."""
         mode = OPERATIONS[operation_mode]
-        if mode not in SETTABLE:
+        if mode not in SETTABLE_MODES:
             raise ServiceValidationError(
                 translation_domain=DOMAIN,
                 translation_key="manual_mode_not_settable",
             )
-        await self._hot_water.async_set_mode(mode)
+        await self._async_write(self._hot_water.async_set_mode(mode))
         await self.coordinator.async_request_refresh()

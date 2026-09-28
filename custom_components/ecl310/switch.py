@@ -5,9 +5,9 @@ register has three positions, the third being "hand it back to the
 regulation", so the pumps are on the select platform instead.
 
 The anti-bacteria weekdays are one register holding a seven-bit mask, which is
-seven switches here. Writing one reads the others back off the controller's
-last value, so two changes in the same second could lose one; in practice a
-weekday is set once and left alone.
+seven switches here. Changing one is a read-modify-write of that register, so
+the coordinator's mask lock serialises them and each re-reads the mask from the
+controller first: a scene that sets several days at once loses none of them.
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ class Ecl310SwitchDescription(SwitchEntityDescription):
 
     component: str
     value_fn: Callable[[Ecl310], bool | None]
-    set_fn: Callable[[Ecl310, bool], Awaitable[None]]
+    set_fn: Callable[[Ecl310Coordinator, bool], Awaitable[None]]
 
 
 def _disinfection_day(day: int) -> Ecl310SwitchDescription:
@@ -51,7 +51,7 @@ def _disinfection_day(day: int) -> Ecl310SwitchDescription:
         component=COMPONENT_HOT_WATER,
         entity_category=EntityCategory.CONFIG,
         value_fn=lambda device, index=day: _day_is_set(device, index),
-        set_fn=lambda device, on, index=day: _set_day(device, index, on=on),
+        set_fn=lambda coordinator, on, index=day: _set_day(coordinator, index, on=on),
     )
 
 
@@ -61,12 +61,18 @@ def _day_is_set(device: Ecl310, day: int) -> bool | None:
     return None if days is None else day in days
 
 
-async def _set_day(device: Ecl310, day: int, *, on: bool) -> None:
-    """Add or remove one weekday from the anti-bacteria run."""
-    water = cast(HotWater, device.hot_water)
-    days = set(water.disinfection_weekdays or ())
-    days.add(day) if on else days.discard(day)
-    await water.async_set_disinfection_weekdays(sorted(days))
+async def _set_day(coordinator: Ecl310Coordinator, day: int, *, on: bool) -> None:
+    """Add or remove one weekday from the anti-bacteria run.
+
+    The other six days come from a fresh read of the mask rather than from the
+    last poll, under a lock, so concurrent changes to different days all land.
+    """
+    water = cast(HotWater, coordinator.device.hot_water)
+    async with coordinator.mask_lock:
+        await water.async_update(notify=False)
+        days = set(water.disinfection_weekdays or ())
+        days.add(day) if on else days.discard(day)
+        await water.async_set_disinfection_weekdays(sorted(days))
 
 
 SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
@@ -76,8 +82,8 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
         component=COMPONENT_HEATING,
         entity_category=EntityCategory.CONFIG,
         value_fn=lambda device: device.heating.pump_off_in_setback,
-        set_fn=lambda device, on: cast(
-            HeatingCircuit, device.heating
+        set_fn=lambda coordinator, on: cast(
+            HeatingCircuit, coordinator.device.heating
         ).async_set_pump_off_in_setback(on),
     ),
     Ecl310SwitchDescription(
@@ -86,8 +92,8 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
         component=COMPONENT_HEATING,
         entity_category=EntityCategory.CONFIG,
         value_fn=lambda device: device.heating.hot_water_priority,
-        set_fn=lambda device, on: cast(
-            HeatingCircuit, device.heating
+        set_fn=lambda coordinator, on: cast(
+            HeatingCircuit, coordinator.device.heating
         ).async_set_hot_water_priority(on),
     ),
     *(_disinfection_day(day) for day in range(7)),
@@ -133,5 +139,5 @@ class Ecl310Switch(Ecl310Entity, SwitchEntity):
 
     async def _async_set(self, *, on: bool) -> None:
         """Write the value and refresh so the state reflects the controller."""
-        await self.entity_description.set_fn(self.coordinator.device, on)
+        await self._async_write(self.entity_description.set_fn(self.coordinator, on))
         await self.coordinator.async_request_refresh()

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING
 
 from homeassistant.config_entries import ConfigEntry
@@ -53,6 +54,9 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
         self._failed: frozenset[str] = frozenset()
         self._polls = 0
         self._schedules: frozenset[str] = frozenset()
+        #: Held across a read-modify-write of a register that packs several
+        #: entities' values, such as the anti-bacteria weekday mask.
+        self.mask_lock = asyncio.Lock()
 
     def answered(self, component: str) -> bool:
         """Return whether a sub-system's last read succeeded.

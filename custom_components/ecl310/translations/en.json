@@ -306,8 +306,14 @@
     }
   },
   "exceptions": {
+    "invalid_value": {
+      "message": "The controller does not accept this value: {error}"
+    },
     "manual_mode_not_settable": {
       "message": "Manual mode cannot be set from Home Assistant. At the controller it deactivates every control loop and the frost protection, refuses the output override, and puts all circuits into manual - so it is chosen at the controller itself."
+    },
+    "write_failed": {
+      "message": "The controller did not take the change: {error}"
     }
   }
 }
