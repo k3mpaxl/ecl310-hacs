@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 from homeassistant.config_entries import SOURCE_USER, ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from homeassistant.exceptions import ServiceValidationError
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
+from modbus_connection import IllegalDataValueError
 from modbus_connection.mock import MockModbusConnection
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -406,3 +409,80 @@ async def test_a_controller_in_manual_says_so(
     thermostat = hass.states.get(ids["thermostat"])
     assert thermostat.attributes["preset_mode"] == "manual"
     assert "manual" in thermostat.attributes["preset_modes"]
+
+
+async def test_a_value_the_controller_refuses_is_a_validation_error(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """A setpoint outside the datapoint's domain never reaches the register."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+
+    with pytest.raises(ServiceValidationError) as raised:
+        await hass.services.async_call(
+            "water_heater",
+            "set_temperature",
+            {"entity_id": ids["water_heater"], "temperature": 70},
+            blocking=True,
+        )
+    assert raised.value.translation_key == "invalid_value"
+    assert await unit.read_holding_registers(12189, 1) == [400]
+
+
+async def test_a_refused_write_is_a_home_assistant_error(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """A Modbus error on a write is reported, not raised as a traceback."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    unit.fail_write(12124, IllegalDataValueError("refused"))
+
+    with pytest.raises(HomeAssistantError) as raised:
+        await hass.services.async_call(
+            "number",
+            "set_value",
+            {"entity_id": ids["disinfection_temperature"], "value": 65},
+            blocking=True,
+        )
+    assert not isinstance(raised.value, ServiceValidationError)
+    assert raised.value.translation_key == "write_failed"
+
+
+async def test_the_bounds_come_from_the_datapoints(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Thermostat and water heater offer the range the controller accepts."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+
+    thermostat = hass.states.get(ids["thermostat"]).attributes
+    assert (thermostat["min_temp"], thermostat["max_temp"]) == (5, 40)
+    assert thermostat["target_temp_step"] == 0.5
+
+    water_heater = hass.states.get(ids["water_heater"]).attributes
+    assert (water_heater["min_temp"], water_heater["max_temp"]) == (40, 65)
+
+
+async def test_weekdays_switched_together_all_land(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Concurrent changes to the weekday mask do not overwrite each other."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+
+    await asyncio.gather(
+        *(
+            hass.services.async_call(
+                "switch",
+                "turn_on",
+                {"entity_id": ids[f"disinfection_{day}"]},
+                blocking=True,
+            )
+            for day in ("monday", "wednesday", "friday")
+        )
+    )
+    await hass.async_block_till_done()
+    assert await unit.read_holding_registers(12121, 1) == [0b0110101]

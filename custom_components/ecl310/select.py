@@ -89,7 +89,9 @@ class Ecl310Select(Ecl310Entity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Write the override, then refresh so the state follows the device."""
-        await self.coordinator.device.outputs.async_set_relay_override(
-            self.entity_description.relay, OPTIONS[option]
+        await self._async_write(
+            self.coordinator.device.outputs.async_set_relay_override(
+                self.entity_description.relay, OPTIONS[option]
+            )
         )
         await self.coordinator.async_request_refresh()

@@ -308,6 +308,12 @@
   "exceptions": {
     "manual_mode_not_settable": {
       "message": "Der Handbetrieb lässt sich nicht von Home Assistant aus setzen. Am Regler deaktiviert er sämtliche Regelungen und den Frostschutz, verweigert die Ausgangs-Übersteuerung und versetzt alle Kreise in den Handbetrieb - er wird deshalb nur am Gerät selbst gewählt."
+    },
+    "invalid_value": {
+      "message": "Der Regler akzeptiert diesen Wert nicht: {error}"
+    },
+    "write_failed": {
+      "message": "Der Regler hat die Änderung nicht übernommen: {error}"
     }
   }
 }

@@ -4,6 +4,8 @@ from datetime import timedelta
 from logging import Logger, getLogger
 from typing import Final
 
+from .ecl310_modbus import OperatingMode
+
 LOGGER: Logger = getLogger(__package__)
 
 DOMAIN: Final = "ecl310"
@@ -33,3 +35,17 @@ COMPONENT_HOT_WATER: Final = "hot_water"
 COMPONENT_OUTPUTS: Final = "outputs"
 COMPONENT_HEATING_SCHEDULE: Final = "heating_schedule"
 COMPONENT_HOT_WATER_SCHEDULE: Final = "hot_water_schedule"
+
+#: The operating modes Home Assistant may put a circuit into. Manual is not one
+#: of them. Selecting it at the controller deactivates every control loop,
+#: turns the frost protection off and refuses the output override this
+#: integration writes - and it puts *all* circuits into manual, not the one it
+#: was chosen for. It stays readable: a controller someone put into manual at
+#: its own display says so, and the mode list grows to include it for exactly
+#: as long as that is true.
+SETTABLE_MODES: Final[tuple[OperatingMode, ...]] = (
+    OperatingMode.SCHEDULED,
+    OperatingMode.COMFORT,
+    OperatingMode.SETBACK,
+    OperatingMode.FROST_PROTECTION,
+)
