@@ -38,6 +38,7 @@ class Ecl310BinarySensorDescription(BinarySensorEntityDescription):
     """Describes a binary sensor reading one output register."""
 
     component: str
+    field: str
     value_fn: Callable[[Ecl310], int | None]
 
 
@@ -49,6 +50,7 @@ def _output(kind: str, number: int) -> Ecl310BinarySensorDescription:
         translation_key=kind,
         translation_placeholders={"number": str(number)},
         component=COMPONENT_OUTPUTS,
+        field=attribute,
         value_fn=lambda device, name=attribute: getattr(device.outputs, name),
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
@@ -61,6 +63,7 @@ def _pump(key: str, number: int) -> Ecl310BinarySensorDescription:
         key=key,
         translation_key=key,
         component=COMPONENT_OUTPUTS,
+        field=f"relay_{number}",
         device_class=BinarySensorDeviceClass.RUNNING,
         value_fn=lambda device, name=f"relay_{number}": getattr(device.outputs, name),
     )
@@ -100,7 +103,9 @@ class Ecl310BinarySensor(Ecl310Entity, BinarySensorEntity):
         description: Ecl310BinarySensorDescription,
     ) -> None:
         """Initialize the binary sensor."""
-        super().__init__(coordinator, description.key, description.component)
+        super().__init__(
+            coordinator, description.key, description.component, (description.field,)
+        )
         self.entity_description = description
 
     @property

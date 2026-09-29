@@ -18,7 +18,7 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
-from modbus_connection import ModbusError
+from modbus_connection import IllegalDataAddressError, ModbusError
 from modbus_connection.tmodbus import ModbusConnection
 
 from .const import (
@@ -30,7 +30,7 @@ from .const import (
     DOMAIN,
     FRAMERS,
 )
-from .ecl310_modbus import Ecl310
+from .ecl310_modbus import DeviceInformation, Ecl310
 
 #: What probing an unreachable controller raises. Named rather than written
 #: inline so the formatter leaves the tuple alone on a Python 3.14 target.
@@ -113,6 +113,11 @@ class Ecl310ConfigFlow(ConfigFlow, domain=DOMAIN):
         )
         try:
             info = await Ecl310.async_probe(connection.for_unit(unit_id))
+        except IllegalDataAddressError:
+            # The controller answered, it just does not serve one of the
+            # registers probed. That is an application detail the coordinator
+            # handles register by register, not a failed connection.
+            return DeviceInformation().name
         except PROBE_ERRORS:
             return None
         else:

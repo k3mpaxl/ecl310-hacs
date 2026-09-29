@@ -15,6 +15,7 @@ from unittest.mock import patch
 
 import pytest
 import pytest_homeassistant_custom_component
+from modbus_connection import IllegalDataAddressError
 from modbus_connection.mock import MockModbusConnection
 
 pytest_plugins = "pytest_homeassistant_custom_component"
@@ -143,7 +144,17 @@ def auto_enable_custom_integrations(enable_custom_integrations: None) -> None:
 
 
 @pytest.fixture
-def connections() -> list[MockModbusConnection]:
+def refused_registers() -> set[int]:
+    """Return the registers the controller answers with "illegal data address".
+
+    Empty by default; a test parametrizes it to model an application that does
+    not serve a parameter the integration reads.
+    """
+    return set()
+
+
+@pytest.fixture
+def connections(refused_registers: set[int]) -> list[MockModbusConnection]:
     """Hand out a freshly seeded controller for every connection opened.
 
     Each construction is its own object, as in production: the config flow
@@ -156,6 +167,8 @@ def connections() -> list[MockModbusConnection]:
         unit = connection.for_unit(ENTRY_DATA["unit_id"])
         for address, value in HOLDING.items():
             unit.holding[address] = value
+        for address in refused_registers:
+            unit.fail_read(address, IllegalDataAddressError())
 
         def follow_the_override(event: object) -> None:
             """Mirror what the real controller does with an override.

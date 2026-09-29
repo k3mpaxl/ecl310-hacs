@@ -6,6 +6,7 @@ import asyncio
 
 import pytest
 from homeassistant.config_entries import SOURCE_USER, ConfigEntryState
+from homeassistant.const import STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
@@ -437,7 +438,7 @@ async def test_a_refused_write_is_a_home_assistant_error(
     entry = await setup_entry(hass, connections)
     ids = entity_ids(hass, entry)
     unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
-    unit.fail_write(12124, IllegalDataValueError("refused"))
+    unit.fail_write(12124, IllegalDataValueError())
 
     with pytest.raises(HomeAssistantError) as raised:
         await hass.services.async_call(
@@ -486,3 +487,64 @@ async def test_weekdays_switched_together_all_land(
     )
     await hass.async_block_till_done()
     assert await unit.read_holding_registers(12121, 1) == [0b0110101]
+
+
+@pytest.mark.parametrize("refused_registers", [{11027}])
+async def test_setup_survives_a_register_the_controller_lacks(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """A refused parameter takes down its own entity, not the whole circuit.
+
+    Register 11027 is the heating return limit, which not every application
+    serves (issue 13). The flow still creates the entry, the warning names the
+    register, and only the entity that reads it is unavailable.
+    """
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], ENTRY_DATA
+    )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    await hass.async_block_till_done()
+
+    entry = hass.config_entries.async_entries(DOMAIN)[0]
+    assert entry.state is ConfigEntryState.LOADED
+    ids = entity_ids(hass, entry)
+
+    assert hass.states.get(ids["heating_return_limit"]).state == STATE_UNAVAILABLE
+    assert hass.states.get(ids["thermostat"]).state == "off"  # frost protection
+    assert hass.states.get(ids["heating_frost_protection_temperature"]).state == "10"
+    assert "register 11027 (heating.return_limit)" in caplog.text
+
+
+@pytest.mark.parametrize("refused_registers", [{10202}])
+async def test_a_refused_register_inside_a_block_is_found(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Only the refused input of a block read goes unavailable.
+
+    The sensor inputs are read as one block; S3 (10202) is refused, so the
+    block fails until the fields are tried one by one.
+    """
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+
+    assert hass.states.get(ids["flow_temperature"]).state == STATE_UNAVAILABLE
+    assert hass.states.get(ids["outdoor_temperature"]).state == "30.22"
+
+
+async def test_every_entity_names_fields_its_sub_system_has(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """A misspelt field would never mark its entity unavailable."""
+    entry = await setup_entry(hass, connections)
+    platforms = hass.data["entity_components"]
+    for domain in platforms:
+        for entity in platforms[domain].entities:
+            if entity.platform.config_entry is not entry:
+                continue
+            declared = type(entity._subsystem).declared_fields  # noqa: SLF001
+            assert entity._fields <= declared.keys(), entity.entity_id

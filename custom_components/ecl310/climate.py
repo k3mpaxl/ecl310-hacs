@@ -74,7 +74,12 @@ class Ecl310Thermostat(Ecl310Entity, ClimateEntity):
 
     def __init__(self, coordinator: Ecl310Coordinator) -> None:
         """Initialize the thermostat, bounded by the setpoint's own domain."""
-        super().__init__(coordinator, key="thermostat", component=COMPONENT_HEATING)
+        super().__init__(
+            coordinator,
+            key="thermostat",
+            component=COMPONENT_HEATING,
+            fields=("mode", "comfort_setpoint"),
+        )
         setpoint = self._metadata("comfort_setpoint").number
         if setpoint is not None:
             if setpoint.min_value is not None:

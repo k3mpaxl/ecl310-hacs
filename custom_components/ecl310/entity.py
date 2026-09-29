@@ -71,11 +71,20 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
     _attr_has_entity_name = True
 
     def __init__(
-        self, coordinator: Ecl310Coordinator, key: str, component: str
+        self,
+        coordinator: Ecl310Coordinator,
+        key: str,
+        component: str,
+        fields: tuple[str, ...] = (),
     ) -> None:
-        """Initialize the entity."""
+        """Initialize the entity.
+
+        ``fields`` names the sub-system fields the entity reads. It stays
+        unavailable if the controller does not serve any of them.
+        """
         super().__init__(coordinator)
         self._component = component
+        self._fields = frozenset(fields)
         entry = coordinator.config_entry
         self._attr_unique_id = f"{entry.entry_id}_{key}"
 
@@ -85,8 +94,12 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
 
     @property
     def available(self) -> bool:
-        """Return whether the sub-system behind this entity answered."""
-        return super().available and self.coordinator.answered(self._component)
+        """Return whether the sub-system and the fields behind this entity answered."""
+        return (
+            super().available
+            and self.coordinator.answered(self._component)
+            and self._fields.isdisjoint(self.coordinator.refused(self._component))
+        )
 
     @property
     def _subsystem(self) -> Ecl310Component:
