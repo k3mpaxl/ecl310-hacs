@@ -37,6 +37,9 @@
       "circulation_pump": {
         "name": "Circulation pump"
       },
+      "heat_available": {
+        "name": "Heat available"
+      },
       "heating_pump": {
         "name": "Heating circuit pump"
       },
@@ -48,9 +51,6 @@
       },
       "triac": {
         "name": "Triac {number}"
-      },
-      "heat_available": {
-        "name": "Heat available"
       }
     },
     "climate": {
