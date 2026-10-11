@@ -48,6 +48,9 @@
       },
       "relay": {
         "name": "Relay {number}"
+      },
+      "heat_available": {
+        "name": "Heat available"
       }
     },
     "climate": {

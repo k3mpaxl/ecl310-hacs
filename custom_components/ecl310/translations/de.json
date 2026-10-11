@@ -48,6 +48,9 @@
       },
       "triac": {
         "name": "Triac {number}"
+      },
+      "heat_available": {
+        "name": "Wärme verfügbar"
       }
     },
     "climate": {
