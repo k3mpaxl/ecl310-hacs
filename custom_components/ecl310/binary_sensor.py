@@ -7,6 +7,10 @@ default - enable the ones your installation actually uses.
 
 These report what an output is doing. Forcing one is the select platform's job:
 the state register is a result and the controller refuses a write to it.
+
+One sensor is derived rather than read: whether the heating circuit is
+delivering heat right now. Radiator valves that can be told so - a Danfoss Ally
+takes it as "HeatAvailable" - stop asking for heat the system is not supplying.
 """
 
 from __future__ import annotations
@@ -23,10 +27,14 @@ from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import COMPONENT_OUTPUTS
+from .const import COMPONENT_HEATING, COMPONENT_OUTPUTS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import Ecl310
-from .ecl310_modbus.configurations import RELAY_ASSIGNMENTS, RELAY_ASSIGNMENTS_BY_NUMBER
+from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
+from .ecl310_modbus.configurations import (
+    RELAY_ASSIGNMENTS,
+    RELAY_ASSIGNMENTS_BY_KEY,
+    RELAY_ASSIGNMENTS_BY_NUMBER,
+)
 from .ecl310_modbus.subsystems.outputs import RELAY_COUNT, TRIAC_COUNT
 from .entity import Ecl310Entity
 
@@ -88,7 +96,13 @@ async def async_setup_entry(
     """Set up the ECL output binary sensors."""
     coordinator = entry.runtime_data.coordinator
     async_add_entities(
-        Ecl310BinarySensor(coordinator, description) for description in BINARY_SENSORS
+        [
+            *(
+                Ecl310BinarySensor(coordinator, description)
+                for description in BINARY_SENSORS
+            ),
+            Ecl310HeatAvailable(coordinator),
+        ]
     )
 
 
@@ -115,3 +129,62 @@ class Ecl310BinarySensor(Ecl310Entity, BinarySensorEntity):
         if value is None:
             return None
         return value != 0
+
+
+#: Where in the weekly program the circuit counts as heating. Pre-comfort is
+#: the circuit already heating up for the comfort period that follows.
+_HEATING_STATES = frozenset({CircuitState.COMFORT, CircuitState.PRE_COMFORT})
+
+
+def heat_available(
+    mode: OperatingMode | None, state: CircuitState | None, pump: int | None
+) -> bool | None:
+    """Return whether the heating circuit is delivering heat right now.
+
+    The pump has to run, and the circuit has to be in comfort: constant
+    comfort, or the weekly program inside (or heating up for) a comfort
+    period. Setback, frost protection and a summer cut-off - which stops the
+    pump - all count as no heat.
+    """
+    if mode is None or pump is None:
+        return None
+    if not pump:
+        return False
+    if mode == OperatingMode.COMFORT:
+        return True
+    if mode == OperatingMode.SCHEDULED:
+        return None if state is None else state in _HEATING_STATES
+    return False
+
+
+class Ecl310HeatAvailable(Ecl310Entity, BinarySensorEntity):
+    """Whether the heating circuit is supplying heat - for radiator valves."""
+
+    _attr_translation_key = "heat_available"
+    _attr_device_class = BinarySensorDeviceClass.HEAT
+
+    def __init__(self, coordinator: Ecl310Coordinator) -> None:
+        """Initialize the sensor on the heating circuit's device."""
+        super().__init__(
+            coordinator, "heat_available", COMPONENT_HEATING, ("mode", "state")
+        )
+        self._pump_field = f"relay_{RELAY_ASSIGNMENTS_BY_KEY['heating_pump'].number}"
+
+    @property
+    def available(self) -> bool:
+        """Return whether the circuit and the pump output both answered."""
+        return (
+            super().available
+            and self.coordinator.answered(COMPONENT_OUTPUTS)
+            and self._pump_field not in self.coordinator.refused(COMPONENT_OUTPUTS)
+        )
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return whether heat is available."""
+        device = self.coordinator.device
+        return heat_available(
+            device.heating.mode,
+            device.heating.state,
+            getattr(device.outputs, self._pump_field),
+        )

@@ -25,12 +25,26 @@ this repository so nothing has to be released to PyPI before you can try it.
 | Time | The weekly programs: three comfort periods a day, start and end, for the heating circuit and for hot water - 84 entities, of which the first period of each day is enabled. Plus the start of the anti-bacteria run |
 | Select | Forcing the heating circuit, storage charge and circulation pump: *Automatik*, *Dauerhaft aus*, *Dauerhaft ein* |
 | Switch | The automatic pump shutdown during setback, hot water priority, and the seven weekdays of the anti-bacteria run |
-| Binary sensor | The three named pumps; plus the six triacs and the three unnamed relays, diagnostic and disabled by default |
+| Binary sensor | The three named pumps; **Heat available** on the heating circuit (see below); plus the six triacs and the three unnamed relays, diagnostic and disabled by default |
 
 The heating circuit and hot water appear as sub-devices of the controller. Every
 number entity takes its range and step from the library's datapoint metadata, so
 the bounds the UI enforces are the ones the controller accepts, and an invalid
 value is refused before a register is written.
+
+## Heat available – for radiator valves
+
+The heating circuit carries a derived binary sensor, **Heat available**
+(*Wärme verfügbar*). It is on while the circuit is actually delivering heat:
+the heating pump runs **and** the circuit is in comfort – constant comfort, or
+the weekly program inside a comfort period or heating up for one. Setback,
+frost protection and a summer cut-off (which stops the pump) count as no heat.
+
+Radiator valves can use it. A Danfoss Ally eTRV takes it as *HeatAvailable*
+(cluster 0x0201, attribute 0x4030): told that no heat is available, it switches
+to boiler mode and stops requesting heat the system is not supplying. The
+[Danfoss Ally Coordinator](https://github.com/k3mpaxl/danfoss-ally-coordinator)
+can forward this sensor to every valve it coordinates.
 
 ## Where the register map comes from
 

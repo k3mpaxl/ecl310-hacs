@@ -548,3 +548,52 @@ async def test_every_entity_names_fields_its_sub_system_has(
                 continue
             declared = type(entity._subsystem).declared_fields  # noqa: SLF001
             assert entity._fields <= declared.keys(), entity.entity_id
+
+
+@pytest.mark.parametrize(
+    ("registers", "expected"),
+    [
+        ((2, 0, 1), "on"),  # constant comfort, pump running
+        ((1, 2, 1), "on"),  # weekly program, comfort period
+        ((1, 1, 1), "on"),  # weekly program, heating up for comfort
+        ((1, 0, 1), "off"),  # weekly program, setback period
+        ((1, 3, 1), "off"),  # weekly program, cooling down for setback
+        ((3, 2, 1), "off"),  # constant setback
+        ((4, 2, 1), "off"),  # frost protection
+        ((2, 2, 0), "off"),  # comfort, but the pump stands (summer cut-off)
+    ],
+)
+async def test_heat_available_follows_mode_program_and_pump(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    registers: tuple[int, int, int],
+    expected: str,
+) -> None:
+    """Heat counts as available only when the circuit heats in comfort."""
+    mode, state, pump = registers
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+
+    # The reference image: frost protection, nothing running.
+    assert hass.states.get(ids["heat_available"]).state == "off"
+
+    unit.holding[4200] = mode  # heating circuit mode
+    unit.holding[4210] = state  # heating circuit schedule state
+    unit.holding[4005] = pump  # relay 1, the heating circuit pump
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+
+    sensor = hass.states.get(ids["heat_available"])
+    assert sensor.state == expected
+    assert sensor.attributes["device_class"] == "heat"
+
+
+async def test_heat_available_sits_on_the_heating_circuit(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The sensor belongs to the heating circuit's device, not the controller."""
+    entry = await setup_entry(hass, connections)
+    entity = er.async_get(hass).async_get(entity_ids(hass, entry)["heat_available"])
+    device = dr.async_get(hass).async_get(entity.device_id)
+    assert (DOMAIN, f"{entry.entry_id}_heating") in device.identifiers
