@@ -586,7 +586,7 @@ async def test_heat_available_follows_mode_program_and_pump(
 
     sensor = hass.states.get(ids["heat_available"])
     assert sensor.state == expected
-    assert sensor.attributes["device_class"] == "heat"
+    assert "device_class" not in sensor.attributes
 
 
 async def test_heat_available_sits_on_the_heating_circuit(
