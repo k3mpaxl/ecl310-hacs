@@ -38,7 +38,11 @@
         "name": "Circulation pump"
       },
       "heat_available": {
-        "name": "Heat available"
+        "name": "Heat available",
+        "state": {
+          "off": "Not available",
+          "on": "Available"
+        }
       },
       "heating_pump": {
         "name": "Heating circuit pump"

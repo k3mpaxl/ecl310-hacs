@@ -50,7 +50,11 @@
         "name": "Relay {number}"
       },
       "heat_available": {
-        "name": "Heat available"
+        "name": "Heat available",
+        "state": {
+          "on": "Available",
+          "off": "Not available"
+        }
       }
     },
     "climate": {

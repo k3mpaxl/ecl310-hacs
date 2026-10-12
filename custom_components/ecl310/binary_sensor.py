@@ -161,7 +161,8 @@ class Ecl310HeatAvailable(Ecl310Entity, BinarySensorEntity):
     """Whether the heating circuit is supplying heat - for radiator valves."""
 
     _attr_translation_key = "heat_available"
-    _attr_device_class = BinarySensorDeviceClass.HEAT
+    # No device class: "heat" would read hot/normal; the states are translated.
+    _attr_icon = "mdi:fire-circle"
 
     def __init__(self, coordinator: Ecl310Coordinator) -> None:
         """Initialize the sensor on the heating circuit's device."""

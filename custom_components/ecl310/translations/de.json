@@ -50,7 +50,11 @@
         "name": "Triac {number}"
       },
       "heat_available": {
-        "name": "Wärme verfügbar"
+        "name": "Wärme verfügbar",
+        "state": {
+          "on": "Verfügbar",
+          "off": "Nicht verfügbar"
+        }
       }
     },
     "climate": {
