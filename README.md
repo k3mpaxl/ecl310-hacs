@@ -14,6 +14,12 @@ Assistant core. The device library it is built on is
 [`ecl310-modbus`](https://github.com/k3mpaxl/ecl310-modbus), vendored into
 this repository so nothing has to be released to PyPI before you can try it.
 
+![The controller, heating circuit and hot water devices in Home Assistant](docs/images/devices.png)
+
+*Controller, heating circuit and hot water as they appear in Home Assistant
+(German profile language). See [Screenshots](#screenshots) for what each card
+shows.*
+
 ## What you get
 
 | Platform | Entities |
@@ -32,6 +38,26 @@ number entity takes its range and step from the library's datapoint metadata, so
 the bounds the UI enforces are the ones the controller accepts, and an invalid
 value is refused before a register is written.
 
+## Screenshots
+
+The integration creates three devices: the controller itself and, as its
+sub-devices, the heating circuit (*Heizkreis*) and hot water (*Warmwasser*).
+The picture above shows their device pages, left to right:
+
+* **Controller** - the three pump overrides (*Automatik*, *Dauerhaft aus*,
+  *Dauerhaft ein*) and the live readings: outdoor, flow and return
+  temperature, and whether each pump is running.
+* **Heating circuit** - the thermostat, showing its HVAC mode and the exact
+  ECL mode as preset (here *Aus - Frostschutzbetrieb*: switched off, frost
+  protection only), the **Heat available** sensor, and further down the
+  weekly program and the heat curve.
+* **Hot water** - the water heater with its setpoint and the measured storage
+  temperature, followed by the anti-bacteria run: its weekdays, start,
+  duration and temperature.
+
+The settings in the *Konfiguration* card are ordinary number, time and switch
+entities, so they can be used in automations and dashboards like any other.
+
 ## Heat available – for radiator valves
 
 The heating circuit carries a derived binary sensor, **Heat available**
@@ -44,7 +70,8 @@ Radiator valves can use it. A Danfoss Ally eTRV takes it as *HeatAvailable*
 (cluster 0x0201, attribute 0x4030): told that no heat is available, it switches
 to boiler mode and stops requesting heat the system is not supplying. The
 [Danfoss Ally Coordinator](https://github.com/k3mpaxl/danfoss-ally-coordinator)
-can forward this sensor to every valve it coordinates.
+can forward this sensor to every valve it coordinates. Choose it there as the
+heat source.
 
 ## Where the register map comes from
 
@@ -297,7 +324,7 @@ coordinator. They differ in exactly two places:
    version vendors it under `custom_components/ecl310/ecl310_modbus`, kept in
    step with upstream by `scripts/vendor-library` and checked by a workflow.
 
-## Trying it before you publish
+## Trying it without HACS
 
 You do not need HACS, or a repository, to try this. Three ways, cheapest first.
 
