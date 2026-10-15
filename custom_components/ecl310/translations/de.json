@@ -21,6 +21,16 @@
           "unit_id": "Die Modbus-Stationsadresse des Reglers, im Systemmenü des Reglers unter „Modbus-Adresse“ eingestellt."
         },
         "description": "Netzwerkdaten des Reglers eingeben – oder des Modbus-Gateways, an dem er hängt."
+      },
+      "application": {
+        "title": "Applikation",
+        "description": "Welche Applikation läuft auf dem Regler? Er zeigt sie auf dem Startbildschirm an, z. B. „A337.2“. Erkannt: {detected}. Mit „Andere Applikation“ werden alle Parameter gelesen, und fehlende werden im Betrieb erkannt.",
+        "data": {
+          "application": "Applikation"
+        },
+        "data_description": {
+          "application": "Es werden nur die Entitäten angelegt, die diese Applikation hat."
+        }
       }
     }
   },
@@ -286,6 +296,9 @@
       },
       "hot_water_boost_on_raise": {
         "name": "Aufheizen, wenn das Ziel steigt"
+      },
+      "disinfection": {
+        "name": "Desinfektion"
       }
     },
     "time": {
@@ -362,6 +375,30 @@
     },
     "boost_write_failed": {
       "message": "Die Warmwasser-Betriebsart ließ sich nicht ändern: {error}"
+    },
+    "cannot_connect": {
+      "message": "Regler nicht erreichbar: {error}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Applikation",
+        "description": "Welche Applikation läuft auf dem Regler? Er zeigt sie auf dem Startbildschirm an, z. B. „A337.2“. Die Integration lädt nach der Änderung neu.",
+        "data": {
+          "application": "Applikation"
+        },
+        "data_description": {
+          "application": "Es werden nur die Entitäten angelegt, die diese Applikation hat."
+        }
+      }
+    }
+  },
+  "selector": {
+    "application": {
+      "options": {
+        "generic": "Andere Applikation (fehlende Parameter im Betrieb erkennen)"
+      }
     }
   }
 }

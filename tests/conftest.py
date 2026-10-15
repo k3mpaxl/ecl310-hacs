@@ -154,20 +154,49 @@ def refused_registers() -> set[int]:
 
 
 @pytest.fixture
-def connections(refused_registers: set[int]) -> list[MockModbusConnection]:
+def application() -> str | None:
+    """Return the application the simulated controller runs.
+
+    ``None`` answers every register, as the captured image alone would. A
+    profile key makes the controller refuse every parameter of the other
+    profiles that this application lacks - as the real ones do - and seeds
+    the parameters it has but the capture lacks with their factory defaults.
+    """
+    return None
+
+
+def simulate(application: str) -> tuple[dict[int, int], set[int]]:
+    """Return the registers to seed and to refuse for an application."""
+    from custom_components.ecl310.ecl310_modbus import PROFILES
+
+    profile = PROFILES[application]
+    known = set().union(*(other.parameters for other in PROFILES.values()))
+    seed = {
+        pnu - 1: parameter.default & 0xFFFF
+        for pnu, parameter in profile.parameters.items()
+        if parameter.default is not None and pnu - 1 not in HOLDING
+    }
+    return seed, {pnu - 1 for pnu in known - set(profile.parameters)}
+
+
+@pytest.fixture
+def connections(
+    refused_registers: set[int], application: str | None
+) -> list[MockModbusConnection]:
     """Hand out a freshly seeded controller for every connection opened.
 
     Each construction is its own object, as in production: the config flow
     closes the connection it probed over, and a closed connection stays closed.
     """
     created: list[MockModbusConnection] = []
+    seed, lacking = simulate(application) if application else ({}, set())
 
     def _factory(*args: object, **kwargs: object) -> MockModbusConnection:
         connection = MockModbusConnection()
         unit = connection.for_unit(ENTRY_DATA["unit_id"])
-        for address, value in HOLDING.items():
+        for address, value in {**HOLDING, **seed}.items():
             unit.holding[address] = value
-        for address in refused_registers:
+        for address in refused_registers | lacking:
             unit.fail_read(address, IllegalDataAddressError())
 
         def follow_the_override(event: object) -> None:

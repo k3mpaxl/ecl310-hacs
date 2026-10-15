@@ -26,6 +26,12 @@ from .addresses import (
     sensor_range,
     to_hours_minutes,
 )
+from .applications import (
+    PROFILES,
+    ApplicationProfile,
+    Detection,
+    Parameter,
+)
 from .configurations import (
     COIL_RANGES,
     REGISTER_RANGES,
@@ -68,6 +74,10 @@ from .subsystems import (
 )
 
 __all__ = [
+    "PROFILES",
+    "ApplicationProfile",
+    "Detection",
+    "Parameter",
     "to_hours_minutes",
     "schedule_ranges",
     "period_parameter",

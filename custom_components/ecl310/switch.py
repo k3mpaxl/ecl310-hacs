@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from typing import Any, cast
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -27,9 +27,12 @@ from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import Ecl310, HeatingCircuit, HotWater
 from .ecl310_modbus.enums import Weekday
-from .entity import Ecl310Entity
+from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 1
+
+#: Where the disinfection switch keeps the temperature turning it on sets.
+ATTR_TEMPERATURE_WHEN_ON = "temperature_when_on"
 
 #: The attribute-name fragment each weekday is exposed under.
 WEEKDAY_KEYS: tuple[str, ...] = tuple(day.name.lower() for day in Weekday)
@@ -107,7 +110,7 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
@@ -115,12 +118,82 @@ async def async_setup_entry(
     coordinator = entry.runtime_data.coordinator
     boost = entry.runtime_data.boost
     async_add_entities(
-        [
-            *(Ecl310Switch(coordinator, description) for description in SWITCHES),
-            Ecl310BoostSwitch(coordinator, boost),
-            Ecl310BoostOnRaiseSwitch(coordinator, boost),
-        ]
+        supported(
+            hass,
+            Platform.SWITCH,
+            [
+                *(Ecl310Switch(coordinator, description) for description in SWITCHES),
+                Ecl310DisinfectionSwitch(coordinator),
+                Ecl310BoostSwitch(coordinator, boost),
+                Ecl310BoostOnRaiseSwitch(coordinator, boost),
+            ],
+        )
     )
+
+
+class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
+    """Whether the disinfection function has a temperature to run at.
+
+    The controller switches the disinfection off by storing its "off" value
+    in place of the temperature, so turning it back on needs a temperature:
+    the one it last had, or the library's default.
+    """
+
+    _attr_translation_key = "disinfection"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_icon = "mdi:bacteria-outline"
+
+    def __init__(self, coordinator: Ecl310Coordinator) -> None:
+        """Initialize the switch on the hot water device."""
+        super().__init__(
+            coordinator,
+            "disinfection",
+            COMPONENT_HOT_WATER,
+            ("disinfection_temperature",),
+        )
+        self._temperature: float | None = None
+
+    async def async_added_to_hass(self) -> None:
+        """Pick up the temperature it ran at before the restart."""
+        await super().async_added_to_hass()
+        if (last := await self.async_get_last_state()) is not None:
+            self._temperature = last.attributes.get(ATTR_TEMPERATURE_WHEN_ON)
+        self._remember()
+
+    def _remember(self) -> None:
+        setpoint = self.coordinator.device.hot_water.disinfection_setpoint
+        if setpoint is not None:
+            self._temperature = setpoint
+
+    def _handle_coordinator_update(self) -> None:
+        self._remember()
+        super()._handle_coordinator_update()
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return whether the disinfection is switched on."""
+        return self.coordinator.device.hot_water.disinfection_enabled
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """The temperature turning it on will set."""
+        return {ATTR_TEMPERATURE_WHEN_ON: self._temperature}
+
+    async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Switch it on at the temperature it last had."""
+        water = cast(HotWater, self.coordinator.device.hot_water)
+        await self._async_write(
+            water.async_set_disinfection_enabled(
+                enabled=True, temperature=self._temperature
+            )
+        )
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Switch it off."""
+        water = cast(HotWater, self.coordinator.device.hot_water)
+        await self._async_write(water.async_set_disinfection_enabled(enabled=False))
+        await self.coordinator.async_request_refresh()
 
 
 class Ecl310BoostSwitch(Ecl310Entity, SwitchEntity):

@@ -22,7 +22,7 @@ from datetime import time
 from typing import cast
 
 from homeassistant.components.time import TimeEntity, TimeEntityDescription
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -42,7 +42,7 @@ from .ecl310_modbus import (
     to_hours_minutes,
 )
 from .ecl310_modbus.addresses import field_name
-from .entity import Ecl310Entity
+from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 1
 
@@ -119,17 +119,21 @@ DISINFECTION_START = TimeEntityDescription(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the weekly program entities."""
     coordinator = entry.runtime_data.coordinator
     async_add_entities(
-        [
-            *(Ecl310Time(coordinator, description) for description in TIMES),
-            Ecl310DisinfectionStart(coordinator),
-        ]
+        supported(
+            hass,
+            Platform.TIME,
+            [
+                *(Ecl310Time(coordinator, description) for description in TIMES),
+                Ecl310DisinfectionStart(coordinator),
+            ],
+        )
     )
 
 

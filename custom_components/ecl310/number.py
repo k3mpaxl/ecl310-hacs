@@ -2,6 +2,9 @@
 
 Each entity takes its range, step and unit from the library's datapoint
 metadata, so the bounds shown in the UI are the ones the controller accepts.
+A setting with an "off" value outside that range - the disinfection
+temperature - reads unknown while it is off; the switch platform turns it on
+and off.
 """
 
 from __future__ import annotations
@@ -14,14 +17,14 @@ from homeassistant.components.number import (
     NumberEntityDescription,
     NumberMode,
 )
-from homeassistant.const import EntityCategory, UnitOfTemperature, UnitOfTime
+from homeassistant.const import EntityCategory, Platform, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus.subsystems.heating_circuit import CURVE_POINTS
-from .entity import Ecl310Entity
+from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 1
 
@@ -131,14 +134,18 @@ NUMBERS: tuple[Ecl310NumberDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the ECL setpoint numbers."""
     coordinator = entry.runtime_data.coordinator
     async_add_entities(
-        Ecl310Number(coordinator, description) for description in NUMBERS
+        supported(
+            hass,
+            Platform.NUMBER,
+            (Ecl310Number(coordinator, description) for description in NUMBERS),
+        )
     )
 
 
@@ -158,9 +165,12 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
             (description.attribute,),
         )
         self.entity_description = description
+        self._off_value: float | None = None
 
         number = self._metadata(description.attribute).number
         if number is not None:
+            if number.off_value is not None:
+                self._off_value = float(number.off_value)
             if number.min_value is not None:
                 self._attr_native_min_value = float(number.min_value)
             if number.max_value is not None:
@@ -170,8 +180,15 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
 
     @property
     def native_value(self) -> float | None:
-        """Return the setpoint currently stored in the controller."""
-        return getattr(self._subsystem, self.entity_description.attribute)
+        """Return the setpoint currently stored in the controller.
+
+        A setting the controller holds at its "off" value has no setpoint: it
+        reads unknown, and a switch of its own turns it back on.
+        """
+        value = getattr(self._subsystem, self.entity_description.attribute)
+        if value is not None and value == self._off_value:
+            return None
+        return value
 
     async def async_set_native_value(self, value: float) -> None:
         """Write a new setpoint."""

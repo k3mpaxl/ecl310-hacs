@@ -27,6 +27,9 @@ class NumberMetadata:
     unit: str | None = None
     raw_min: int | None = None
     raw_max: int | None = None
+    off_value: float | int | None = None
+    """A value outside ``min_value``..``max_value`` the controller stores to
+    mean "off" - shown as ``OFF`` on its display. ``None`` if there is none."""
 
 
 @dataclass(frozen=True)

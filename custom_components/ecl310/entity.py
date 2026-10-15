@@ -10,11 +10,13 @@ which is only known once the parent exists, so the entities cannot describe
 that relationship themselves.
 """
 
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Iterable
 from typing import cast
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from modbus_connection import ModbusError
@@ -27,7 +29,12 @@ from .const import (
     DOMAIN,
 )
 from .coordinator import Ecl310Coordinator
-from .ecl310_modbus import DatapointMetadata, DeviceInformation, Ecl310Component
+from .ecl310_modbus import (
+    DatapointMetadata,
+    DeviceInformation,
+    Ecl310,
+    Ecl310Component,
+)
 
 # Sub-devices, keyed by the library sub-system they read from: the suffix that
 # makes their identifier, and the key their name is translated under.
@@ -60,9 +67,33 @@ def controller_device_info(entry: ConfigEntry, info: DeviceInformation) -> Devic
         manufacturer=info.manufacturer,
         model=info.model,
         name=info.model,
+        model_id=info.application,
         sw_version=info.firmware_version,
         serial_number=info.serial_number,
     )
+
+
+def supported[EntityT: Ecl310Entity](
+    hass: HomeAssistant, platform: str, entities: Iterable[EntityT]
+) -> list[EntityT]:
+    """Keep the entities whose datapoints the controller's application has.
+
+    One that an earlier version created for a datapoint the application does
+    not have is removed from the entity registry, rather than lingering there
+    as unavailable.
+    """
+    registry = er.async_get(hass)
+    kept: list[EntityT] = []
+    for entity in entities:
+        if entity.supported_by(entity.coordinator.device):
+            kept.append(entity)
+        elif entity.unique_id and (
+            entity_id := registry.async_get_entity_id(
+                platform, DOMAIN, entity.unique_id
+            )
+        ):
+            registry.async_remove(entity_id)
+    return kept
 
 
 class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
@@ -100,6 +131,10 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
             and self.coordinator.answered(self._component)
             and self._fields.isdisjoint(self.coordinator.refused(self._component))
         )
+
+    def supported_by(self, device: Ecl310) -> bool:
+        """Return whether the controller's application has this entity's data."""
+        return all(device.supports(self._component, field) for field in self._fields)
 
     @property
     def _subsystem(self) -> Ecl310Component:

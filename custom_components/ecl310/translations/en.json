@@ -7,6 +7,16 @@
       "cannot_connect": "Failed to connect. Check that the controller is reachable on this address, port and unit, and that the framing matches your gateway."
     },
     "step": {
+      "application": {
+        "data": {
+          "application": "Application"
+        },
+        "data_description": {
+          "application": "Only the entities this application has are created."
+        },
+        "description": "Which application does the controller run? The controller shows it on its start screen, e.g. 'A337.2'. Detected: {detected}. With 'Other application', every parameter is read and the ones the controller does not serve are found out at runtime.",
+        "title": "Application"
+      },
       "user": {
         "data": {
           "framer": "Framing",
@@ -234,6 +244,9 @@
       }
     },
     "switch": {
+      "disinfection": {
+        "name": "Disinfection"
+      },
       "disinfection_friday": {
         "name": "Disinfection on Friday"
       },
@@ -354,6 +367,9 @@
     "boost_write_failed": {
       "message": "Could not change the hot water mode: {error}"
     },
+    "cannot_connect": {
+      "message": "Could not reach the controller: {error}"
+    },
     "invalid_value": {
       "message": "The controller does not accept this value: {error}"
     },
@@ -362,6 +378,27 @@
     },
     "write_failed": {
       "message": "The controller did not take the change: {error}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "application": "Application"
+        },
+        "data_description": {
+          "application": "Only the entities this application has are created."
+        },
+        "description": "Which application does the controller run? The controller shows it on its start screen, e.g. 'A337.2'. The integration reloads after the change.",
+        "title": "Application"
+      }
+    }
+  },
+  "selector": {
+    "application": {
+      "options": {
+        "generic": "Other application (find missing parameters at runtime)"
+      }
     }
   }
 }
