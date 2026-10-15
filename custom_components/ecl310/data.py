@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from modbus_connection import ModbusConnection
 
+    from .boost import HotWaterBoost
     from .coordinator import Ecl310Coordinator
 
 
@@ -20,3 +21,6 @@ class Ecl310Data:
 
     connection: ModbusConnection
     """The Modbus link this entry owns and closes when it unloads."""
+
+    boost: HotWaterBoost
+    """The one-off hot water boost of this controller."""

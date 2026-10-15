@@ -195,6 +195,15 @@
           "setback": "Setback"
         }
       },
+      "hot_water_boost_duration": {
+        "name": "Boost running for"
+      },
+      "hot_water_boost_estimated_end": {
+        "name": "Boost finished (estimate)"
+      },
+      "hot_water_boost_start_temperature": {
+        "name": "Boost start temperature"
+      },
       "hot_water_mode": {
         "name": "Operating mode",
         "state": {
@@ -245,6 +254,32 @@
       },
       "disinfection_wednesday": {
         "name": "Disinfection on Wednesday"
+      },
+      "hot_water_boost": {
+        "name": "Hot water boost",
+        "state_attributes": {
+          "estimated_end": {
+            "name": "Estimated end"
+          },
+          "previous_mode": {
+            "name": "Previous mode"
+          },
+          "rate": {
+            "name": "Heating rate (K/min)"
+          },
+          "start_temperature": {
+            "name": "Start temperature"
+          },
+          "started_at": {
+            "name": "Started at"
+          },
+          "target_temperature": {
+            "name": "Target temperature"
+          }
+        }
+      },
+      "hot_water_boost_on_raise": {
+        "name": "Boost when the setpoint is raised"
       },
       "hot_water_priority": {
         "name": "Hot water priority"
@@ -313,6 +348,12 @@
     }
   },
   "exceptions": {
+    "boost_not_possible": {
+      "message": "A boost needs the hot water setpoint and an operating mode other than manual."
+    },
+    "boost_write_failed": {
+      "message": "Could not change the hot water mode: {error}"
+    },
     "invalid_value": {
       "message": "The controller does not accept this value: {error}"
     },

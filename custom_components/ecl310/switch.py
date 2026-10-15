@@ -20,7 +20,9 @@ from homeassistant.components.switch import SwitchEntity, SwitchEntityDescriptio
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
+from .boost import HotWaterBoost
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import Ecl310, HeatingCircuit, HotWater
@@ -111,9 +113,103 @@ async def async_setup_entry(
 ) -> None:
     """Set up the ECL switches."""
     coordinator = entry.runtime_data.coordinator
+    boost = entry.runtime_data.boost
     async_add_entities(
-        Ecl310Switch(coordinator, description) for description in SWITCHES
+        [
+            *(Ecl310Switch(coordinator, description) for description in SWITCHES),
+            Ecl310BoostSwitch(coordinator, boost),
+            Ecl310BoostOnRaiseSwitch(coordinator, boost),
+        ]
     )
+
+
+class Ecl310BoostSwitch(Ecl310Entity, SwitchEntity):
+    """Heat the tank to its setpoint once, then go back to the previous mode."""
+
+    _attr_translation_key = "hot_water_boost"
+    _attr_icon = "mdi:water-boiler-alert"
+
+    def __init__(self, coordinator: Ecl310Coordinator, boost: HotWaterBoost) -> None:
+        """Initialize the switch on the hot water device."""
+        super().__init__(
+            coordinator, "hot_water_boost", COMPONENT_HOT_WATER, ("mode", "setpoint")
+        )
+        self._boost = boost
+
+    async def async_added_to_hass(self) -> None:
+        """Follow the boost as it starts, progresses and ends."""
+        await super().async_added_to_hass()
+        self.async_on_remove(self._boost.async_add_listener(self.async_write_ha_state))
+
+    @property
+    def is_on(self) -> bool:
+        """Return whether a boost is running."""
+        return self._boost.session is not None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Describe the running boost."""
+        session = self._boost.session
+        if session is None:
+            return {}
+        rate = self._boost.rate
+        end = self._boost.estimated_end
+        return {
+            "started_at": session.started_at.isoformat(),
+            "start_temperature": session.start_temperature,
+            "target_temperature": session.target,
+            "previous_mode": session.previous_mode.name.lower(),
+            "rate": None if rate is None else round(rate, 2),
+            "estimated_end": None if end is None else end.isoformat(),
+        }
+
+    async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Start a boost, remembering who asked."""
+        context = self._context
+        await self._boost.async_start(context.user_id if context else None)
+
+    async def async_turn_off(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Stop the boost and put the previous mode back."""
+        await self._boost.async_cancel()
+
+
+class Ecl310BoostOnRaiseSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
+    """Start a boost whenever the hot water setpoint is raised above the tank."""
+
+    _attr_translation_key = "hot_water_boost_on_raise"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_icon = "mdi:thermometer-chevron-up"
+
+    def __init__(self, coordinator: Ecl310Coordinator, boost: HotWaterBoost) -> None:
+        """Initialize the setting on the hot water device."""
+        super().__init__(coordinator, "hot_water_boost_on_raise", COMPONENT_HOT_WATER)
+        self._boost = boost
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the choice made before the restart."""
+        await super().async_added_to_hass()
+        if (last := await self.async_get_last_state()) is not None:
+            self._boost.on_raise = last.state == "on"
+
+    @property
+    def available(self) -> bool:
+        """A setting of this integration, so always available."""
+        return True
+
+    @property
+    def is_on(self) -> bool:
+        """Return whether raising the setpoint starts a boost."""
+        return self._boost.on_raise
+
+    async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Start boosts on a raised setpoint."""
+        self._boost.on_raise = True
+        self.async_write_ha_state()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Leave a raised setpoint to the weekly program."""
+        self._boost.on_raise = False
+        self.async_write_ha_state()
 
 
 class Ecl310Switch(Ecl310Entity, SwitchEntity):
