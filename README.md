@@ -30,7 +30,8 @@ shows.*
 | Number | Heating: heat curve and its six points, setback room setpoint, summer cut-off, minimum and maximum flow temperature, return limit, frost protection, pump post-run. Hot water: setback setpoint, return limit, maximum charging temperature, the three charging differences, disinfection temperature and duration, both frost limits |
 | Time | The weekly programs: three comfort periods a day, start and end, for the heating circuit and for hot water - 84 entities, of which the first period of each day is enabled. Plus the start of the anti-bacteria run |
 | Select | Forcing the heating circuit, storage charge and circulation pump: *Automatik*, *Dauerhaft aus*, *Dauerhaft ein* |
-| Switch | The automatic pump shutdown during setback, hot water priority, and the seven weekdays of the anti-bacteria run |
+| Switch | The automatic pump shutdown during setback, hot water priority, and the seven weekdays of the anti-bacteria run; **Hot water boost** and its *Boost when the setpoint is raised* setting (see below) |
+| Sensor (boost) | While a hot water boost runs: start temperature, how long it has been running, and when it should be done |
 | Binary sensor | The three named pumps; **Heat available** on the heating circuit (see below); plus the six triacs and the three unnamed relays, diagnostic and disabled by default |
 
 The heating circuit and hot water appear as sub-devices of the controller. Every
@@ -72,6 +73,31 @@ to boiler mode and stops requesting heat the system is not supplying. The
 [Danfoss Ally Coordinator](https://github.com/k3mpaxl/danfoss-ally-coordinator)
 can forward this sensor to every valve it coordinates. Choose it there as the
 heat source.
+
+## Hot water boost
+
+Raising the hot water setpoint does nothing outside a comfort period of the
+weekly program: the controller only charges the tank in comfort. **Hot water
+boost** (*Einmal aufheizen*) on the hot water device puts the circuit into
+constant comfort, watches the storage temperature on S6, and puts the previous
+mode back as soon as the tank reaches the setpoint - one tap for a hot shower,
+and the weekly program carries on afterwards.
+
+* **Boost when the setpoint is raised** (*Aufheizen, wenn das Ziel steigt*, a
+  configuration switch, off by default) starts a boost by itself whenever the
+  setpoint is set at least 1 K above the tank through Home Assistant.
+* While it runs, the switch's attributes and three sensors show the start time
+  and temperature, how long it has been running, the heating rate in K/min and
+  when the tank should be there.
+* It gives up after three hours, and a mode chosen meanwhile - by hand or by an
+  absence automation - wins: the boost ends and leaves that mode alone.
+* A running boost survives a restart of Home Assistant as long as the
+  controller is still in comfort.
+* Every boost ends with an `ecl310_hot_water_boost_finished` event carrying
+  `result` (`reached`, `timeout`, `cancelled`, `mode_changed`),
+  `start_temperature`, `end_temperature`, `target`, `duration_minutes`,
+  `started_at`, `previous_mode` and the `user_id` of whoever started it - enough
+  for an automation that tells that person their water is ready.
 
 ## Where the register map comes from
 

@@ -222,6 +222,15 @@
       },
       "storage_temperature": {
         "name": "Speichertemperatur"
+      },
+      "hot_water_boost_start_temperature": {
+        "name": "Aufheizen ab"
+      },
+      "hot_water_boost_duration": {
+        "name": "Aufheizen seit"
+      },
+      "hot_water_boost_estimated_end": {
+        "name": "Aufheizen fertig (Schätzung)"
       }
     },
     "switch": {
@@ -251,6 +260,32 @@
       },
       "pump_off_in_setback": {
         "name": "Pumpe aus im Sparbetrieb"
+      },
+      "hot_water_boost": {
+        "name": "Einmal aufheizen",
+        "state_attributes": {
+          "started_at": {
+            "name": "Gestartet um"
+          },
+          "start_temperature": {
+            "name": "Starttemperatur"
+          },
+          "target_temperature": {
+            "name": "Zieltemperatur"
+          },
+          "previous_mode": {
+            "name": "Vorherige Betriebsart"
+          },
+          "rate": {
+            "name": "Aufheizrate (K/min)"
+          },
+          "estimated_end": {
+            "name": "Voraussichtlich fertig"
+          }
+        }
+      },
+      "hot_water_boost_on_raise": {
+        "name": "Aufheizen, wenn das Ziel steigt"
       }
     },
     "time": {
@@ -321,6 +356,12 @@
     },
     "write_failed": {
       "message": "Der Regler hat die Änderung nicht übernommen: {error}"
+    },
+    "boost_not_possible": {
+      "message": "Zum Aufheizen braucht es die Warmwasser-Zieltemperatur und eine andere Betriebsart als Handbetrieb."
+    },
+    "boost_write_failed": {
+      "message": "Die Warmwasser-Betriebsart ließ sich nicht ändern: {error}"
     }
   }
 }

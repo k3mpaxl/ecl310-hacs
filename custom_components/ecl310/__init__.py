@@ -16,10 +16,12 @@ from typing import TYPE_CHECKING
 
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.storage import Store
 from modbus_connection import ModbusTcpParams
 from modbus_connection.tmodbus import ModbusConnection
 
-from .const import CONF_FRAMER, CONF_UNIT_ID, DEFAULT_FRAMER
+from .boost import STORAGE_VERSION, HotWaterBoost
+from .const import CONF_FRAMER, CONF_UNIT_ID, DEFAULT_FRAMER, DOMAIN
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .data import Ecl310Data
 from .ecl310_modbus import Ecl310
@@ -61,7 +63,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: Ecl310ConfigEntry) -> bo
         await connection.close()
         raise
 
-    entry.runtime_data = Ecl310Data(coordinator=coordinator, connection=connection)
+    boost = HotWaterBoost(
+        hass,
+        coordinator,
+        Store(hass, STORAGE_VERSION, f"{DOMAIN}.{entry.entry_id}.boost"),
+    )
+    await boost.async_load()
+    entry.async_on_unload(
+        coordinator.async_add_listener(boost.async_coordinator_updated)
+    )
+    entry.runtime_data = Ecl310Data(
+        coordinator=coordinator, connection=connection, boost=boost
+    )
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
     # Every device is created here: a sub-device names its parent by the

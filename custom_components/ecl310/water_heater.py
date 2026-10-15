@@ -105,6 +105,14 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
             await self._async_write(self._hot_water.async_set_setpoint(temperature))
             await self.coordinator.async_request_refresh()
+            # A raised setpoint may start a boost; it is told who asked, so its
+            # end can be reported to that person.
+            context = self._context
+            await (
+                self.coordinator.config_entry.runtime_data.boost.async_setpoint_changed(
+                    float(temperature), context.user_id if context else None
+                )
+            )
 
     async def async_set_operation_mode(self, operation_mode: str) -> None:
         """Write the hot water operating mode."""

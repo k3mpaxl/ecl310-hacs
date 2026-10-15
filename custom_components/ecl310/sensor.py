@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import IntEnum
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -16,10 +17,11 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import EntityCategory, UnitOfTemperature
+from homeassistant.const import EntityCategory, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
+from .boost import HotWaterBoost
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_SENSORS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
@@ -142,9 +144,82 @@ async def async_setup_entry(
 ) -> None:
     """Set up the ECL sensors."""
     coordinator = entry.runtime_data.coordinator
+    boost = entry.runtime_data.boost
     async_add_entities(
-        Ecl310Sensor(coordinator, description) for description in SENSORS
+        [
+            *(Ecl310Sensor(coordinator, description) for description in SENSORS),
+            *(
+                Ecl310BoostSensor(coordinator, boost, description)
+                for description in BOOST_SENSORS
+            ),
+        ]
     )
+
+
+@dataclass(frozen=True, kw_only=True)
+class Ecl310BoostSensorDescription(SensorEntityDescription):
+    """Describes one detail of the running hot water boost."""
+
+    value_fn: Callable[[HotWaterBoost], Any]
+
+
+BOOST_SENSORS: tuple[Ecl310BoostSensorDescription, ...] = (
+    Ecl310BoostSensorDescription(
+        key="hot_water_boost_start_temperature",
+        translation_key="hot_water_boost_start_temperature",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        suggested_display_precision=1,
+        value_fn=lambda boost: (
+            boost.session.start_temperature if boost.session else None
+        ),
+    ),
+    Ecl310BoostSensorDescription(
+        key="hot_water_boost_duration",
+        translation_key="hot_water_boost_duration",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.MINUTES,
+        suggested_display_precision=0,
+        value_fn=lambda boost: (
+            round(boost.elapsed.total_seconds() / 60, 1)
+            if boost.elapsed is not None
+            else None
+        ),
+    ),
+    Ecl310BoostSensorDescription(
+        key="hot_water_boost_estimated_end",
+        translation_key="hot_water_boost_estimated_end",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        value_fn=lambda boost: boost.estimated_end,
+    ),
+)
+
+
+class Ecl310BoostSensor(Ecl310Entity, SensorEntity):
+    """A detail of the running boost; unknown while none runs."""
+
+    entity_description: Ecl310BoostSensorDescription
+
+    def __init__(
+        self,
+        coordinator: Ecl310Coordinator,
+        boost: HotWaterBoost,
+        description: Ecl310BoostSensorDescription,
+    ) -> None:
+        """Initialize the sensor on the hot water device."""
+        super().__init__(coordinator, description.key, COMPONENT_HOT_WATER, ("mode",))
+        self.entity_description = description
+        self._boost = boost
+
+    async def async_added_to_hass(self) -> None:
+        """Follow the boost as well as the polls."""
+        await super().async_added_to_hass()
+        self.async_on_remove(self._boost.async_add_listener(self.async_write_ha_state))
+
+    @property
+    def native_value(self) -> Any:
+        """Return the detail, or None while no boost runs."""
+        return self.entity_description.value_fn(self._boost)
 
 
 class Ecl310Sensor(Ecl310Entity, SensorEntity):
