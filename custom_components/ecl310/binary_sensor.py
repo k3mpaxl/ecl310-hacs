@@ -23,7 +23,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -36,7 +36,7 @@ from .ecl310_modbus.configurations import (
     RELAY_ASSIGNMENTS_BY_NUMBER,
 )
 from .ecl310_modbus.subsystems.outputs import RELAY_COUNT, TRIAC_COUNT
-from .entity import Ecl310Entity
+from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 0
 
@@ -89,20 +89,24 @@ BINARY_SENSORS: tuple[Ecl310BinarySensorDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the ECL output binary sensors."""
     coordinator = entry.runtime_data.coordinator
     async_add_entities(
-        [
-            *(
-                Ecl310BinarySensor(coordinator, description)
-                for description in BINARY_SENSORS
-            ),
-            Ecl310HeatAvailable(coordinator),
-        ]
+        supported(
+            hass,
+            Platform.BINARY_SENSOR,
+            [
+                *(
+                    Ecl310BinarySensor(coordinator, description)
+                    for description in BINARY_SENSORS
+                ),
+                Ecl310HeatAvailable(coordinator),
+            ],
+        )
     )
 
 

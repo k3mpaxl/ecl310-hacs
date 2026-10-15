@@ -57,14 +57,21 @@ def _number_validator(
     *,
     min_value: float | int | None,
     max_value: float | int | None,
+    off_value: float | int | None = None,
 ) -> Callable[[Any], Any]:
-    """Return a write validator rejecting values outside the ECL domain."""
+    """Return a write validator rejecting values outside the ECL domain.
+
+    ``off_value``, where the datapoint has one, is accepted as well: it lies
+    outside the domain on purpose.
+    """
 
     def validate(value: Any) -> Any:
         try:
             number = float(value)
         except (TypeError, ValueError) as err:
             raise Ecl310ValueValidationError(f"{value!r} is not a number") from err
+        if off_value is not None and number == off_value:
+            return value
         if min_value is not None and number < min_value:
             raise Ecl310ValueValidationError(
                 f"Value {value} is below the minimum {min_value}"
@@ -83,6 +90,7 @@ def _writable(
     *,
     min_value: float | int | None,
     max_value: float | int | None,
+    off_value: float | int | None = None,
 ) -> bool | Callable[[Any], Any]:
     """Return the ``writable`` argument, validated where a domain is known."""
     if not writable:
@@ -91,7 +99,9 @@ def _writable(
         return writable
     if min_value is None and max_value is None:
         return True
-    return _number_validator(min_value=min_value, max_value=max_value)
+    return _number_validator(
+        min_value=min_value, max_value=max_value, off_value=off_value
+    )
 
 
 def _number_metadata(
@@ -109,6 +119,7 @@ def _number_metadata(
     unit: str | None,
     raw_min: int | None,
     raw_max: int | None,
+    off_value: float | int | None = None,
 ) -> DatapointMetadata:
     """Build the neutral metadata for a numeric datapoint."""
     return DatapointMetadata(
@@ -127,6 +138,7 @@ def _number_metadata(
             unit=unit,
             raw_min=raw_min,
             raw_max=raw_max,
+            off_value=off_value,
         ),
     )
 
@@ -189,6 +201,7 @@ def register_gauge(
     unit: str | None = None,
     raw_min: int | None = None,
     raw_max: int | None = None,
+    off_value: float | int | None = None,
     parameter_id: int | None = None,
     sensor_number: int | None = None,
     maker_key: str | None = None,
@@ -196,14 +209,21 @@ def register_gauge(
     description: str | None = None,
     writable: bool | Callable[[Any], Any] = False,
 ) -> NumberField[float]:
-    """Create a scaled numeric field at a zero-based register address."""
+    """Create a scaled numeric field at a zero-based register address.
+
+    ``off_value`` is a value outside ``min_value``..``max_value`` the
+    controller stores to mean "off". It decodes like any other value - so a
+    consumer can tell "off" from "not read" - and may be written.
+    """
     field = _modbus_gauge(
         address,
         scale,
         signed=signed,
         nan=nan,
         unit=unit,
-        writable=_writable(writable, min_value=min_value, max_value=max_value),
+        writable=_writable(
+            writable, min_value=min_value, max_value=max_value, off_value=off_value
+        ),
     )
     return attach_metadata(
         field,
@@ -221,6 +241,7 @@ def register_gauge(
             unit=unit,
             raw_min=raw_min,
             raw_max=raw_max,
+            off_value=off_value,
         ),
     )
 

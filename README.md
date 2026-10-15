@@ -30,7 +30,7 @@ shows.*
 | Number | Heating: heat curve and its six points, setback room setpoint, summer cut-off, minimum and maximum flow temperature, return limit, frost protection, pump post-run. Hot water: setback setpoint, return limit, maximum charging temperature, the three charging differences, disinfection temperature and duration, both frost limits |
 | Time | The weekly programs: three comfort periods a day, start and end, for the heating circuit and for hot water - 84 entities, of which the first period of each day is enabled. Plus the start of the anti-bacteria run |
 | Select | Forcing the heating circuit, storage charge and circulation pump: *Automatik*, *Dauerhaft aus*, *Dauerhaft ein* |
-| Switch | The automatic pump shutdown during setback, hot water priority, and the seven weekdays of the anti-bacteria run; **Hot water boost** and its *Boost when the setpoint is raised* setting (see below) |
+| Switch | The automatic pump shutdown during setback, hot water priority, the disinfection itself and the seven weekdays of the anti-bacteria run; **Hot water boost** and its *Boost when the setpoint is raised* setting (see below) |
 | Sensor (boost) | While a hot water boost runs: start temperature, how long it has been running, and when it should be done |
 | Binary sensor | The three named pumps; **Heat available** on the heating circuit (see below); plus the six triacs and the three unnamed relays, diagnostic and disabled by default |
 
@@ -125,7 +125,7 @@ application key A237.1 V04, software 1.56, over Modbus/TCP on unit 1:
   which physical output, and which sensor input is actually connected, was
   confirmed by switching outputs and watching the plant respond.
 
-A full poll is 22 block reads and takes about 200 ms. The two weekly programs
+A full poll is 23 block reads and takes about 200 ms. The two weekly programs
 are 14 further reads, about 100 ms, fetched on their own slower cadence.
 
 ## Requirements
@@ -165,7 +165,38 @@ Everything is set up from the UI. The config flow asks for:
 
 The flow reads the controller before it creates the entry, so a wrong address,
 unit or framing is reported immediately rather than showing up as an
-unavailable device later.
+unavailable device later. It then asks which application the controller runs,
+with the one it detected already selected - see below.
+
+## Applications
+
+An ECL Comfort 310 runs one *application* - A237.1, A337.2 and so on, shown on
+the controller's start screen - and the application decides which parameters
+the controller has. A parameter it lacks is refused over Modbus. The
+integration carries a profile for each application it knows: the parameters
+that application has, generated from Danfoss' ECL Tool reports.
+
+| Application | Profile | Tested on |
+| :---------- | :------ | :-------- |
+| A237.1 | V04 | the controller this integration was built on |
+| A337.2 | V02 | a controller in the field ([issue 13](https://github.com/k3mpaxl/ecl310-hacs/issues/13)) |
+
+* **Detection.** Neither the application nor its version can be read over
+  Modbus, so the integration reads a handful of parameters that some
+  applications have and others lack, and suggests the profile that fits. An
+  entry set up with an older version detects its application once, at the
+  first start.
+* **Only what exists.** With a profile, the integration reads only the
+  parameters that application has, and creates entities only for those.
+  Entities an older version created for a parameter the application lacks are
+  removed.
+* **Changing it.** *Configure* on the integration lets you pick another
+  application; the integration reloads.
+* **Other applications.** Choose *Other application*: every parameter is read,
+  and the ones the controller refuses are found at runtime and their entities
+  stay unavailable - the behaviour before profiles existed. To get a profile
+  for your application, open an issue with the application and version from
+  the controller's start screen and a diagnostics download.
 
 ## How it addresses the controller
 
@@ -223,7 +254,13 @@ cannot be written over Modbus.
   runs a different application, S3/S5/S6 may carry something else. The raw
   values are still correct; only the names would be wrong.
 * **The controller reports no identity over Modbus.** Model and manufacturer are
-  static; there is no firmware version or serial number to show.
+  static; there is no firmware version or serial number to show. The device's
+  model ID shows the application chosen in the setup, e.g. `A337.2 V02`.
+* **The disinfection is switched off by its temperature.** The controller
+  stores `9` in the disinfection temperature to mean *off* (its display shows
+  `OFF`). The temperature entity then reads *unknown*, and the *Disinfection*
+  switch turns it back on at the temperature it last had - 70 °C if it never
+  had one.
 * **A device name is fixed when the device is first created.** `Heizkreis` and
   `Warmwasser` are translated at that moment, so switching Home Assistant's
   language later does not rename devices that already exist - as with any

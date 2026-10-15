@@ -18,6 +18,8 @@ from modbus_connection import (
     ModbusTimeoutError,
 )
 
+from .applications import PROFILES, ApplicationProfile, Detection, async_detect
+from .data_model import Ecl310Component
 from .device_info import DeviceInformation
 from .subsystems import (
     HeatingCircuit,
@@ -71,21 +73,94 @@ class Ecl310:
     its own so that one refusal does not take the rest with it.
     """
 
-    def __init__(self, unit: ModbusUnit) -> None:
-        """Set up the sub-systems on ``unit``."""
+    def __init__(
+        self, unit: ModbusUnit, application: ApplicationProfile | None = None
+    ) -> None:
+        """Set up the sub-systems on ``unit``.
+
+        With an ``application``, the sub-systems read only the parameters it
+        has: the others are dropped up front instead of being refused by the
+        controller one poll at a time. Without one, every parameter this
+        library models is read.
+        """
         self._unit = unit
-        self.info = DeviceInformation()
+        self.application = application
+        self.info = DeviceInformation(
+            application=application.title if application else None
+        )
         self.sensors = Sensors(unit)
         self.heating = HeatingCircuit(unit)
         self.hot_water = HotWater(unit)
         self.outputs = Outputs(unit)
         self.heating_schedule = HeatingSchedule(unit)
         self.hot_water_schedule = HotWaterSchedule(unit)
+        if application is not None:
+            for name in ALL_COMPONENT_NAMES:
+                component: Ecl310Component = getattr(self, name)
+                keep = [
+                    field
+                    for field in type(component).declared_fields
+                    if self._has(component, field)
+                ]
+                if len(keep) < len(type(component).declared_fields):
+                    component.restrict_fields(keep)
 
     @property
     def modbus_unit(self) -> ModbusUnit:
         """The unit every sub-system reads from and writes to."""
         return self._unit
+
+    def _has(self, component: Ecl310Component, field: str) -> bool:
+        """Return whether the application has the parameter behind ``field``."""
+        if self.application is None:
+            return True
+        metadata = component.metadata_for(field)
+        if metadata is None or metadata.parameter_id is None:
+            return True  # a sensor, mode or output register, not a parameter
+        return self.application.has(metadata.parameter_id)
+
+    def supports(self, component: str, field: str) -> bool:
+        """Return whether this controller's application has a datapoint.
+
+        Always true without an application: then a datapoint the controller
+        does not serve is only found out when it refuses the read.
+        """
+        return self._has(getattr(self, component), field)
+
+    @staticmethod
+    def parameter_ids() -> frozenset[int]:
+        """Every ECL parameter this library models."""
+        ids: set[int] = set()
+        for component_type in (
+            Sensors,
+            HeatingCircuit,
+            HotWater,
+            Outputs,
+            HeatingSchedule,
+            HotWaterSchedule,
+        ):
+            for descriptor in component_type.declared_fields.values():
+                metadata = getattr(descriptor, "ecl_metadata", None)
+                if metadata is not None and metadata.parameter_id is not None:
+                    ids.add(metadata.parameter_id)
+        return frozenset(ids)
+
+    @classmethod
+    async def async_detect_application(
+        cls,
+        unit: ModbusUnit,
+        profiles: tuple[ApplicationProfile, ...] | None = None,
+    ) -> Detection:
+        """Find out which of the known applications the controller runs.
+
+        Reads a handful of parameters that tell the applications apart, one
+        by one. ``Detection.application`` is the answer when it is clear.
+        """
+        return await async_detect(
+            unit,
+            PROFILES.values() if profiles is None else profiles,
+            preferred=cls.parameter_ids(),
+        )
 
     @classmethod
     async def async_probe(cls, unit: ModbusUnit) -> DeviceInformation:
@@ -96,7 +171,8 @@ class Ecl310:
         can turn that into "cannot connect".
         """
         device = cls(unit)
-        await device.heating.async_update()
+        # The sensor inputs: unlike most parameters, every application has them.
+        await device.sensors.async_update()
         return device.info
 
     async def _async_poll(

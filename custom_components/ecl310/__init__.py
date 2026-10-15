@@ -15,20 +15,30 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.storage import Store
-from modbus_connection import ModbusTcpParams
+from modbus_connection import ModbusError, ModbusTcpParams
 from modbus_connection.tmodbus import ModbusConnection
 
 from .boost import STORAGE_VERSION, HotWaterBoost
-from .const import CONF_FRAMER, CONF_UNIT_ID, DEFAULT_FRAMER, DOMAIN
+from .const import (
+    APPLICATION_GENERIC,
+    CONF_APPLICATION,
+    CONF_FRAMER,
+    CONF_UNIT_ID,
+    DEFAULT_FRAMER,
+    DOMAIN,
+    LOGGER,
+)
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .data import Ecl310Data
-from .ecl310_modbus import Ecl310
+from .ecl310_modbus import PROFILES, ApplicationProfile, Ecl310
 from .entity import SUB_DEVICES, controller_device_info, device_identifiers
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
+    from modbus_connection import ModbusUnit
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -51,10 +61,53 @@ def connection_params(data: dict) -> ModbusTcpParams:
     )
 
 
+def application_key(entry: Ecl310ConfigEntry) -> str | None:
+    """Return the application an entry was set to, if it was set to one yet."""
+    return entry.options.get(CONF_APPLICATION, entry.data.get(CONF_APPLICATION))
+
+
+async def _async_application(
+    hass: HomeAssistant, entry: Ecl310ConfigEntry, unit: ModbusUnit
+) -> ApplicationProfile | None:
+    """Return the profile of the controller's application, if there is one.
+
+    An entry set up before applications could be chosen has none stored: the
+    application is detected once and stored, so the next start reads only the
+    parameters it has. The options let the user change it.
+    """
+    key = application_key(entry)
+    if key is None:
+        detection = await Ecl310.async_detect_application(unit)
+        detected = detection.application
+        key = detected.key if detected else APPLICATION_GENERIC
+        LOGGER.info(
+            "Detected application %s (answered %s, refused %s)",
+            detected.title if detected else "unknown",
+            sorted(detection.answered),
+            sorted(detection.refused),
+        )
+        hass.config_entries.async_update_entry(
+            entry, data={**entry.data, CONF_APPLICATION: key}
+        )
+    if key != APPLICATION_GENERIC and key not in PROFILES:
+        LOGGER.warning("Unknown application %s; reading every parameter", key)
+    return PROFILES.get(key)
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: Ecl310ConfigEntry) -> bool:
     """Set up the ECL Comfort 310 from a config entry."""
     connection = ModbusConnection(connection_params(dict(entry.data)))
-    device = Ecl310(connection.for_unit(int(entry.data[CONF_UNIT_ID])))
+    unit = connection.for_unit(int(entry.data[CONF_UNIT_ID]))
+    try:
+        application = await _async_application(hass, entry, unit)
+    except ModbusError as err:
+        await connection.close()
+        raise ConfigEntryNotReady(
+            translation_domain=DOMAIN,
+            translation_key="cannot_connect",
+            translation_placeholders={"error": str(err)},
+        ) from err
+    device = Ecl310(unit, application=application)
     coordinator = Ecl310Coordinator(hass, entry, device)
 
     try:

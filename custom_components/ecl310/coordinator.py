@@ -14,13 +14,20 @@ from modbus_connection import (
 )
 
 from .const import DOMAIN, LOGGER, SCAN_INTERVAL, SCHEDULE_REFRESH_EVERY
-from .ecl310_modbus import SCHEDULE_COMPONENT_NAMES, Ecl310, UpdateReport
+from .ecl310_modbus import (
+    SCHEDULE_COMPONENT_NAMES,
+    Ecl310,
+    Ecl310Component,
+    UpdateReport,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Sequence
 
     from homeassistant.core import HomeAssistant
     from modbus_connection import ModbusUnit
+    from modbus_connection.exceptions import ReadBlock
+    from modbus_connection.model import ResolvedField
 
     from .data import Ecl310Data
 
@@ -44,6 +51,54 @@ def _reader(
     }[space]
 
 
+def _split_block(
+    component: Ecl310Component, block: ReadBlock, covered: list[ResolvedField]
+) -> bool:
+    """Read the fields of a block that fails as a whole in smaller blocks.
+
+    Each of ``covered`` answered on its own, so the block reached across
+    registers between them the controller does not serve. They are read in
+    runs of adjacent registers from now on - or, if they already are one
+    run, one by one. Returns whether that changed anything.
+    """
+    spans = sorted(
+        (where.address, where.address + where.count - 1) for where in covered
+    )
+    runs: list[tuple[int, int]] = []
+    for low, high in spans:
+        if runs and low <= runs[-1][1] + 1:
+            runs[-1] = (runs[-1][0], max(runs[-1][1], high))
+        else:
+            runs.append((low, high))
+    pieces = runs if len(runs) > 1 else spans
+    if len(pieces) < 2:  # noqa: PLR2004 - one piece is no split
+        return False
+
+    first, last = block.address, block.address + block.count - 1
+    ranges: set[tuple[int, int]] = set(pieces)
+    for low, high in component.register_ranges or ():
+        if high < first or low > last:
+            ranges.add((low, high))
+            continue
+        if low < first:
+            ranges.add((low, first - 1))
+        if high > last:
+            ranges.add((last + 1, high))
+    LOGGER.info(
+        "The controller refuses %s registers %d-%d as one block but serves "
+        "each field in it; reading them as %s from now on",
+        block.space,
+        first,
+        last,
+        ", ".join(f"{low}-{high}" for low, high in pieces),
+    )
+    component.register_ranges = tuple(sorted(ranges))
+    # Restricting to the fields it already has makes the component plan its
+    # reads again, over the new ranges.
+    component.restrict_fields(component.resolved_fields)
+    return True
+
+
 class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
     """Refresh every sub-system on a schedule.
 
@@ -56,7 +111,10 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
     in. So when a sub-system is refused, the registers it covers are tried one
     by one; those the controller refuses are logged, dropped from the
     sub-system for as long as the entry is loaded, and the entities reading
-    them stay unavailable. The rest of the sub-system carries on.
+    them stay unavailable. The rest of the sub-system carries on. If every
+    register answers on its own, the block reached across registers between
+    them that the controller does not serve: the sub-system is then read in
+    smaller blocks from there on.
 
     The weekly programs are read on the first poll and every tenth after it.
     They are fourteen block reads of their own - the registers between two
@@ -105,8 +163,9 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
     async def _async_drop_refused(self, name: str, err: ModbusError) -> bool:
         """Drop the fields of a refused block the controller does not serve.
 
-        Returns whether anything was dropped, which is what makes another read
-        of the sub-system worth trying.
+        Where it serves every one of them, split the block instead. Returns
+        whether anything changed, which is what makes another read of the
+        sub-system worth trying.
         """
         block = getattr(err, "block", None)
         if not isinstance(err, REFUSED_ERRORS) or block is None:
@@ -133,7 +192,7 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
                 except REFUSED_ERRORS:
                     refused.append(field)
         if not refused:
-            return False
+            return _split_block(component, block, [fields[f] for f in covered])
 
         for field in refused:
             LOGGER.warning(

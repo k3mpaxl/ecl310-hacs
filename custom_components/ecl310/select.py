@@ -18,6 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -25,7 +26,7 @@ from .const import COMPONENT_OUTPUTS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import OutputControl
 from .ecl310_modbus.configurations import RELAY_ASSIGNMENTS
-from .entity import Ecl310Entity
+from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 1
 
@@ -55,14 +56,18 @@ SELECTS: tuple[Ecl310SelectDescription, ...] = tuple(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the ECL relay overrides."""
     coordinator = entry.runtime_data.coordinator
     async_add_entities(
-        Ecl310Select(coordinator, description) for description in SELECTS
+        supported(
+            hass,
+            Platform.SELECT,
+            (Ecl310Select(coordinator, description) for description in SELECTS),
+        )
     )
 
 

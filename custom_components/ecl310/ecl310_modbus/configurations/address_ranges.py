@@ -16,10 +16,13 @@ from ..addresses import parameter_range, schedule_ranges, sensor_range
 
 Range = tuple[int, int]
 
-#: Output states and what the controller's display forced them to: six triacs
-#: (3999..4004), six relays (4005..4010), and the relays' manual registers
-#: (4025..4030). The controller serves the whole span, so it is one block.
-OUTPUT_RANGE: Range = (3999, 4030)
+#: Output states: six triacs (3999..4004) and six relays (4005..4010).
+OUTPUT_STATE_RANGE: Range = (3999, 4010)
+
+#: What the controller's display forced the relays to (4025..4030). The
+#: registers in between are not served by every application - A337.2 refuses
+#: a read across them - so the states and these are two blocks, not one.
+OUTPUT_MANUAL_RANGE: Range = (4025, 4030)
 
 #: The relays' override registers (4065..4070) - the only writable output
 #: registers. They sit in a block of their own; 4031..4058 is not served for
@@ -99,7 +102,8 @@ HOT_WATER_SCHEDULE_RANGES: tuple[Range, ...] = schedule_ranges(2)
 REGISTER_RANGES: tuple[Range, ...] = (
     *HEATING_SCHEDULE_RANGES,
     *HOT_WATER_SCHEDULE_RANGES,
-    OUTPUT_RANGE,
+    OUTPUT_STATE_RANGE,
+    OUTPUT_MANUAL_RANGE,
     OUTPUT_OVERRIDE_RANGE,
     CIRCUIT_MODE_RANGE,
     CIRCUIT_STATUS_RANGE,

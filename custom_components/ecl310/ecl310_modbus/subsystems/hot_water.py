@@ -1,8 +1,10 @@
 """The domestic hot water circuit (ECL circuit 2).
 
 The tank's two setpoints, the charging thresholds that decide when it is
-loaded, the anti-bacteria run and the frost limits. Bounds are the
-controller's own, from the application report for A237.1.
+loaded, the anti-bacteria run and the frost limits. Bounds come from the
+application report for A237.1; where they are narrower than the controller's,
+that is on purpose - a hot water setpoint of 150 °C is not an everyday
+adjustment.
 
 The anti-bacteria day is a bit mask over the week and its start time is
 counted in half hours, both of which the ECL display hides behind a friendlier
@@ -28,6 +30,15 @@ MODE_REGISTER = 4201
 
 #: Register carrying the hot water circuit's schedule status.
 STATE_REGISTER = 4211
+
+#: What the disinfection temperature (ECL parameter 12125) holds while the
+#: disinfection is switched off: one step below the settable minimum, which
+#: the controller's display renders as ``OFF``. It is the factory default.
+DISINFECTION_OFF = 9
+
+#: The disinfection temperature written when it is switched on with none
+#: given.
+DISINFECTION_DEFAULT_TEMPERATURE = 70
 
 
 class HotWater(Ecl310Component):
@@ -68,15 +79,23 @@ class HotWater(Ecl310Component):
     disinfection_temperature = parameter_temperature(
         12125,
         1,
-        min_value=55,
-        max_value=75,
-        raw_min=55,
-        raw_max=75,
+        min_value=10,
+        max_value=110,
+        raw_min=DISINFECTION_OFF,
+        raw_max=110,
+        off_value=DISINFECTION_OFF,
         writable=True,
         maker_key="Gew. Temp. (Desinfektion)",
-        description="Warmwassertemperatur während der Legionellenschaltung",
+        description=(
+            "Warmwassertemperatur während der Legionellenschaltung; "
+            f"{DISINFECTION_OFF} = AUS"
+        ),
     )
-    """Temperature the tank is raised to by the disinfection function."""
+    """Temperature the tank is raised to by the disinfection function.
+
+    Reads :data:`DISINFECTION_OFF` while the function is switched off - see
+    :attr:`disinfection_enabled` and :attr:`disinfection_setpoint`.
+    """
 
     setback_setpoint = parameter_temperature(
         12191,
@@ -287,6 +306,41 @@ class HotWater(Ecl310Component):
                 f"Expected a half hour of the day, got {hour:02d}:{minute:02d}"
             )
         await self.write("disinfection_start", hour * 2 + (1 if minute else 0))
+
+    @property
+    def disinfection_enabled(self) -> bool | None:
+        """Whether the disinfection function is switched on at all.
+
+        It runs only on the weekdays in :attr:`disinfection_days` - this says
+        whether it has a temperature to run at.
+        """
+        value = self.disinfection_temperature
+        return None if value is None else value != DISINFECTION_OFF
+
+    @property
+    def disinfection_setpoint(self) -> float | None:
+        """The disinfection temperature, or ``None`` while it is switched off."""
+        return self.disinfection_temperature if self.disinfection_enabled else None
+
+    async def async_set_disinfection_enabled(
+        self, *, enabled: bool, temperature: float | None = None
+    ) -> None:
+        """Switch the disinfection off, or on at ``temperature``.
+
+        Switching it on without a temperature uses
+        :data:`DISINFECTION_DEFAULT_TEMPERATURE`.
+        """
+        if not enabled:
+            value: float = DISINFECTION_OFF
+        elif temperature is None:
+            value = DISINFECTION_DEFAULT_TEMPERATURE
+        elif temperature == DISINFECTION_OFF:
+            raise Ecl310ValueValidationError(
+                f"{DISINFECTION_OFF} switches the disinfection off, not on"
+            )
+        else:
+            value = temperature
+        await self.write("disinfection_temperature", value)
 
     @property
     def charging(self) -> bool | None:

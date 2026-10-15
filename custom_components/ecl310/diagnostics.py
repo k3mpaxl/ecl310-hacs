@@ -22,7 +22,9 @@ async def async_get_config_entry_diagnostics(
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
     coordinator = entry.runtime_data.coordinator
+    application = coordinator.device.application
     diagnostics: dict[str, Any] = {
+        "application": application.title if application else None,
         "updated": coordinator.data.updated,
         "failed": {name: str(error) for name, error in coordinator.data.failed.items()},
         "refused": {

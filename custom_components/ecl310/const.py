@@ -13,13 +13,18 @@ DOMAIN: Final = "ecl310"
 CONF_UNIT_ID: Final = "unit_id"
 CONF_FRAMER: Final = "framer"
 
+#: The ECL application the controller runs, as a profile key of the library -
+#: or APPLICATION_GENERIC for one this integration has no profile of.
+CONF_APPLICATION: Final = "application"
+APPLICATION_GENERIC: Final = "generic"
+
 DEFAULT_PORT: Final = 502
 DEFAULT_UNIT_ID: Final = 1
 DEFAULT_FRAMER: Final = "socket"
 
 FRAMERS: Final = ["socket", "rtu"]
 
-# A heating controller changes slowly, and every poll is twenty-two short
+# A heating controller changes slowly, and every poll is twenty-three short
 # block reads over a link that may be shared with other devices.
 SCAN_INTERVAL: Final = timedelta(seconds=30)
 

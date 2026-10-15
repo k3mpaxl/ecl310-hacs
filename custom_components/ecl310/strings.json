@@ -15,6 +15,16 @@
           "unit_id": "The controller's Modbus station address, set under 'Modbus-Adresse' in the controller's system menu.",
           "framer": "Use \"socket\" for a controller reached directly over Modbus TCP, and \"rtu\" for a transparent serial gateway that forwards Modbus RTU frames."
         }
+      },
+      "application": {
+        "title": "Application",
+        "description": "Which application does the controller run? The controller shows it on its start screen, e.g. 'A337.2'. Detected: {detected}. With 'Other application', every parameter is read and the ones the controller does not serve are found out at runtime.",
+        "data": {
+          "application": "Application"
+        },
+        "data_description": {
+          "application": "Only the entities this application has are created."
+        }
       }
     },
     "error": {
@@ -286,6 +296,9 @@
       },
       "hot_water_boost_on_raise": {
         "name": "Boost when the setpoint is raised"
+      },
+      "disinfection": {
+        "name": "Disinfection"
       }
     },
     "time": {
@@ -362,6 +375,30 @@
     },
     "boost_write_failed": {
       "message": "Could not change the hot water mode: {error}"
+    },
+    "cannot_connect": {
+      "message": "Could not reach the controller: {error}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Application",
+        "description": "Which application does the controller run? The controller shows it on its start screen, e.g. 'A337.2'. The integration reloads after the change.",
+        "data": {
+          "application": "Application"
+        },
+        "data_description": {
+          "application": "Only the entities this application has are created."
+        }
+      }
+    }
+  },
+  "selector": {
+    "application": {
+      "options": {
+        "generic": "Other application (find missing parameters at runtime)"
+      }
     }
   }
 }

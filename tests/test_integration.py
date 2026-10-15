@@ -53,10 +53,17 @@ async def test_config_flow_reads_the_model_and_loads(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], dict(ENTRY_DATA)
     )
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "application"
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"application": "generic"}
+    )
     await hass.async_block_till_done()
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["title"] == "Danfoss ECL Comfort 310"
+    assert result["data"]["application"] == "generic"
     assert result["result"].state is ConfigEntryState.LOADED
 
 
@@ -506,6 +513,9 @@ async def test_setup_survives_a_register_the_controller_lacks(
     )
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], ENTRY_DATA
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"application": "generic"}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
     await hass.async_block_till_done()

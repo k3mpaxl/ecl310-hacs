@@ -17,7 +17,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import EntityCategory, UnitOfTemperature, UnitOfTime
+from homeassistant.const import EntityCategory, Platform, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -25,7 +25,7 @@ from .boost import HotWaterBoost
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_SENSORS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
-from .entity import Ecl310Entity
+from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 0
 
@@ -138,7 +138,7 @@ SENSORS: tuple[Ecl310SensorDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
@@ -146,13 +146,17 @@ async def async_setup_entry(
     coordinator = entry.runtime_data.coordinator
     boost = entry.runtime_data.boost
     async_add_entities(
-        [
-            *(Ecl310Sensor(coordinator, description) for description in SENSORS),
-            *(
-                Ecl310BoostSensor(coordinator, boost, description)
-                for description in BOOST_SENSORS
-            ),
-        ]
+        supported(
+            hass,
+            Platform.SENSOR,
+            [
+                *(Ecl310Sensor(coordinator, description) for description in SENSORS),
+                *(
+                    Ecl310BoostSensor(coordinator, boost, description)
+                    for description in BOOST_SENSORS
+                ),
+            ],
+        )
     )
 
 
