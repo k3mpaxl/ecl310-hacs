@@ -400,5 +400,11 @@
         "generic": "Andere Applikation (fehlende Parameter im Betrieb erkennen)"
       }
     }
+  },
+  "issues": {
+    "application_mismatch": {
+      "title": "{title}: Der Regler läuft mit {reported}, nicht {chosen}",
+      "description": "Der Regler meldet die Applikation {reported}, eingestellt ist aber {chosen}. Dadurch können Entitäten fehlen oder nicht verfügbar sein. Wähle {reported} – oder „Andere Applikation“, falls sie nicht angeboten wird – unter Einstellungen → Geräte & Dienste → {title} → Konfigurieren."
+    }
   }
 }

@@ -168,6 +168,21 @@ unit or framing is reported immediately rather than showing up as an
 unavailable device later. It then asks which application the controller runs,
 with the one it detected already selected - see below.
 
+## Device information
+
+The controller reports what it is (Danfoss *communication description*
+VI.LG.V5.02, §6.12, pointed out in
+[issue 32](https://github.com/k3mpaxl/ecl310-hacs/issues/32)). The device page
+shows:
+
+* the application as the model ID, e.g. `A237.1 V04`
+* the software version as firmware (e.g. `1.56`)
+* the hardware revision (e.g. `H.3`)
+* the serial number
+
+Diagnostics also include the code number, build and production week. They
+leave the serial number out, so a download can be shared.
+
 ## Applications
 
 An ECL Comfort 310 runs one *application* - A237.1, A337.2 and so on, shown on
@@ -181,11 +196,16 @@ that application has, generated from Danfoss' ECL Tool reports.
 | A237.1 | V04 | the controller this integration was built on |
 | A337.2 | V02 | a controller in the field ([issue 13](https://github.com/k3mpaxl/ecl310-hacs/issues/13)) |
 
-* **Detection.** Neither the application nor its version can be read over
-  Modbus, so the integration reads a handful of parameters that some
-  applications have and others lack, and suggests the profile that fits. An
-  entry set up with an older version detects its application once, at the
-  first start.
+* **Detection.** The controller reports its application and version
+  (PNU 2060-2063), and the setup suggests that profile.
+  * If the controller reports an application without a profile here, the setup
+    names it and suggests *Other application*.
+  * Only a controller that reports nothing is probed: the integration reads a
+    handful of parameters that some applications have and others lack.
+  * An entry set up with an older version detects its application once, at
+    the first start.
+* **A wrong choice is flagged.** If the application chosen in the setup is not
+  the one the controller reports, a repair notice says so until you change it.
 * **Only what exists.** With a profile, the integration reads only the
   parameters that application has, and creates entities only for those.
   Entities an older version created for a parameter the application lacks are
@@ -253,9 +273,6 @@ cannot be written over Modbus.
 * **Sensor assignment follows application key A237/A337.** If your controller
   runs a different application, S3/S5/S6 may carry something else. The raw
   values are still correct; only the names would be wrong.
-* **The controller reports no identity over Modbus.** Model and manufacturer are
-  static; there is no firmware version or serial number to show. The device's
-  model ID shows the application chosen in the setup, e.g. `A337.2 V02`.
 * **The disinfection is switched off by its temperature.** The controller
   stores `9` in the disinfection temperature to mean *off* (its display shows
   `OFF`). The temperature entity then reads *unknown*, and the *Disinfection*

@@ -69,6 +69,7 @@ def controller_device_info(entry: ConfigEntry, info: DeviceInformation) -> Devic
         name=info.model,
         model_id=info.application,
         sw_version=info.firmware_version,
+        hw_version=info.hardware_version,
         serial_number=info.serial_number,
     )
 

@@ -106,6 +106,21 @@ HOLDING: dict[int, int] = {
         for day in range(7)
         for offset, value in enumerate((500, 2100, 2100, 2100, 2330, 2330))
     },
+    # What the controller reports about itself (Danfoss VI.LG.V5.02, section
+    # 6.12): build 8575, code number 087H3040, hardware H.3, software 1.56,
+    # application A237.1 V04, produced in week 12 of 2017. The serial number is
+    # the manual's example (1, 0x0215 = 66069), not the captured controller's.
+    7: 8575,
+    18: 3040,
+    33: 0x4803,
+    34: 0x0138,
+    35: 1,
+    36: 0x0215,
+    2059: 65,
+    2060: 237,
+    2061: 1,
+    2062: 0x0400,
+    2098: 0x110C,
 }
 
 #: Relay 1..6 state registers - read only on the real controller.
@@ -175,10 +190,30 @@ def register_image() -> dict[int, int]:
     return HOLDING
 
 
+#: Where the controller reports its application: prefix, type, sub, version.
+APPLICATION_REGISTERS = (2059, 2060, 2061, 2062)
+
+
+def reported_application(profile: object) -> dict[int, int]:
+    """Return the registers a controller running ``profile`` reports it in."""
+    number, _, sub = profile.application[1:].partition(".")  # type: ignore[attr-defined]
+    return dict(
+        zip(
+            APPLICATION_REGISTERS,
+            (ord("A"), int(number), int(sub or 0), profile.version << 8),  # type: ignore[attr-defined]
+            strict=True,
+        )
+    )
+
+
 def simulate(
     application: str, image: dict[int, int] | None = None
 ) -> tuple[dict[int, int], set[int]]:
-    """Return the registers to seed and to refuse for an application."""
+    """Return the registers to seed and to refuse for an application.
+
+    The controller also reports the application, as real ones do; a test
+    refusing ``APPLICATION_REGISTERS`` models one that does not.
+    """
     from custom_components.ecl310.ecl310_modbus import PROFILES
 
     image = HOLDING if image is None else image
@@ -189,6 +224,7 @@ def simulate(
         for pnu, parameter in profile.parameters.items()
         if parameter.default is not None and pnu - 1 not in image
     }
+    seed |= reported_application(profile)
     return seed, {pnu - 1 for pnu in known - set(profile.parameters)}
 
 

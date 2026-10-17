@@ -93,6 +93,7 @@ class Ecl310ConfigFlow(ConfigFlow, domain=DOMAIN):
         self._data: dict[str, Any] = {}
         self._title = DeviceInformation().name
         self._detected: str | None = None
+        self._reported: str | None = None
 
     @staticmethod
     @callback
@@ -142,12 +143,12 @@ class Ecl310ConfigFlow(ConfigFlow, domain=DOMAIN):
                 data={**self._data, CONF_APPLICATION: user_input[CONF_APPLICATION]},
             )
         detected = PROFILES.get(self._detected) if self._detected else None
+        # What the controller says it runs wins; a probed best fit otherwise.
+        shown = self._reported or (detected.title if detected else None)
         return self.async_show_form(
             step_id="application",
             data_schema=application_schema(self._detected or APPLICATION_GENERIC),
-            description_placeholders={
-                "detected": detected.title if detected else "-",
-            },
+            description_placeholders={"detected": shown or "-"},
         )
 
     async def _async_probe(
@@ -189,6 +190,7 @@ class Ecl310ConfigFlow(ConfigFlow, domain=DOMAIN):
             self._detected = (
                 detection.application.key if detection.application else None
             )
+            self._reported = detection.reported
             return True
         finally:
             await connection.close()

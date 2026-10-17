@@ -8,12 +8,17 @@ can back a regression test without hardware.
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import Any
 
+from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.core import HomeAssistant
 from modbus_connection import ModbusError
 
 from .coordinator import Ecl310ConfigEntry
+
+#: The controller's serial number identifies one installation.
+TO_REDACT = {"serial_number"}
 
 
 async def async_get_config_entry_diagnostics(
@@ -25,6 +30,11 @@ async def async_get_config_entry_diagnostics(
     application = coordinator.device.application
     diagnostics: dict[str, Any] = {
         "application": application.title if application else None,
+        "system": (
+            async_redact_data(asdict(system), TO_REDACT)
+            if (system := coordinator.device.system) is not None
+            else None
+        ),
         "updated": coordinator.data.updated,
         "failed": {name: str(error) for name, error in coordinator.data.failed.items()},
         "refused": {
