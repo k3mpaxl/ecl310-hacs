@@ -21,7 +21,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from custom_components.ecl310.ecl310_modbus import PROFILES, Ecl310
 from custom_components.ecl310.ecl310_modbus.subsystems import Outputs
 
-from .conftest import DOMAIN, ENTRY_DATA, HOLDING
+from .conftest import APPLICATION_REGISTERS, DOMAIN, ENTRY_DATA, HOLDING
 from .test_integration import entity_ids, setup_entry
 
 A237 = "a237_1_v04"
@@ -84,19 +84,56 @@ def test_disinfection_off_is_in_every_profile(key: str) -> None:
 # -- detection ----------------------------------------------------------------
 
 
+@pytest.mark.parametrize("application", [A237, A337])
+async def test_the_controller_reports_its_application(
+    connections: list[MockModbusConnection], application: str
+) -> None:
+    """PNU 2060-2063 name the application; nothing needs to be probed."""
+    from custom_components.ecl310 import ModbusConnection
+
+    detection = await Ecl310.async_detect_application(
+        ModbusConnection(None).for_unit(1)
+    )
+    assert detection.application is PROFILES[application]
+    assert detection.reported == PROFILES[application].title
+    assert not detection.answered
+    assert not detection.refused
+
+
+async def test_an_application_without_a_profile_is_not_guessed(
+    connections: list[MockModbusConnection],
+) -> None:
+    """A reported application this integration has no profile for gets none.
+
+    Probing would pick the closest profile - wrong for certain here.
+    """
+    from custom_components.ecl310 import ModbusConnection
+
+    unit = ModbusConnection(None).for_unit(1)
+    _unit(connections).holding.update(
+        dict(zip(APPLICATION_REGISTERS, (ord("A"), 266, 1, 0x0300), strict=True))
+    )
+    detection = await Ecl310.async_detect_application(unit)
+    assert detection.reported == "A266.1 V03"
+    assert detection.application is None
+
+
+@pytest.mark.parametrize("refused_registers", [set(APPLICATION_REGISTERS)])
 @pytest.mark.parametrize(("application", "expected"), [(A237, A237), (A337, A337)])
 async def test_detection_tells_the_applications_apart(
     connections: list[MockModbusConnection], application: str, expected: str
 ) -> None:
-    """The refused parameters single out the application."""
+    """A controller that does not report it: the refused parameters decide."""
     from custom_components.ecl310 import ModbusConnection
 
     connection = ModbusConnection(None)
     detection = await Ecl310.async_detect_application(connection.for_unit(1))
     assert detection.application is PROFILES[expected]
+    assert detection.reported is None
     assert 11027 + 1 in (detection.answered if expected == A237 else detection.refused)
 
 
+@pytest.mark.parametrize("refused_registers", [set(APPLICATION_REGISTERS)])
 async def test_a_controller_answering_everything_is_not_guessed(
     connections: list[MockModbusConnection],
 ) -> None:
@@ -201,7 +238,8 @@ async def test_the_options_change_the_application(
     controller = dr.async_get(hass).async_get_device_by_identifier(
         (DOMAIN, entry.entry_id), entry.entry_id
     )
-    assert controller.model_id is None
+    # The model ID shows what the controller reports, whatever is chosen.
+    assert controller.model_id == "A337.2 V02"
 
 
 # -- the disinfection's off value -------------------------------------------------

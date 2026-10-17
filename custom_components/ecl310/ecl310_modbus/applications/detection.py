@@ -47,14 +47,24 @@ class Detection:
     ranking: tuple[tuple[ApplicationProfile, int], ...]
     """Every profile with its number of wrong predictions, best first."""
 
+    reported: str | None = None
+    """The application the controller reports itself, e.g. ``A237.1 V04``."""
+
+    reported_profile: ApplicationProfile | None = None
+    """The profile of the reported application, if this library has one."""
+
     @property
     def application(self) -> ApplicationProfile | None:
-        """The profile that fits clearly better than every other, if one does.
+        """The controller's profile: the reported one, else a clear best fit.
 
-        It may mispredict a quarter of the probes at most - a parameter the
-        report lists need not be served over Modbus - and must beat the
-        runner-up.
+        A controller that reports its application is taken at its word - also
+        when there is no profile for it, as no other profile is right then.
+        Otherwise the probes decide: the best profile may mispredict a quarter
+        of them at most - a parameter the report lists need not be served over
+        Modbus - and must beat the runner-up.
         """
+        if self.reported is not None:
+            return self.reported_profile
         if not self.ranking:
             return None
         best, misses = self.ranking[0]

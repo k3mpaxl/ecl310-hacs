@@ -1,12 +1,9 @@
-"""Controller identity.
+"""Controller identity, for a device registry or a CLI banner.
 
-An ECL Comfort 310 keeps its type number, firmware version and serial number
-behind the M-Bus / ECL Portal interfaces rather than in the Modbus register
-map this library reads, so identity here is static rather than read from the
-device. It is exposed as a small object so consumers - a device registry, a CLI
-banner - have one place to take it from, and so a later release can start
-filling the optional fields in from the device without changing the shape of
-the API.
+Manufacturer and model are static. The rest is filled in from what the
+controller reports about itself (see :mod:`ecl310_modbus.system_info`) once
+:meth:`~ecl310_modbus.Ecl310.async_read_system_information` has run, and stays
+None where it does not report it.
 """
 
 from __future__ import annotations
@@ -28,13 +25,22 @@ class DeviceInformation:
     """Controller model name."""
 
     application: str | None = None
-    """The installed application key, e.g. ``A237.1``, when it is known."""
+    """The application, e.g. ``A237.1 V04``: as reported, else as configured."""
 
     firmware_version: str | None = None
-    """Controller firmware version, when it is known."""
+    """Controller software version, e.g. ``1.56``, when it is known."""
 
     serial_number: str | None = None
     """Controller serial number, when it is known."""
+
+    hardware_version: str | None = None
+    """Controller hardware revision, e.g. ``H.3``, when it is known."""
+
+    code_number: str | None = None
+    """Order code number, e.g. ``087H3040``, when it is known."""
+
+    production: tuple[int, int] | None = None
+    """Production ``(year, week)``, when it is known."""
 
     @property
     def name(self) -> str:

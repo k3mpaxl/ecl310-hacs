@@ -380,6 +380,12 @@
       "message": "The controller did not take the change: {error}"
     }
   },
+  "issues": {
+    "application_mismatch": {
+      "description": "The controller reports that it runs application {reported}, but {chosen} is chosen for it. Entities may be missing or unavailable. Choose {reported} - or 'Other application' if it is not offered - under Settings → Devices & services → {title} → Configure.",
+      "title": "{title}: the controller runs {reported}, not {chosen}"
+    }
+  },
   "options": {
     "step": {
       "init": {

@@ -9,7 +9,7 @@ in-memory mock.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
 from modbus_connection import (
@@ -29,6 +29,7 @@ from .subsystems import (
     Outputs,
     Sensors,
 )
+from .system_info import SystemInformation, async_read_system_information
 
 if TYPE_CHECKING:
     from modbus_connection import ModbusUnit
@@ -85,6 +86,7 @@ class Ecl310:
         """
         self._unit = unit
         self.application = application
+        self.system: SystemInformation | None = None
         self.info = DeviceInformation(
             application=application.title if application else None
         )
@@ -145,6 +147,26 @@ class Ecl310:
                     ids.add(metadata.parameter_id)
         return frozenset(ids)
 
+    async def async_read_system_information(self) -> SystemInformation:
+        """Read what the controller reports about itself, into :attr:`info`.
+
+        Read once: none of it changes while the controller runs. The reported
+        application replaces the configured one in :attr:`info`; the profile
+        the sub-systems read by stays as constructed.
+        """
+        system = await async_read_system_information(self._unit)
+        self.system = system
+        self.info = replace(
+            self.info,
+            application=system.application_title or self.info.application,
+            firmware_version=system.software,
+            serial_number=system.serial_number,
+            hardware_version=system.hardware,
+            code_number=system.code_number,
+            production=system.production,
+        )
+        return system
+
     @classmethod
     async def async_detect_application(
         cls,
@@ -153,14 +175,22 @@ class Ecl310:
     ) -> Detection:
         """Find out which of the known applications the controller runs.
 
-        Reads a handful of parameters that tell the applications apart, one
-        by one. ``Detection.application`` is the answer when it is clear.
+        Asks the controller first (PNU 2060-2063). One that does not say is
+        probed: a handful of parameters that tell the applications apart are
+        read one by one. ``Detection.application`` is the answer when clear.
         """
-        return await async_detect(
-            unit,
-            PROFILES.values() if profiles is None else profiles,
-            preferred=cls.parameter_ids(),
-        )
+        candidates = tuple(PROFILES.values() if profiles is None else profiles)
+        system = await async_read_system_information(unit)
+        if system.application_title is not None:
+            profile = next((p for p in candidates if p.key == system.profile_key), None)
+            return Detection(
+                frozenset(),
+                frozenset(),
+                (),
+                reported=system.application_title,
+                reported_profile=profile,
+            )
+        return await async_detect(unit, candidates, preferred=cls.parameter_ids())
 
     @classmethod
     async def async_probe(cls, unit: ModbusUnit) -> DeviceInformation:
@@ -173,6 +203,7 @@ class Ecl310:
         device = cls(unit)
         # The sensor inputs: unlike most parameters, every application has them.
         await device.sensors.async_update()
+        await device.async_read_system_information()
         return device.info
 
     async def _async_poll(

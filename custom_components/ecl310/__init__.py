@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.storage import Store
 from modbus_connection import ModbusError, ModbusTcpParams
 from modbus_connection.tmodbus import ModbusConnection
@@ -81,8 +82,9 @@ async def _async_application(
         detected = detection.application
         key = detected.key if detected else APPLICATION_GENERIC
         LOGGER.info(
-            "Detected application %s (answered %s, refused %s)",
+            "Detected application %s (reported %s, answered %s, refused %s)",
             detected.title if detected else "unknown",
+            detection.reported,
             sorted(detection.answered),
             sorted(detection.refused),
         )
@@ -92,6 +94,42 @@ async def _async_application(
     if key != APPLICATION_GENERIC and key not in PROFILES:
         LOGGER.warning("Unknown application %s; reading every parameter", key)
     return PROFILES.get(key)
+
+
+def _check_application(
+    hass: HomeAssistant,
+    entry: Ecl310ConfigEntry,
+    application: ApplicationProfile | None,
+    reported: str | None,
+) -> None:
+    """Raise a repair issue while the chosen application is not the running one.
+
+    Only a chosen profile can be wrong: "Other application" reads everything.
+    The issue goes away once the options name the application the controller
+    reports.
+    """
+    issue_id = f"application_mismatch_{entry.entry_id}"
+    if application is None or reported is None or reported == application.title:
+        ir.async_delete_issue(hass, DOMAIN, issue_id)
+        return
+    LOGGER.warning(
+        "The controller reports application %s, but %s is chosen",
+        reported,
+        application.title,
+    )
+    ir.async_create_issue(
+        hass,
+        DOMAIN,
+        issue_id,
+        is_fixable=False,
+        severity=ir.IssueSeverity.WARNING,
+        translation_key="application_mismatch",
+        translation_placeholders={
+            "chosen": application.title,
+            "reported": reported,
+            "title": entry.title,
+        },
+    )
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: Ecl310ConfigEntry) -> bool:
@@ -108,6 +146,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: Ecl310ConfigEntry) -> bo
             translation_placeholders={"error": str(err)},
         ) from err
     device = Ecl310(unit, application=application)
+    try:
+        system = await device.async_read_system_information()
+    except ModbusError as err:
+        await connection.close()
+        raise ConfigEntryNotReady(
+            translation_domain=DOMAIN,
+            translation_key="cannot_connect",
+            translation_placeholders={"error": str(err)},
+        ) from err
+    _check_application(hass, entry, application, system.application_title)
     coordinator = Ecl310Coordinator(hass, entry, device)
 
     try:

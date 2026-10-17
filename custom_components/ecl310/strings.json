@@ -400,5 +400,11 @@
         "generic": "Other application (find missing parameters at runtime)"
       }
     }
+  },
+  "issues": {
+    "application_mismatch": {
+      "title": "{title}: the controller runs {reported}, not {chosen}",
+      "description": "The controller reports that it runs application {reported}, but {chosen} is chosen for it. Entities may be missing or unavailable. Choose {reported} - or 'Other application' if it is not offered - under Settings → Devices & services → {title} → Configure."
+    }
   }
 }
