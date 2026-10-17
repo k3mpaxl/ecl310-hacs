@@ -165,23 +165,38 @@ def application() -> str | None:
     return None
 
 
-def simulate(application: str) -> tuple[dict[int, int], set[int]]:
+@pytest.fixture
+def register_image() -> dict[int, int]:
+    """Return the register image the simulated controller starts from.
+
+    The captured A237.1 controller by default; a test parametrizes it with
+    another real controller's image from ``register_images``.
+    """
+    return HOLDING
+
+
+def simulate(
+    application: str, image: dict[int, int] | None = None
+) -> tuple[dict[int, int], set[int]]:
     """Return the registers to seed and to refuse for an application."""
     from custom_components.ecl310.ecl310_modbus import PROFILES
 
+    image = HOLDING if image is None else image
     profile = PROFILES[application]
     known = set().union(*(other.parameters for other in PROFILES.values()))
     seed = {
         pnu - 1: parameter.default & 0xFFFF
         for pnu, parameter in profile.parameters.items()
-        if parameter.default is not None and pnu - 1 not in HOLDING
+        if parameter.default is not None and pnu - 1 not in image
     }
     return seed, {pnu - 1 for pnu in known - set(profile.parameters)}
 
 
 @pytest.fixture
 def connections(
-    refused_registers: set[int], application: str | None
+    refused_registers: set[int],
+    application: str | None,
+    register_image: dict[int, int],
 ) -> list[MockModbusConnection]:
     """Hand out a freshly seeded controller for every connection opened.
 
@@ -189,12 +204,14 @@ def connections(
     closes the connection it probed over, and a closed connection stays closed.
     """
     created: list[MockModbusConnection] = []
-    seed, lacking = simulate(application) if application else ({}, set())
+    seed, lacking = (
+        simulate(application, register_image) if application else ({}, set())
+    )
 
     def _factory(*args: object, **kwargs: object) -> MockModbusConnection:
         connection = MockModbusConnection()
         unit = connection.for_unit(ENTRY_DATA["unit_id"])
-        for address, value in {**HOLDING, **seed}.items():
+        for address, value in {**register_image, **seed}.items():
             unit.holding[address] = value
         for address in refused_registers | lacking:
             unit.fail_read(address, IllegalDataAddressError())
