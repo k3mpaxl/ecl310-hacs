@@ -68,6 +68,10 @@ BOOSTABLE_MODES = (
     OperatingMode.COMFORT,
 )
 
+#: The modes "boost on raise" may leave on its own. Frost protection is a
+#: deliberate "off" - absence, holidays - and is only left by hand.
+RAISE_BOOST_MODES = (OperatingMode.SCHEDULED, OperatingMode.SETBACK)
+
 
 def _round(value: float | None) -> float | None:
     return None if value is None else round(value, 1)
@@ -255,9 +259,17 @@ class HotWaterBoost:
         self._notify()
 
     async def async_setpoint_changed(
-        self, setpoint: float, user_id: str | None
+        self,
+        setpoint: float,
+        user_id: str | None,
+        previous: float | None = None,
     ) -> None:
-        """Follow a new setpoint, and start a boost on a raise if wanted."""
+        """Follow a new setpoint, and start a boost on a raise if wanted.
+
+        A raise is a setpoint higher than ``previous``: writing the value it
+        already had - an automation lowering to where it already is - starts
+        nothing, however far the tank has cooled meanwhile.
+        """
         if self.session is not None:
             self.session.target = setpoint
             await self._async_save()
@@ -266,10 +278,11 @@ class HotWaterBoost:
         storage = self.storage_temperature
         if (
             self.on_raise
+            and previous is not None
+            and setpoint > previous
             and storage is not None
             and setpoint >= storage + RAISE_MARGIN
-            and self.mode in BOOSTABLE_MODES
-            and self.mode is not OperatingMode.COMFORT
+            and self.mode in RAISE_BOOST_MODES
         ):
             await self.async_start(user_id)
 

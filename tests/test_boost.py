@@ -223,3 +223,62 @@ async def test_a_running_boost_survives_a_reload(
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     assert hass.states.get(ids["hot_water_boost"]).state == "off"
+
+
+async def test_writing_the_same_setpoint_is_no_raise(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    hass_admin_user: MockUser,
+) -> None:
+    """An automation setting 40 C where it already is starts no boost.
+
+    2026-10-18: the tank had cooled to 36.5 C overnight, the morning
+    automation wrote the unchanged 40 C, and a boost ran.
+    """
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    unit = _unit(connections)
+    unit.holding[SETPOINT] = 400
+    unit.holding[STORAGE] = 3650
+    await _poll(hass, entry)
+    await _switch(hass, ids["hot_water_boost_on_raise"], on=True)
+
+    await hass.services.async_call(
+        "water_heater",
+        "set_temperature",
+        {ATTR_ENTITY_ID: ids["water_heater"], "temperature": 40},
+        blocking=True,
+        context=Context(user_id=hass_admin_user.id),
+    )
+    await hass.async_block_till_done()
+    assert unit.holding[MODE] == 1
+    assert hass.states.get(ids["hot_water_boost"]).state == "off"
+
+
+async def test_frost_protection_is_not_left_by_a_raise(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    hass_admin_user: MockUser,
+) -> None:
+    """Frost protection (absence) is a deliberate off: only a hand boost leaves it."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    unit = _unit(connections)
+    unit.holding[MODE] = 4
+    unit.holding[SETPOINT] = 400
+    await _poll(hass, entry)
+    await _switch(hass, ids["hot_water_boost_on_raise"], on=True)
+
+    await hass.services.async_call(
+        "water_heater",
+        "set_temperature",
+        {ATTR_ENTITY_ID: ids["water_heater"], "temperature": 55},
+        blocking=True,
+        context=Context(user_id=hass_admin_user.id),
+    )
+    await hass.async_block_till_done()
+    assert unit.holding[MODE] == 4
+    assert hass.states.get(ids["hot_water_boost"]).state == "off"
+
+    await _switch(hass, ids["hot_water_boost"], on=True)  # by hand: allowed
+    assert unit.holding[MODE] == 2
