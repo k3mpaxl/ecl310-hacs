@@ -13,16 +13,18 @@ from typing import Any
 
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from modbus_connection import ModbusError
 
 from .coordinator import Ecl310ConfigEntry
+from .entity import ATTR_PNU, ATTR_TERMINAL
 
 #: The controller's serial number identifies one installation.
 TO_REDACT = {"serial_number"}
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
@@ -40,9 +42,28 @@ async def async_get_config_entry_diagnostics(
         "refused": {
             name: sorted(coordinator.refused(name)) for name in coordinator.data.updated
         },
+        "entities": _entity_datapoints(hass, entry),
     }
     try:
         diagnostics["registers"] = await coordinator.device.async_read_raw()
     except ModbusError as err:
         diagnostics["registers_error"] = str(err)
     return diagnostics
+
+
+def _entity_datapoints(
+    hass: HomeAssistant, entry: Ecl310ConfigEntry
+) -> dict[str, dict[str, Any]]:
+    """Each entity with the PNUs and terminals behind it, as its state shows."""
+    datapoints: dict[str, dict[str, Any]] = {}
+    for entity in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id):
+        if (state := hass.states.get(entity.entity_id)) is None:
+            continue
+        shown = {
+            name: state.attributes[name]
+            for name in (ATTR_PNU, ATTR_TERMINAL)
+            if name in state.attributes
+        }
+        if shown:
+            datapoints[entity.entity_id] = shown
+    return datapoints

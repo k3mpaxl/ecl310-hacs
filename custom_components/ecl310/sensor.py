@@ -247,6 +247,8 @@ BOOST_SENSORS: tuple[Ecl310BoostSensorDescription, ...] = (
 class Ecl310BoostSensor(Ecl310Entity, SensorEntity):
     """A detail of the running boost; unknown while none runs."""
 
+    _shows_datapoints = False
+
     entity_description: Ecl310BoostSensorDescription
 
     def __init__(

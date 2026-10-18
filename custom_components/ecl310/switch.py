@@ -176,8 +176,11 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """The temperature turning it on will set."""
-        return {ATTR_TEMPERATURE_WHEN_ON: self._temperature}
+        """The temperature turning it on will set, and where it lives."""
+        return {
+            **(super().extra_state_attributes or {}),
+            ATTR_TEMPERATURE_WHEN_ON: self._temperature,
+        }
 
     async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Switch it on at the temperature it last had."""
@@ -198,6 +201,8 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
 
 class Ecl310BoostSwitch(Ecl310Entity, SwitchEntity):
     """Heat the tank to its setpoint once, then go back to the previous mode."""
+
+    _shows_datapoints = False
 
     _attr_translation_key = "hot_water_boost"
     _attr_icon = "mdi:water-boiler-alert"
@@ -248,6 +253,8 @@ class Ecl310BoostSwitch(Ecl310Entity, SwitchEntity):
 
 class Ecl310BoostOnRaiseSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
     """Start a boost whenever the hot water setpoint is raised above the tank."""
+
+    _shows_datapoints = False
 
     _attr_translation_key = "hot_water_boost_on_raise"
     _attr_entity_category = EntityCategory.CONFIG

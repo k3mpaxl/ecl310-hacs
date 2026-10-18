@@ -18,7 +18,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .const import COMPONENT_HOT_WATER, DOMAIN, SETTABLE_MODES
+from .const import COMPONENT_HOT_WATER, COMPONENT_SENSORS, DOMAIN, SETTABLE_MODES
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import HotWater, OperatingMode
 from .entity import Ecl310Entity
@@ -44,6 +44,8 @@ async def async_setup_entry(
 
 class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
     """Domestic hot water preparation as a water heater."""
+
+    _extra_datapoints = ((COMPONENT_SENSORS, "storage_temperature"),)
 
     _attr_name = None  # primary entity -> takes the sub-device's name
     _attr_translation_key = "hot_water"  # names the operating modes, not the entity

@@ -45,25 +45,73 @@
   "entity": {
     "binary_sensor": {
       "heating_pump": {
-        "name": "Heating circuit pump"
+        "name": "Heating circuit pump",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "storage_charge_pump": {
-        "name": "Storage charge pump"
+        "name": "Storage charge pump",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "circulation_pump": {
-        "name": "Circulation pump"
+        "name": "Circulation pump",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "triac": {
-        "name": "Triac {number}"
+        "name": "Triac {number}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "relay": {
-        "name": "Relay {number}"
+        "name": "Relay {number}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "heat_available": {
         "name": "Heat available",
         "state": {
           "on": "Available",
           "off": "Not available"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       }
     },
@@ -78,82 +126,280 @@
               "setback": "[%key:component::ecl310::entity::sensor::heating_mode::state::setback%]",
               "frost_protection": "[%key:component::ecl310::entity::sensor::heating_mode::state::frost_protection%]"
             }
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
           }
         }
       }
     },
     "number": {
       "setback_setpoint": {
-        "name": "Setback temperature"
+        "name": "Setback temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "summer_cut_off": {
-        "name": "Summer cut-off"
+        "name": "Summer cut-off",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "min_flow_temperature": {
-        "name": "Minimum flow temperature"
+        "name": "Minimum flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "max_flow_temperature": {
-        "name": "Maximum flow temperature"
+        "name": "Maximum flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_temperature": {
-        "name": "Disinfection temperature"
+        "name": "Disinfection temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "heat_curve": {
-        "name": "Heat curve"
+        "name": "Heat curve",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "curve_at_minus_30": {
-        "name": "Curve at -30 °C"
+        "name": "Curve at -30 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "curve_at_minus_15": {
-        "name": "Curve at -15 °C"
+        "name": "Curve at -15 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "curve_at_minus_5": {
-        "name": "Curve at -5 °C"
+        "name": "Curve at -5 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "curve_at_0": {
-        "name": "Curve at 0 °C"
+        "name": "Curve at 0 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "curve_at_5": {
-        "name": "Curve at 5 °C"
+        "name": "Curve at 5 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "curve_at_15": {
-        "name": "Curve at 15 °C"
+        "name": "Curve at 15 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "heating_return_limit": {
-        "name": "Return temperature limit"
+        "name": "Return temperature limit",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "heating_frost_protection_temperature": {
-        "name": "Frost protection temperature"
+        "name": "Frost protection temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "pump_post_run": {
-        "name": "Pump post-run"
+        "name": "Pump post-run",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_setback_setpoint": {
-        "name": "Setback temperature"
+        "name": "Setback temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_return_limit": {
-        "name": "Return temperature limit"
+        "name": "Return temperature limit",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "max_charge_temperature": {
-        "name": "Maximum charging temperature"
+        "name": "Maximum charging temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "charge_difference": {
-        "name": "Charging difference"
+        "name": "Charging difference",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "start_difference": {
-        "name": "Start difference"
+        "name": "Start difference",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "stop_difference": {
-        "name": "Stop difference"
+        "name": "Stop difference",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_duration": {
-        "name": "Disinfection duration"
+        "name": "Disinfection duration",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "circulation_frost_temperature": {
-        "name": "Circulation pump frost temperature"
+        "name": "Circulation pump frost temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_frost_protection_temperature": {
-        "name": "Frost protection temperature"
+        "name": "Frost protection temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "select": {
@@ -163,6 +409,14 @@
           "auto": "Automatic",
           "off": "Forced off",
           "on": "Forced on"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       },
       "storage_charge_pump_override": {
@@ -171,6 +425,14 @@
           "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
           "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
           "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       },
       "circulation_pump_override": {
@@ -179,21 +441,61 @@
           "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
           "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
           "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       }
     },
     "sensor": {
       "outdoor_temperature": {
-        "name": "Outdoor temperature"
+        "name": "Outdoor temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "flow_temperature": {
-        "name": "Flow temperature"
+        "name": "Flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "return_temperature": {
-        "name": "Return temperature"
+        "name": "Return temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "storage_temperature": {
-        "name": "Storage temperature"
+        "name": "Storage temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "heating_mode": {
         "name": "Operating mode",
@@ -203,6 +505,14 @@
           "comfort": "Constant comfort",
           "setback": "Constant setback",
           "frost_protection": "Frost protection"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       },
       "heating_state": {
@@ -212,6 +522,14 @@
           "pre_comfort": "Pre-comfort",
           "comfort": "Comfort",
           "pre_setback": "Pre-setback"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       },
       "hot_water_mode": {
@@ -222,6 +540,14 @@
           "comfort": "[%key:component::ecl310::entity::sensor::heating_mode::state::comfort%]",
           "setback": "[%key:component::ecl310::entity::sensor::heating_mode::state::setback%]",
           "frost_protection": "[%key:component::ecl310::entity::sensor::heating_mode::state::frost_protection%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       },
       "hot_water_state": {
@@ -231,6 +557,14 @@
           "pre_comfort": "[%key:component::ecl310::entity::sensor::heating_state::state::pre_comfort%]",
           "comfort": "[%key:component::ecl310::entity::sensor::heating_state::state::comfort%]",
           "pre_setback": "[%key:component::ecl310::entity::sensor::heating_state::state::pre_setback%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       },
       "hot_water_boost_start_temperature": {
@@ -243,57 +577,193 @@
         "name": "Boost finished (estimate)"
       },
       "secondary_return_temperature": {
-        "name": "Secondary return temperature"
+        "name": "Secondary return temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_flow_temperature": {
-        "name": "Hot water flow temperature"
+        "name": "Hot water flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_return_temperature": {
-        "name": "Hot water return temperature"
+        "name": "Hot water return temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "desired_flow_temperature": {
-        "name": "Desired flow temperature"
+        "name": "Desired flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "filtered_outdoor_temperature": {
-        "name": "Filtered outdoor temperature"
+        "name": "Filtered outdoor temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "return_limit_in_force": {
-        "name": "Return limit in force"
+        "name": "Return limit in force",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "desired_tank_temperature": {
-        "name": "Desired tank temperature"
+        "name": "Desired tank temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "desired_hot_water_flow_temperature": {
-        "name": "Desired hot water flow temperature"
+        "name": "Desired hot water flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "switch": {
       "pump_off_in_setback": {
-        "name": "Pump off during setback"
+        "name": "Pump off during setback",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_priority": {
-        "name": "Hot water priority"
+        "name": "Hot water priority",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_monday": {
-        "name": "Disinfection on Monday"
+        "name": "Disinfection on Monday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_tuesday": {
-        "name": "Disinfection on Tuesday"
+        "name": "Disinfection on Tuesday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_wednesday": {
-        "name": "Disinfection on Wednesday"
+        "name": "Disinfection on Wednesday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_thursday": {
-        "name": "Disinfection on Thursday"
+        "name": "Disinfection on Thursday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_friday": {
-        "name": "Disinfection on Friday"
+        "name": "Disinfection on Friday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_saturday": {
-        "name": "Disinfection on Saturday"
+        "name": "Disinfection on Saturday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_sunday": {
-        "name": "Disinfection on Sunday"
+        "name": "Disinfection on Sunday",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "hot_water_boost": {
         "name": "Hot water boost",
@@ -322,54 +792,182 @@
         "name": "Boost when the setpoint is raised"
       },
       "disinfection": {
-        "name": "Disinfection"
+        "name": "Disinfection",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "time": {
       "monday_start": {
-        "name": "Monday period {period} start"
+        "name": "Monday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "monday_stop": {
-        "name": "Monday period {period} end"
+        "name": "Monday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "tuesday_start": {
-        "name": "Tuesday period {period} start"
+        "name": "Tuesday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "tuesday_stop": {
-        "name": "Tuesday period {period} end"
+        "name": "Tuesday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "wednesday_start": {
-        "name": "Wednesday period {period} start"
+        "name": "Wednesday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "wednesday_stop": {
-        "name": "Wednesday period {period} end"
+        "name": "Wednesday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "thursday_start": {
-        "name": "Thursday period {period} start"
+        "name": "Thursday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "thursday_stop": {
-        "name": "Thursday period {period} end"
+        "name": "Thursday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "friday_start": {
-        "name": "Friday period {period} start"
+        "name": "Friday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "friday_stop": {
-        "name": "Friday period {period} end"
+        "name": "Friday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "saturday_start": {
-        "name": "Saturday period {period} start"
+        "name": "Saturday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "saturday_stop": {
-        "name": "Saturday period {period} end"
+        "name": "Saturday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "sunday_start": {
-        "name": "Sunday period {period} start"
+        "name": "Sunday period {period} start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "sunday_stop": {
-        "name": "Sunday period {period} end"
+        "name": "Sunday period {period} end",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       },
       "disinfection_start": {
-        "name": "Disinfection start"
+        "name": "Disinfection start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "water_heater": {
@@ -380,6 +978,14 @@
           "comfort": "[%key:component::ecl310::entity::sensor::heating_mode::state::comfort%]",
           "setback": "[%key:component::ecl310::entity::sensor::heating_mode::state::setback%]",
           "frost_protection": "[%key:component::ecl310::entity::sensor::heating_mode::state::frost_protection%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
         }
       }
     }
