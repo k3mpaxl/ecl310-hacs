@@ -195,6 +195,7 @@ that application has, generated from Danfoss' ECL Tool reports.
 | :---------- | :------ | :-------- |
 | A237.1 | V04 | the controller this integration was built on |
 | A337.2 | V02 | a controller in the field ([issue 13](https://github.com/k3mpaxl/ecl310-hacs/issues/13)) |
+| A266.10 | V03 | not yet - help welcome ([issue 35](https://github.com/k3mpaxl/ecl310-hacs/issues/35)) |
 
 * **Detection.** The controller reports its application and version
   (PNU 2060-2063), and the setup suggests that profile.
@@ -206,6 +207,13 @@ that application has, generated from Danfoss' ECL Tool reports.
     the first start.
 * **A wrong choice is flagged.** If the application chosen in the setup is not
   the one the controller reports, a repair notice says so until you change it.
+* **Named after the application.** What a sensor input measures depends on the
+  application:
+  * On A266.10, S2 is the secondary return, S4 the hot water flow and S6 the
+    hot water return. On A237/A337, S6 is the storage tank.
+  * The pumps are named after what they drive where the application's relay
+    assignment is known. Otherwise the relays are shown by number, and the
+    pump overrides and *Heat available* are left out.
 * **Only what exists.** With a profile, the integration reads only the
   parameters that application has, and creates entities only for those.
   Entities an older version created for a parameter the application lacks are

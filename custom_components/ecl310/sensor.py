@@ -106,6 +106,22 @@ SENSORS: tuple[Ecl310SensorDescription, ...] = (
         lambda device: device.sensors.storage_temperature,
         diagnostic=True,
     ),
+    # Inputs only some applications assign (A266: S2, S4, S6).
+    _temperature(
+        "secondary_return_temperature",
+        COMPONENT_SENSORS,
+        lambda device: device.sensors.secondary_return_temperature,
+    ),
+    _temperature(
+        "hot_water_flow_temperature",
+        COMPONENT_SENSORS,
+        lambda device: device.sensors.hot_water_flow_temperature,
+    ),
+    _temperature(
+        "hot_water_return_temperature",
+        COMPONENT_SENSORS,
+        lambda device: device.sensors.hot_water_return_temperature,
+    ),
     _enum(
         "heating_mode",
         COMPONENT_HEATING,

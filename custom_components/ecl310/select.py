@@ -24,8 +24,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import COMPONENT_OUTPUTS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import OutputControl
-from .ecl310_modbus.configurations import RELAY_ASSIGNMENTS
+from .ecl310_modbus import Ecl310, OutputControl
 from .entity import Ecl310Entity, supported
 
 PARALLEL_UPDATES = 1
@@ -44,15 +43,17 @@ class Ecl310SelectDescription(SelectEntityDescription):
     relay: int
 
 
-SELECTS: tuple[Ecl310SelectDescription, ...] = tuple(
-    Ecl310SelectDescription(
-        key=f"{assignment.key}_override",
-        translation_key=f"{assignment.key}_override",
-        component=COMPONENT_OUTPUTS,
-        relay=assignment.number,
+def selects(device: Ecl310) -> tuple[Ecl310SelectDescription, ...]:
+    """Describe an override for each pump the application names."""
+    return tuple(
+        Ecl310SelectDescription(
+            key=f"{assignment.key}_override",
+            translation_key=f"{assignment.key}_override",
+            component=COMPONENT_OUTPUTS,
+            relay=assignment.number,
+        )
+        for assignment in device.relay_assignments or ()
     )
-    for assignment in RELAY_ASSIGNMENTS
-)
 
 
 async def async_setup_entry(
@@ -66,7 +67,10 @@ async def async_setup_entry(
         supported(
             hass,
             Platform.SELECT,
-            (Ecl310Select(coordinator, description) for description in SELECTS),
+            (
+                Ecl310Select(coordinator, description)
+                for description in selects(coordinator.device)
+            ),
         )
     )
 

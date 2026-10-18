@@ -214,6 +214,9 @@
       "hot_water_boost_start_temperature": {
         "name": "Boost start temperature"
       },
+      "hot_water_flow_temperature": {
+        "name": "Hot water flow temperature"
+      },
       "hot_water_mode": {
         "name": "Operating mode",
         "state": {
@@ -223,6 +226,9 @@
           "scheduled": "Scheduled",
           "setback": "Constant setback"
         }
+      },
+      "hot_water_return_temperature": {
+        "name": "Hot water return temperature"
       },
       "hot_water_state": {
         "name": "Circuit status",
@@ -238,6 +244,9 @@
       },
       "return_temperature": {
         "name": "Return temperature"
+      },
+      "secondary_return_temperature": {
+        "name": "Secondary return temperature"
       },
       "storage_temperature": {
         "name": "Storage temperature"

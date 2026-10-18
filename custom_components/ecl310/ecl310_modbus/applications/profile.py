@@ -55,6 +55,22 @@ class Parameter:
     off: int | None = None
     """A raw value the controller stores to mean "off", if the parameter has one."""
 
+    circuit: int = 0
+    """The circuit the parameter belongs to: ``1`` heating, ``2`` hot water, ...;
+    ``0`` for controller-wide settings."""
+
+    name_de: str | None = None
+    """The controller display's German text for the parameter, if known."""
+
+    options: Mapping[int, str] | None = None
+    """Raw values and what they mean, when the report lists them."""
+
+    def display_name(self, language: str | None) -> str:
+        """The parameter's display text in ``language``, English otherwise."""
+        if language and language.lower().startswith("de") and self.name_de:
+            return self.name_de
+        return self.name
+
 
 @dataclass(frozen=True)
 class ApplicationProfile:
@@ -74,6 +90,15 @@ class ApplicationProfile:
 
     parameters: Mapping[int, Parameter]
     """Every parameter of the application, by ECL parameter number."""
+
+    sensors: Mapping[int, str] | None = None
+    """What each sensor input measures, by input number, as the
+    :class:`~ecl310_modbus.subsystems.Sensors` field it is read into. ``None``
+    for the A237/A337 assignment the library started out with."""
+
+    relays: Mapping[int, str] | None = None
+    """What each relay drives, by relay number. ``None`` for the A237/A337
+    assignment; empty when the application's assignment is not known yet."""
 
     @property
     def title(self) -> str:
