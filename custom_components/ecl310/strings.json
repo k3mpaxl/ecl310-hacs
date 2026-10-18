@@ -250,6 +250,21 @@
       },
       "hot_water_return_temperature": {
         "name": "Hot water return temperature"
+      },
+      "desired_flow_temperature": {
+        "name": "Desired flow temperature"
+      },
+      "filtered_outdoor_temperature": {
+        "name": "Filtered outdoor temperature"
+      },
+      "return_limit_in_force": {
+        "name": "Return limit in force"
+      },
+      "desired_tank_temperature": {
+        "name": "Desired tank temperature"
+      },
+      "desired_hot_water_flow_temperature": {
+        "name": "Desired hot water flow temperature"
       }
     },
     "switch": {

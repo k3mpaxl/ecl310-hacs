@@ -48,13 +48,14 @@ def _temperature(
     value_fn: Callable[[Ecl310], float | IntEnum | None],
     *,
     diagnostic: bool = False,
+    field: str | None = None,
 ) -> Ecl310SensorDescription:
-    """Describe a measured temperature, read from the field its key names."""
+    """Describe a temperature, read from ``field`` - by default its key."""
     return Ecl310SensorDescription(
         key=key,
         translation_key=key,
         component=component,
-        field=key,
+        field=field or key,
         value_fn=value_fn,
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -121,6 +122,34 @@ SENSORS: tuple[Ecl310SensorDescription, ...] = (
         "hot_water_return_temperature",
         COMPONENT_SENSORS,
         lambda device: device.sensors.hot_water_return_temperature,
+    ),
+    # What the controller is working with right now, read only.
+    _temperature(
+        "desired_flow_temperature",
+        COMPONENT_HEATING,
+        lambda device: device.heating.desired_flow_temperature,
+    ),
+    _temperature(
+        "filtered_outdoor_temperature",
+        COMPONENT_HEATING,
+        lambda device: device.heating.filtered_outdoor_temperature,
+    ),
+    _temperature(
+        "return_limit_in_force",
+        COMPONENT_HEATING,
+        lambda device: device.heating.return_limit_in_force,
+        diagnostic=True,
+    ),
+    _temperature(
+        "desired_tank_temperature",
+        COMPONENT_HOT_WATER,
+        lambda device: device.hot_water.desired_tank_temperature,
+    ),
+    _temperature(
+        "desired_hot_water_flow_temperature",
+        COMPONENT_HOT_WATER,
+        lambda device: device.hot_water.desired_flow_temperature,
+        field="desired_flow_temperature",
     ),
     _enum(
         "heating_mode",

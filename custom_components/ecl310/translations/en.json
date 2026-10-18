@@ -183,6 +183,18 @@
       }
     },
     "sensor": {
+      "desired_flow_temperature": {
+        "name": "Desired flow temperature"
+      },
+      "desired_hot_water_flow_temperature": {
+        "name": "Desired hot water flow temperature"
+      },
+      "desired_tank_temperature": {
+        "name": "Desired tank temperature"
+      },
+      "filtered_outdoor_temperature": {
+        "name": "Filtered outdoor temperature"
+      },
       "flow_temperature": {
         "name": "Flow temperature"
       },
@@ -241,6 +253,9 @@
       },
       "outdoor_temperature": {
         "name": "Outdoor temperature"
+      },
+      "return_limit_in_force": {
+        "name": "Return limit in force"
       },
       "return_temperature": {
         "name": "Return temperature"

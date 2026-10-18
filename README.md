@@ -26,13 +26,22 @@ shows.*
 | :------- | :------- |
 | Climate | The heating circuit as a thermostat: comfort room setpoint, operating mode as HVAC mode plus a preset for the exact ECL mode, circuit status driving the HVAC action |
 | Water heater | Domestic hot water: setpoint and operating mode, with the S6 storage temperature as the current temperature |
-| Sensor | Outdoor, flow, return and storage temperature; operating mode and circuit status for both circuits |
+| Sensor | Outdoor, flow, return and storage temperature (named after the application's sensor assignment, see *Applications*); operating mode and circuit status for both circuits |
+| Sensor (targets) | What the controller is working with right now: **desired flow temperature**, the **filtered outdoor temperature** the summer cut-off acts on, the **return limit in force**, and the **desired tank temperature** (A237/A337) or **desired hot water flow temperature** (A266) |
 | Number | Heating: heat curve and its six points, setback room setpoint, summer cut-off, minimum and maximum flow temperature, return limit, frost protection, pump post-run. Hot water: setback setpoint, return limit, maximum charging temperature, the three charging differences, disinfection temperature and duration, both frost limits |
 | Time | The weekly programs: three comfort periods a day, start and end, for the heating circuit and for hot water - 84 entities, of which the first period of each day is enabled. Plus the start of the anti-bacteria run |
-| Select | Forcing the heating circuit, storage charge and circulation pump: *Automatik*, *Dauerhaft aus*, *Dauerhaft ein* |
+| Select | Forcing the heating circuit, storage charge and circulation pump: *Automatik*, *Dauerhaft aus*, *Dauerhaft ein* - where the application's relay assignment is known |
 | Switch | The automatic pump shutdown during setback, hot water priority, the disinfection itself and the seven weekdays of the anti-bacteria run; **Hot water boost** and its *Boost when the setpoint is raised* setting (see below) |
 | Sensor (boost) | While a hot water boost runs: start temperature, how long it has been running, and when it should be done |
-| Binary sensor | The three named pumps; **Heat available** on the heating circuit (see below); plus the six triacs and the three unnamed relays, diagnostic and disabled by default |
+| Binary sensor | The three named pumps; **Heat available** on the heating circuit (see below); plus the six triacs and the unnamed relays, diagnostic and disabled by default. With an unknown relay assignment the six relays show by number, enabled |
+
+The target sensors read values the controller computes and does not let you
+set (Danfoss *communication description*, 9.1). They answer most "why is it
+doing that?" questions. For example, the heating stays off while the filtered
+outdoor temperature is above the summer cut-off, even when it is colder outside
+right now. In frost protection the desired flow drops to the frost limit. When
+the controller has no target, it reports 192.00 °C, which these sensors show as
+*unknown*.
 
 The heating circuit and hot water appear as sub-devices of the controller. Every
 number entity takes its range and step from the library's datapoint metadata, so
