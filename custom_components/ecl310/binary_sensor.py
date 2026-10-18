@@ -195,6 +195,7 @@ class Ecl310HeatAvailable(Ecl310Entity, BinarySensorEntity):
             coordinator, "heat_available", COMPONENT_HEATING, ("mode", "state")
         )
         self._pump_field = f"relay_{pump_relay}"
+        self._extra_datapoints = ((COMPONENT_OUTPUTS, self._pump_field),)
 
     @property
     def available(self) -> bool:

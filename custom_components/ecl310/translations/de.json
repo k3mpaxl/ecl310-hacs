@@ -45,25 +45,73 @@
   "entity": {
     "binary_sensor": {
       "circulation_pump": {
-        "name": "Zirkulationspumpe"
+        "name": "Zirkulationspumpe",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "heating_pump": {
-        "name": "Heizkreispumpe"
+        "name": "Heizkreispumpe",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "relay": {
-        "name": "Relais {number}"
+        "name": "Relais {number}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "storage_charge_pump": {
-        "name": "Speicherladepumpe"
+        "name": "Speicherladepumpe",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "triac": {
-        "name": "Triac {number}"
+        "name": "Triac {number}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "heat_available": {
         "name": "Wärme verfügbar",
         "state": {
           "on": "Verfügbar",
           "off": "Nicht verfügbar"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       }
     },
@@ -78,82 +126,280 @@
               "scheduled": "Wochenprogramm",
               "setback": "Sparbetrieb"
             }
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
           }
         }
       }
     },
     "number": {
       "charge_difference": {
-        "name": "Ladedifferenz"
+        "name": "Ladedifferenz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "circulation_frost_temperature": {
-        "name": "Frostschutz Zirkulationspumpe"
+        "name": "Frostschutz Zirkulationspumpe",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "curve_at_0": {
-        "name": "Kennlinie bei 0 °C"
+        "name": "Kennlinie bei 0 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "curve_at_15": {
-        "name": "Kennlinie bei 15 °C"
+        "name": "Kennlinie bei 15 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "curve_at_5": {
-        "name": "Kennlinie bei 5 °C"
+        "name": "Kennlinie bei 5 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "curve_at_minus_15": {
-        "name": "Kennlinie bei -15 °C"
+        "name": "Kennlinie bei -15 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "curve_at_minus_30": {
-        "name": "Kennlinie bei -30 °C"
+        "name": "Kennlinie bei -30 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "curve_at_minus_5": {
-        "name": "Kennlinie bei -5 °C"
+        "name": "Kennlinie bei -5 °C",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_duration": {
-        "name": "Desinfektionsdauer"
+        "name": "Desinfektionsdauer",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_temperature": {
-        "name": "Desinfektionstemperatur"
+        "name": "Desinfektionstemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "heat_curve": {
-        "name": "Heizkurve"
+        "name": "Heizkurve",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "heating_frost_protection_temperature": {
-        "name": "Frostschutztemperatur"
+        "name": "Frostschutztemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "heating_return_limit": {
-        "name": "Rücklaufbegrenzung"
+        "name": "Rücklaufbegrenzung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_frost_protection_temperature": {
-        "name": "Frostschutztemperatur"
+        "name": "Frostschutztemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_return_limit": {
-        "name": "Rücklaufbegrenzung"
+        "name": "Rücklaufbegrenzung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_setback_setpoint": {
-        "name": "Spartemperatur"
+        "name": "Spartemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "max_charge_temperature": {
-        "name": "Maximale Ladetemperatur"
+        "name": "Maximale Ladetemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "max_flow_temperature": {
-        "name": "Maximale Vorlauftemperatur"
+        "name": "Maximale Vorlauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "min_flow_temperature": {
-        "name": "Minimale Vorlauftemperatur"
+        "name": "Minimale Vorlauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "pump_post_run": {
-        "name": "Pumpennachlauf"
+        "name": "Pumpennachlauf",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "setback_setpoint": {
-        "name": "Spartemperatur"
+        "name": "Spartemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "start_difference": {
-        "name": "Startdifferenz"
+        "name": "Startdifferenz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "stop_difference": {
-        "name": "Stoppdifferenz"
+        "name": "Stoppdifferenz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "summer_cut_off": {
-        "name": "Sommerabschaltung"
+        "name": "Sommerabschaltung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       }
     },
     "select": {
@@ -163,6 +409,14 @@
           "auto": "Automatik",
           "off": "Dauerhaft aus",
           "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       },
       "heating_pump_override": {
@@ -171,6 +425,14 @@
           "auto": "Automatik",
           "off": "Dauerhaft aus",
           "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       },
       "storage_charge_pump_override": {
@@ -179,12 +441,28 @@
           "auto": "Automatik",
           "off": "Dauerhaft aus",
           "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       }
     },
     "sensor": {
       "flow_temperature": {
-        "name": "Vorlauftemperatur"
+        "name": "Vorlauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "heating_mode": {
         "name": "Betriebsart",
@@ -194,6 +472,14 @@
           "manual": "Handbetrieb",
           "scheduled": "Wochenprogramm",
           "setback": "Sparbetrieb"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       },
       "heating_state": {
@@ -203,6 +489,14 @@
           "pre_comfort": "Vorkomfort",
           "pre_setback": "Vorsparen",
           "setback": "Sparen"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       },
       "hot_water_mode": {
@@ -213,6 +507,14 @@
           "manual": "Handbetrieb",
           "scheduled": "Wochenprogramm",
           "setback": "Sparbetrieb"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       },
       "hot_water_state": {
@@ -222,16 +524,48 @@
           "pre_comfort": "Vorkomfort",
           "pre_setback": "Vorsparen",
           "setback": "Sparen"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       },
       "outdoor_temperature": {
-        "name": "Außentemperatur"
+        "name": "Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "return_temperature": {
-        "name": "Rücklauftemperatur"
+        "name": "Rücklauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "storage_temperature": {
-        "name": "Speichertemperatur"
+        "name": "Speichertemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_boost_start_temperature": {
         "name": "Aufheizen ab"
@@ -243,57 +577,193 @@
         "name": "Aufheizen fertig (Schätzung)"
       },
       "secondary_return_temperature": {
-        "name": "Rücklauftemperatur Sekundärseite"
+        "name": "Rücklauftemperatur Sekundärseite",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_flow_temperature": {
-        "name": "Warmwasser-Vorlauftemperatur"
+        "name": "Warmwasser-Vorlauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_return_temperature": {
-        "name": "Warmwasser-Rücklauftemperatur"
+        "name": "Warmwasser-Rücklauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "desired_flow_temperature": {
-        "name": "Gewünschte Vorlauftemperatur"
+        "name": "Gewünschte Vorlauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "filtered_outdoor_temperature": {
-        "name": "Gemittelte Außentemperatur"
+        "name": "Gemittelte Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "return_limit_in_force": {
-        "name": "Aktuelle Rücklaufbegrenzung"
+        "name": "Aktuelle Rücklaufbegrenzung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "desired_tank_temperature": {
-        "name": "Gewünschte Speichertemperatur"
+        "name": "Gewünschte Speichertemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "desired_hot_water_flow_temperature": {
-        "name": "Gewünschte Warmwasser-Vorlauftemperatur"
+        "name": "Gewünschte Warmwasser-Vorlauftemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       }
     },
     "switch": {
       "disinfection_friday": {
-        "name": "Desinfektion Freitag"
+        "name": "Desinfektion Freitag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_monday": {
-        "name": "Desinfektion Montag"
+        "name": "Desinfektion Montag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_saturday": {
-        "name": "Desinfektion Samstag"
+        "name": "Desinfektion Samstag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_sunday": {
-        "name": "Desinfektion Sonntag"
+        "name": "Desinfektion Sonntag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_thursday": {
-        "name": "Desinfektion Donnerstag"
+        "name": "Desinfektion Donnerstag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_tuesday": {
-        "name": "Desinfektion Dienstag"
+        "name": "Desinfektion Dienstag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "disinfection_wednesday": {
-        "name": "Desinfektion Mittwoch"
+        "name": "Desinfektion Mittwoch",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_priority": {
-        "name": "Warmwasser-Vorrang"
+        "name": "Warmwasser-Vorrang",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "pump_off_in_setback": {
-        "name": "Pumpe aus im Sparbetrieb"
+        "name": "Pumpe aus im Sparbetrieb",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "hot_water_boost": {
         "name": "Einmal aufheizen",
@@ -322,54 +792,182 @@
         "name": "Aufheizen, wenn das Ziel steigt"
       },
       "disinfection": {
-        "name": "Desinfektion"
+        "name": "Desinfektion",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       }
     },
     "time": {
       "disinfection_start": {
-        "name": "Desinfektionsbeginn"
+        "name": "Desinfektionsbeginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "friday_start": {
-        "name": "Freitag Zeitraum {period} Beginn"
+        "name": "Freitag Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "friday_stop": {
-        "name": "Freitag Zeitraum {period} Ende"
+        "name": "Freitag Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "monday_start": {
-        "name": "Montag Zeitraum {period} Beginn"
+        "name": "Montag Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "monday_stop": {
-        "name": "Montag Zeitraum {period} Ende"
+        "name": "Montag Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "saturday_start": {
-        "name": "Samstag Zeitraum {period} Beginn"
+        "name": "Samstag Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "saturday_stop": {
-        "name": "Samstag Zeitraum {period} Ende"
+        "name": "Samstag Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "sunday_start": {
-        "name": "Sonntag Zeitraum {period} Beginn"
+        "name": "Sonntag Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "sunday_stop": {
-        "name": "Sonntag Zeitraum {period} Ende"
+        "name": "Sonntag Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "thursday_start": {
-        "name": "Donnerstag Zeitraum {period} Beginn"
+        "name": "Donnerstag Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "thursday_stop": {
-        "name": "Donnerstag Zeitraum {period} Ende"
+        "name": "Donnerstag Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "tuesday_start": {
-        "name": "Dienstag Zeitraum {period} Beginn"
+        "name": "Dienstag Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "tuesday_stop": {
-        "name": "Dienstag Zeitraum {period} Ende"
+        "name": "Dienstag Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "wednesday_start": {
-        "name": "Mittwoch Zeitraum {period} Beginn"
+        "name": "Mittwoch Zeitraum {period} Beginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       },
       "wednesday_stop": {
-        "name": "Mittwoch Zeitraum {period} Ende"
+        "name": "Mittwoch Zeitraum {period} Ende",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       }
     },
     "water_heater": {
@@ -380,6 +978,14 @@
           "manual": "Handbetrieb",
           "scheduled": "Wochenprogramm",
           "setback": "Sparbetrieb"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
         }
       }
     }

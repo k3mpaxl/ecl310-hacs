@@ -264,6 +264,23 @@ prints:
 
 Heating is ECL circuit 1 (`11xxx`), domestic hot water is circuit 2 (`12xxx`).
 
+### PNU and terminal on every entity
+
+Each entity names where its values live, as state attributes (suggested in
+[issue 35](https://github.com/k3mpaxl/ecl310-hacs/issues/35)):
+
+* `pnu` – the Danfoss parameter number, as the manuals print it. Danfoss numbers
+  every register this way, one above its Modbus address: the heat curve is PNU
+  `11175`, relay 1's state PNU `4006` (register 4005), sensor S3 PNU `10203`.
+* `terminal` – the input or output on the terminal block: `S3`, `relay 2`,
+  `triac 1`.
+
+An entity built from several values lists them by name, e.g. the thermostat:
+`pnu: {mode: 4201, comfort_setpoint: 11180, state: 4211}`. The numbers come from
+the same definitions the integration reads and writes, so they cannot drift.
+The hot water boost is the integration's own logic and names none. Diagnostics
+list every entity with its PNUs and terminals.
+
 A relay is controlled through its **override** register, never its state
 register: the state is a result and the controller answers a write to it with a
 Modbus exception. The override takes three values - `0` hand it back to the

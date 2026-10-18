@@ -64,6 +64,7 @@ class Ecl310Thermostat(Ecl310Entity, ClimateEntity):
     _attr_translation_key = "heating_circuit"  # names the presets, not the entity
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT, HVACMode.AUTO]
+    _extra_datapoints = ((COMPONENT_HEATING, "state"),)
 
     _attr_supported_features = (
         ClimateEntityFeature.TARGET_TEMPERATURE

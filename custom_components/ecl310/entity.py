@@ -10,8 +10,10 @@ which is only known once the parent exists, so the entities cannot describe
 that relationship themselves.
 """
 
+import re
 from collections.abc import Awaitable, Iterable
-from typing import cast
+from functools import cached_property
+from typing import Any, cast
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -36,6 +38,13 @@ from .ecl310_modbus import (
     Ecl310Component,
 )
 
+#: The state attributes naming where an entity's values live on the controller.
+ATTR_PNU = "pnu"
+ATTR_TERMINAL = "terminal"
+
+#: A switching output's fields: ``relay_2``, ``relay_2_override``, ``triac_1``.
+OUTPUT_FIELD = re.compile(r"^(?P<kind>triac|relay)_(?P<number>\d+)(?:_\w+)?$")
+
 # Sub-devices, keyed by the library sub-system they read from: the suffix that
 # makes their identifier, and the key their name is translated under.
 SUB_DEVICES: dict[str, tuple[str, str]] = {
@@ -50,6 +59,32 @@ SHARED_DEVICES: dict[str, str] = {
     COMPONENT_HEATING_SCHEDULE: COMPONENT_HEATING,
     COMPONENT_HOT_WATER_SCHEDULE: COMPONENT_HOT_WATER,
 }
+
+
+def datapoint_pnu(device: Ecl310, component: str, field: str) -> int | None:
+    """Return the Danfoss parameter number (PNU) behind a sub-system field.
+
+    Danfoss numbers every register by its PNU, one above the zero-based Modbus
+    address - parameters, modes, outputs and sensors alike (communication
+    description VI.LG.V5.02: "The register address is PNU-1").
+    """
+    subsystem = getattr(device, component, None)
+    if subsystem is None:
+        return None
+    descriptor = type(subsystem).declared_fields.get(field)
+    address = getattr(descriptor, "address", None)
+    return None if address is None else address + 1
+
+
+def datapoint_terminal(device: Ecl310, component: str, field: str) -> str | None:
+    """Return the terminal a field is wired to: ``S3``, ``relay 2``, ``triac 1``."""
+    if (output := OUTPUT_FIELD.match(field)) is not None:
+        return f"{output['kind']} {output['number']}"
+    subsystem = getattr(device, component, None)
+    metadata = subsystem.metadata_for(field) if subsystem is not None else None
+    if metadata is None or metadata.sensor_number is None:
+        return None
+    return f"S{metadata.sensor_number}"
 
 
 def device_identifiers(entry: ConfigEntry, component: str) -> set[tuple[str, str]]:
@@ -102,6 +137,13 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
 
     _attr_has_entity_name = True
 
+    #: Whether the entity shows controller datapoints, and so their PNUs. One the
+    #: integration computes itself - the boost - names none.
+    _shows_datapoints = True
+
+    #: Datapoints shown besides the fields, as ``(sub-system, field)``.
+    _extra_datapoints: tuple[tuple[str, str], ...] = ()
+
     def __init__(
         self,
         coordinator: Ecl310Coordinator,
@@ -117,6 +159,7 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
         super().__init__(coordinator)
         self._component = component
         self._fields = frozenset(fields)
+        self._field_order = fields
         entry = coordinator.config_entry
         self._attr_unique_id = f"{entry.entry_id}_{key}"
 
@@ -132,6 +175,50 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
             and self.coordinator.answered(self._component)
             and self._fields.isdisjoint(self.coordinator.refused(self._component))
         )
+
+    @cached_property
+    def _datapoint_attributes(self) -> dict[str, Any]:
+        """``pnu`` and ``terminal`` of the datapoints behind this entity.
+
+        One datapoint gives plain values; several give the PNUs by field, so the
+        thermostat shows its mode, setpoint and status apart.
+        """
+        if not self._shows_datapoints:
+            return {}
+        device = self.coordinator.device
+        datapoints = [
+            (component, field)
+            for component, field in (
+                *((self._component, field) for field in self._field_order),
+                *self._extra_datapoints,
+            )
+            if device.supports(component, field)
+        ]
+        pnus = {
+            field: pnu
+            for component, field in datapoints
+            if (pnu := datapoint_pnu(device, component, field)) is not None
+        }
+        terminals = list(
+            dict.fromkeys(
+                terminal
+                for component, field in datapoints
+                if (terminal := datapoint_terminal(device, component, field))
+            )
+        )
+        attributes: dict[str, Any] = {}
+        if pnus:
+            attributes[ATTR_PNU] = next(iter(pnus.values())) if len(pnus) == 1 else pnus
+        if terminals:
+            attributes[ATTR_TERMINAL] = (
+                terminals[0] if len(terminals) == 1 else terminals
+            )
+        return attributes
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Where the entity's values live on the controller."""
+        return dict(self._datapoint_attributes) or None
 
     def supported_by(self, device: Ecl310) -> bool:
         """Return whether the controller's application has this entity's data."""
