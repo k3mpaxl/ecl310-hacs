@@ -13,12 +13,63 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from modbus_connection.mock import MockModbusConnection
 
+from custom_components.ecl310.ecl310_modbus import PROFILES, Ecl310, HotWater
+
 from .conftest import DOMAIN
 from .test_integration import entity_ids, setup_entry
 
 A367 = "a367_1_v04"
 
 pytestmark = pytest.mark.parametrize("application", [A367])
+
+#: What the A367.1 controller of issue 38 refused under 0.12.0, which read the
+#: A237 layout: exactly circuit 2's hot water parameters - A367.1 keeps its hot
+#: water on circuit 3 (the owner's Home Assistant log, 2026-10-18).
+REFUSED_ON_THE_OWNERS_CONTROLLER = {
+    12030,
+    12076,
+    12122,
+    12123,
+    12124,
+    12125,
+    12152,
+    12190,
+    12191,
+    12193,
+    12194,
+    12195,
+    12256,
+}
+
+
+def test_the_profile_predicts_what_the_owners_controller_refused(
+    application: str,
+) -> None:
+    """Of the A237 hot water parameters, A367.1 lacks exactly those refused."""
+    profile = PROFILES[application]
+    read_by_0_12 = {
+        field.ecl_metadata.parameter_id
+        for field in HotWater.declared_fields.values()
+        if field.ecl_metadata.parameter_id is not None
+    }
+    lacking = {pnu for pnu in read_by_0_12 if not profile.has(pnu)}
+    assert lacking == REFUSED_ON_THE_OWNERS_CONTROLLER
+
+
+def test_the_register_map_matches_the_owners_own_version(application: str) -> None:
+    """The owner moved hot water by hand: 13xxx, mode 4202, program 3310.
+
+    His modified 0.9.0 (issue 38) controls his installation with these
+    registers; the derived layout arrives at the same ones.
+    """
+    device = Ecl310(None, application=PROFILES[application])  # type: ignore[arg-type]
+    water = type(device.hot_water).declared_fields
+    assert water["mode"].address == 4202
+    assert water["state"].address == 4212
+    assert water["setpoint"].address == 13189
+    assert water["disinfection_temperature"].address == 13124
+    program = type(device.hot_water_schedule).declared_fields
+    assert program["monday_p1_start"].address == 3309
 
 
 async def test_each_circuit_is_a_device_named_by_its_number(
