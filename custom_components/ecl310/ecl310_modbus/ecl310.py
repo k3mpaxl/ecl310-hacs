@@ -9,6 +9,7 @@ in-memory mock.
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
@@ -27,12 +28,18 @@ from .configurations import (
 from .data_model import Ecl310Component
 from .device_info import DeviceInformation
 from .subsystems import (
+    CIRCUIT_TYPES,
+    HEATING,
+    HOT_WATER,
     HeatingCircuit,
     HeatingSchedule,
     HotWater,
     HotWaterSchedule,
     Outputs,
+    SensorInputs,
     Sensors,
+    circuit_component,
+    schedule_component,
 )
 from .system_info import SystemInformation, async_read_system_information
 
@@ -42,7 +49,11 @@ if TYPE_CHECKING:
 #: The controller's factory Modbus station address.
 DEFAULT_UNIT_ID = 1
 
-#: The sub-systems an ordinary poll refreshes, in read order.
+#: The A237/A337 layout, and a controller's whose application has no profile.
+DEFAULT_CIRCUITS: dict[int, str] = {1: HEATING, 2: HOT_WATER}
+
+#: The sub-systems an ordinary poll refreshes for the default layout, in read
+#: order. A device's own are :attr:`Ecl310.component_names`.
 COMPONENT_NAMES: tuple[str, ...] = ("sensors", "heating", "hot_water", "outputs")
 
 #: The weekly programs. Kept out of the ordinary poll: they cost one block
@@ -59,6 +70,42 @@ ALL_COMPONENT_NAMES: tuple[str, ...] = (*COMPONENT_NAMES, *SCHEDULE_COMPONENT_NA
 DEFAULT_SENSORS: dict[int, str] = {
     assignment.number: assignment.key for assignment in SENSOR_ASSIGNMENTS
 }
+
+
+@dataclass(frozen=True)
+class Circuit:
+    """One control circuit of the controller's application."""
+
+    number: int
+    """The ECL circuit number, ``1`` to ``6``."""
+
+    kind: str
+    """``heating`` or ``hot_water``."""
+
+    component: str
+    """The device attribute its sub-system is read into: the kind, or - where
+    the application has two circuits of that kind - the kind and the number,
+    ``heating_1`` and ``heating_2``."""
+
+    @property
+    def schedule(self) -> str:
+        """The device attribute its weekly program is read into."""
+        return f"{self.component}_schedule"
+
+    @property
+    def numbered(self) -> bool:
+        """Whether its name carries the circuit, its kind occurring twice."""
+        return self.component != self.kind
+
+
+def circuits_of(kinds: dict[int, str]) -> tuple[Circuit, ...]:
+    """Name each circuit: by its kind, and by its number where the kind repeats."""
+    known = {number: kind for number, kind in kinds.items() if kind in CIRCUIT_TYPES}
+    counts = Counter(known.values())
+    return tuple(
+        Circuit(number, kind, kind if counts[kind] == 1 else f"{kind}_{number}")
+        for number, kind in sorted(known.items())
+    )
 
 
 @dataclass
@@ -101,15 +148,24 @@ class Ecl310:
         self.info = DeviceInformation(
             application=application.title if application else None
         )
-        self.sensors = Sensors(unit)
-        self.heating = HeatingCircuit(unit)
-        self.hot_water = HotWater(unit)
+        kinds = (
+            dict(application.circuits)
+            if application is not None and application.circuits
+            else DEFAULT_CIRCUITS
+        )
+        self.circuits = circuits_of(kinds)
+        self.sensors = SensorInputs.for_assignment(self.sensor_assignment)(unit)
         self.outputs = Outputs(unit)
-        self.heating_schedule = HeatingSchedule(unit)
-        self.hot_water_schedule = HotWaterSchedule(unit)
-        self.sensors.restrict_fields(self.sensor_assignment.values())
+        for circuit in self.circuits:
+            kind_type = circuit_component(
+                CIRCUIT_TYPES[circuit.kind],
+                circuit.number,
+                self.circuit_sensors(circuit),
+            )
+            setattr(self, circuit.component, kind_type(unit))
+            setattr(self, circuit.schedule, schedule_component(circuit.number)(unit))
         if application is not None:
-            for name in ALL_COMPONENT_NAMES:
+            for name in self.all_component_names:
                 component: Ecl310Component = getattr(self, name)
                 keep = [
                     field
@@ -118,6 +174,51 @@ class Ecl310:
                 ]
                 if len(keep) < len(type(component).declared_fields):
                     component.restrict_fields(keep)
+
+    @property
+    def component_names(self) -> tuple[str, ...]:
+        """The sub-systems an ordinary poll refreshes, in read order."""
+        return (
+            "sensors",
+            *(circuit.component for circuit in self.circuits),
+            "outputs",
+        )
+
+    @property
+    def schedule_component_names(self) -> tuple[str, ...]:
+        """The circuits' weekly programs."""
+        return tuple(circuit.schedule for circuit in self.circuits)
+
+    @property
+    def all_component_names(self) -> tuple[str, ...]:
+        """Every sub-system, for a diagnostics dump."""
+        return (*self.component_names, *self.schedule_component_names)
+
+    def circuit_sensors(self, circuit: Circuit) -> dict[str, int]:
+        """The inputs measuring for ``circuit``, by role without the circuit.
+
+        A role suffixed ``_circuit_n`` is circuit n's; an unsuffixed one is the
+        only one of its kind, and so belongs to whichever circuit uses it.
+        """
+        found: dict[str, int] = {}
+        for number, role in sorted(self.sensor_assignment.items()):
+            base, _, suffix = role.partition("_circuit_")
+            if not suffix:
+                found.setdefault(base, number)
+            elif int(suffix) == circuit.number:
+                found[base] = number
+        return found
+
+    def circuit(self, component: str) -> Circuit | None:
+        """The circuit a sub-system or weekly program reads, if it is one."""
+        return next(
+            (
+                circuit
+                for circuit in self.circuits
+                if component in (circuit.component, circuit.schedule)
+            ),
+            None,
+        )
 
     @property
     def modbus_unit(self) -> ModbusUnit:
@@ -143,6 +244,16 @@ class Ecl310:
             for number, key in sorted(self.application.relays.items())
         )
 
+    @property
+    def triac_assignments(self) -> tuple[OutputAssignment, ...] | None:
+        """What each triac drives; ``None`` while the application's is unknown."""
+        if self.application is None or not self.application.triacs:
+            return None
+        return tuple(
+            OutputAssignment(number, key, key)
+            for number, key in sorted(self.application.triacs.items())
+        )
+
     def _has(self, component: Ecl310Component, field: str) -> bool:
         """Return whether the application has the parameter behind ``field``."""
         if component is self.sensors:
@@ -160,7 +271,8 @@ class Ecl310:
         Always true without an application: then a datapoint the controller
         does not serve is only found out when it refuses the read.
         """
-        return self._has(getattr(self, component), field)
+        subsystem = getattr(self, component, None)
+        return subsystem is not None and self._has(subsystem, field)
 
     @staticmethod
     def parameter_ids() -> frozenset[int]:
@@ -270,23 +382,23 @@ class Ecl310:
         they are fourteen further block reads for values only an operator
         changes.
         """
-        names = COMPONENT_NAMES
+        names = self.component_names
         if schedules:
-            names = (*COMPONENT_NAMES, *SCHEDULE_COMPONENT_NAMES)
+            names = self.all_component_names
         report = await self._async_poll(names, UpdateReport())
         self._notify(report)
         return report
 
     async def async_update_schedules(self) -> UpdateReport:
         """Refresh only the weekly programs."""
-        report = await self._async_poll(SCHEDULE_COMPONENT_NAMES, UpdateReport())
+        report = await self._async_poll(self.schedule_component_names, UpdateReport())
         self._notify(report)
         return report
 
     async def async_read_raw(self) -> dict[str, dict[int, int | bool]]:
         """Every register this device reads, undecoded - for diagnostics."""
         raw: dict[str, dict[int, int | bool]] = {}
-        for name in ALL_COMPONENT_NAMES:
+        for name in self.all_component_names:
             read = await getattr(self, name).async_read_raw(notify=False)
             for space, values in read.items():
                 raw.setdefault(space, {}).update(values)

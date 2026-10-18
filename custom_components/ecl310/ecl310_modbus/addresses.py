@@ -74,8 +74,11 @@ def sensor_range(first_sensor: int, last_sensor: int) -> tuple[int, int]:
     return sensor_address(first_sensor), sensor_address(last_sensor)
 
 
-#: ECL parameter of Monday's first ON time, per circuit.
-SCHEDULE_PARAMETERS: dict[int, int] = {1: 3110, 2: 3210}
+#: ECL parameter of Monday's first ON time, per circuit: ``3n10`` (the
+#: reports' group ``Schedule_n``). An application's second program for a
+#: circuit - A237's circulation pump, ``Schedule2_2`` - takes the next free
+#: block, so a profile decides which of these exist.
+SCHEDULE_PARAMETERS: dict[int, int] = {n: 3010 + 100 * n for n in range(1, 7)}
 
 #: Parameters per weekday, of which the first six carry the three periods.
 DAY_STRIDE = 10

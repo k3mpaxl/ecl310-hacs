@@ -35,6 +35,7 @@ from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import (
     END_OF_DAY,
     PERIODS,
+    Circuit,
     HotWater,
     Schedule,
     Weekday,
@@ -42,7 +43,7 @@ from .ecl310_modbus import (
     to_hours_minutes,
 )
 from .ecl310_modbus.addresses import field_name
-from .entity import Ecl310Entity, supported
+from .entity import Ecl310Entity, circuit_key, per_circuit, supported
 
 PARALLEL_UPDATES = 1
 
@@ -130,8 +131,15 @@ async def async_setup_entry(
             hass,
             Platform.TIME,
             [
-                *(Ecl310Time(coordinator, description) for description in TIMES),
-                Ecl310DisinfectionStart(coordinator),
+                *(
+                    Ecl310Time(coordinator, description)
+                    for description in per_circuit(coordinator.device, TIMES)
+                ),
+                *(
+                    Ecl310DisinfectionStart(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HOT_WATER
+                ),
             ],
         )
     )
@@ -194,19 +202,19 @@ class Ecl310DisinfectionStart(Ecl310Entity, TimeEntity):
 
     entity_description = DISINFECTION_START
 
-    def __init__(self, coordinator: Ecl310Coordinator) -> None:
-        """Initialize the entity."""
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Initialize the entity on a hot water circuit."""
         super().__init__(
             coordinator,
-            DISINFECTION_START.key,
-            COMPONENT_HOT_WATER,
+            circuit_key(DISINFECTION_START.key, circuit),
+            circuit.component,
             ("disinfection_start",),
         )
 
     @property
     def native_value(self) -> time | None:
         """Return the start of the anti-bacteria run."""
-        start = self.coordinator.device.hot_water.disinfection_start_time
+        start = cast(HotWater, self._subsystem).disinfection_start_time
         return None if start is None else time(*start)
 
     async def async_set_value(self, value: time) -> None:

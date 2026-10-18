@@ -27,8 +27,8 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import COMPONENT_HEATING, DOMAIN, SETTABLE_MODES
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import HeatingCircuit, OperatingMode
-from .entity import Ecl310Entity
+from .ecl310_modbus import Circuit, HeatingCircuit, OperatingMode
+from .entity import Ecl310Entity, circuit_key
 
 PARALLEL_UPDATES = 1
 
@@ -53,8 +53,13 @@ async def async_setup_entry(
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Set up the heating circuit thermostat."""
-    async_add_entities([Ecl310Thermostat(entry.runtime_data.coordinator)])
+    """Set up a thermostat for each heating circuit."""
+    coordinator = entry.runtime_data.coordinator
+    async_add_entities(
+        Ecl310Thermostat(coordinator, circuit)
+        for circuit in coordinator.device.circuits
+        if circuit.kind == COMPONENT_HEATING
+    )
 
 
 class Ecl310Thermostat(Ecl310Entity, ClimateEntity):
@@ -64,7 +69,6 @@ class Ecl310Thermostat(Ecl310Entity, ClimateEntity):
     _attr_translation_key = "heating_circuit"  # names the presets, not the entity
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT, HVACMode.AUTO]
-    _extra_datapoints = ((COMPONENT_HEATING, "state"),)
 
     _attr_supported_features = (
         ClimateEntityFeature.TARGET_TEMPERATURE
@@ -73,14 +77,16 @@ class Ecl310Thermostat(Ecl310Entity, ClimateEntity):
         | ClimateEntityFeature.TURN_OFF
     )
 
-    def __init__(self, coordinator: Ecl310Coordinator) -> None:
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
         """Initialize the thermostat, bounded by the setpoint's own domain."""
         super().__init__(
             coordinator,
-            key="thermostat",
-            component=COMPONENT_HEATING,
+            key=circuit_key("thermostat", circuit),
+            component=circuit.component,
             fields=("mode", "comfort_setpoint"),
         )
+        # hvac_action follows the circuit status.
+        self._extra_datapoints = ((circuit.component, "state"),)
         setpoint = self._metadata("comfort_setpoint").number
         if setpoint is not None:
             if setpoint.min_value is not None:

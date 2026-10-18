@@ -217,8 +217,12 @@ async def test_a_pump_reports_its_state_and_is_controlled_separately(
     for key in ("heating_pump", "storage_charge_pump", "circulation_pump"):
         assert ids[key].startswith("binary_sensor."), key
         assert ids[f"{key}_override"].startswith("select."), key
-    for key in ("relay_4", "relay_5", "relay_6", "triac_1", "triac_6"):
+    for key in ("relay_4", "relay_5", "relay_6", "triac_3", "triac_6"):
         assert ids[key].startswith("binary_sensor."), key
+    # Danfoss wires valve M1 to triacs 1 and 2: named, the rest by number.
+    for key in ("valve_open", "valve_close"):
+        assert ids[key].startswith("binary_sensor."), key
+    assert "triac_1" not in ids
 
     # Nothing was running when the reference image was captured.
     assert hass.states.get(ids["heating_pump"]).state == "off"

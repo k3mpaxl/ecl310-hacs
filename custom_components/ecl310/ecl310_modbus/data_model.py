@@ -19,9 +19,17 @@ from typing import Any
 from modbus_connection.model import (
     Component,
     NumberField,
+)
+from modbus_connection.model import (
     boolean as _modbus_boolean,
+)
+from modbus_connection.model import (
     enum as _modbus_enum,
+)
+from modbus_connection.model import (
     gauge as _modbus_gauge,
+)
+from modbus_connection.model import (
     integer as _modbus_integer,
 )
 

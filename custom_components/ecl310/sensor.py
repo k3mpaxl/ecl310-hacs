@@ -7,7 +7,7 @@ is what the controller measures and the state it derives from its schedule.
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import IntEnum
 from typing import Any
 
@@ -25,7 +25,7 @@ from .boost import HotWaterBoost
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_SENSORS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
-from .entity import Ecl310Entity, supported
+from .entity import Ecl310Entity, per_circuit, role_name, supported
 
 PARALLEL_UPDATES = 0
 
@@ -39,13 +39,11 @@ class Ecl310SensorDescription(SensorEntityDescription):
 
     component: str
     field: str
-    value_fn: Callable[[Ecl310], float | IntEnum | None]
 
 
 def _temperature(
     key: str,
     component: str,
-    value_fn: Callable[[Ecl310], float | IntEnum | None],
     *,
     diagnostic: bool = False,
     field: str | None = None,
@@ -56,7 +54,6 @@ def _temperature(
         translation_key=key,
         component=component,
         field=field or key,
-        value_fn=value_fn,
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
@@ -70,7 +67,6 @@ def _enum(
     component: str,
     field: str,
     options: list[str],
-    value_fn: Callable[[Ecl310], float | IntEnum | None],
 ) -> Ecl310SensorDescription:
     """Describe a discrete controller state."""
     return Ecl310SensorDescription(
@@ -78,107 +74,59 @@ def _enum(
         translation_key=key,
         component=component,
         field=field,
-        value_fn=value_fn,
         device_class=SensorDeviceClass.ENUM,
         options=options,
         entity_category=EntityCategory.DIAGNOSTIC,
     )
 
 
-SENSORS: tuple[Ecl310SensorDescription, ...] = (
-    _temperature(
-        "outdoor_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.outdoor_temperature,
-    ),
-    _temperature(
-        "flow_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.flow_temperature,
-    ),
-    _temperature(
-        "return_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.return_temperature,
-    ),
-    _temperature(
-        "storage_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.storage_temperature,
-        diagnostic=True,
-    ),
-    # Inputs only some applications assign (A266: S2, S4, S6).
-    _temperature(
-        "secondary_return_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.secondary_return_temperature,
-    ),
-    _temperature(
-        "hot_water_flow_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.hot_water_flow_temperature,
-    ),
-    _temperature(
-        "hot_water_return_temperature",
-        COMPONENT_SENSORS,
-        lambda device: device.sensors.hot_water_return_temperature,
-    ),
-    # What the controller is working with right now, read only.
-    _temperature(
-        "desired_flow_temperature",
-        COMPONENT_HEATING,
-        lambda device: device.heating.desired_flow_temperature,
-    ),
-    _temperature(
-        "filtered_outdoor_temperature",
-        COMPONENT_HEATING,
-        lambda device: device.heating.filtered_outdoor_temperature,
-    ),
-    _temperature(
-        "return_limit_in_force",
-        COMPONENT_HEATING,
-        lambda device: device.heating.return_limit_in_force,
-        diagnostic=True,
-    ),
-    _temperature(
-        "desired_tank_temperature",
-        COMPONENT_HOT_WATER,
-        lambda device: device.hot_water.desired_tank_temperature,
-    ),
+#: The sensor roles shown, as the library derives them from the application;
+#: those marked are diagnostic. A role the application has on two circuits
+#: comes suffixed with its circuit and is named "... circuit n".
+SENSOR_ROLES: dict[str, bool] = {
+    "outdoor_temperature": False,
+    "flow_temperature": False,
+    "return_temperature": False,
+    "storage_temperature": True,
+    "secondary_return_temperature": False,
+    "hot_water_flow_temperature": False,
+    "hot_water_return_temperature": False,
+}
+
+
+def role_sensors(device: Ecl310) -> tuple[Ecl310SensorDescription, ...]:
+    """Describe a temperature for each input the application assigns a role."""
+    descriptions = []
+    for role in device.sensor_assignment.values():
+        translation_key, placeholders = role_name(role)
+        base = translation_key.removesuffix("_circuit")
+        if base not in SENSOR_ROLES:
+            continue
+        descriptions.append(
+            replace(
+                _temperature(role, COMPONENT_SENSORS, diagnostic=SENSOR_ROLES[base]),
+                translation_key=translation_key,
+                translation_placeholders=placeholders,
+            )
+        )
+    return tuple(descriptions)
+
+
+#: Per circuit: what the controller is working with, and its mode and status.
+CIRCUIT_SENSORS: tuple[Ecl310SensorDescription, ...] = (
+    _temperature("desired_flow_temperature", COMPONENT_HEATING),
+    _temperature("filtered_outdoor_temperature", COMPONENT_HEATING),
+    _temperature("return_limit_in_force", COMPONENT_HEATING, diagnostic=True),
+    _temperature("desired_tank_temperature", COMPONENT_HOT_WATER),
     _temperature(
         "desired_hot_water_flow_temperature",
         COMPONENT_HOT_WATER,
-        lambda device: device.hot_water.desired_flow_temperature,
         field="desired_flow_temperature",
     ),
-    _enum(
-        "heating_mode",
-        COMPONENT_HEATING,
-        "mode",
-        _MODE_OPTIONS,
-        lambda device: device.heating.mode,
-    ),
-    _enum(
-        "heating_state",
-        COMPONENT_HEATING,
-        "state",
-        _STATE_OPTIONS,
-        lambda device: device.heating.state,
-    ),
-    _enum(
-        "hot_water_mode",
-        COMPONENT_HOT_WATER,
-        "mode",
-        _MODE_OPTIONS,
-        lambda device: device.hot_water.mode,
-    ),
-    _enum(
-        "hot_water_state",
-        COMPONENT_HOT_WATER,
-        "state",
-        _STATE_OPTIONS,
-        lambda device: device.hot_water.state,
-    ),
+    _enum("heating_mode", COMPONENT_HEATING, "mode", _MODE_OPTIONS),
+    _enum("heating_state", COMPONENT_HEATING, "state", _STATE_OPTIONS),
+    _enum("hot_water_mode", COMPONENT_HOT_WATER, "mode", _MODE_OPTIONS),
+    _enum("hot_water_state", COMPONENT_HOT_WATER, "state", _STATE_OPTIONS),
 )
 
 
@@ -195,10 +143,17 @@ async def async_setup_entry(
             hass,
             Platform.SENSOR,
             [
-                *(Ecl310Sensor(coordinator, description) for description in SENSORS),
+                *(
+                    Ecl310Sensor(coordinator, description)
+                    for description in (
+                        *role_sensors(coordinator.device),
+                        *per_circuit(coordinator.device, CIRCUIT_SENSORS),
+                    )
+                ),
                 *(
                     Ecl310BoostSensor(coordinator, boost, description)
                     for description in BOOST_SENSORS
+                    if boost.available
                 ),
             ],
         )
@@ -290,7 +245,7 @@ class Ecl310Sensor(Ecl310Entity, SensorEntity):
     @property
     def native_value(self) -> float | str | None:
         """Return the current value, mapping enums to their lowercase name."""
-        value = self.entity_description.value_fn(self.coordinator.device)
+        value = getattr(self._subsystem, self.entity_description.field)
         if isinstance(value, IntEnum):
             return value.name.lower()
         return value

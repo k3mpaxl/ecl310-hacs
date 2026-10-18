@@ -131,7 +131,7 @@ class Schedule(Ecl310Component):
         await self.async_set_boundary(day, period, start, stop=False)
 
 
-def _build(name: str, circuit: int) -> type[Schedule]:
+def build_schedule(name: str, circuit: int) -> type[Schedule]:
     """Create the schedule component for one circuit."""
     namespace: dict[str, object] = {
         "CIRCUIT": circuit,
@@ -146,5 +146,5 @@ def _build(name: str, circuit: int) -> type[Schedule]:
     return type(name, (Schedule,), namespace)
 
 
-HeatingSchedule = _build("HeatingSchedule", 1)
-HotWaterSchedule = _build("HotWaterSchedule", 2)
+HeatingSchedule = build_schedule("HeatingSchedule", 1)
+HotWaterSchedule = build_schedule("HotWaterSchedule", 2)

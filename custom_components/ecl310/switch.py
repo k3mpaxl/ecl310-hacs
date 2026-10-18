@@ -25,9 +25,9 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from .boost import HotWaterBoost
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import Ecl310, HeatingCircuit, HotWater
+from .ecl310_modbus import Circuit, Ecl310Component, HeatingCircuit, HotWater
 from .ecl310_modbus.enums import Weekday
-from .entity import Ecl310Entity, supported
+from .entity import Ecl310Entity, circuit_key, per_circuit, supported
 
 PARALLEL_UPDATES = 1
 
@@ -44,8 +44,8 @@ class Ecl310SwitchDescription(SwitchEntityDescription):
 
     component: str
     field: str
-    value_fn: Callable[[Ecl310], bool | None]
-    set_fn: Callable[[Ecl310Coordinator, bool], Awaitable[None]]
+    value_fn: Callable[[Ecl310Component], bool | None]
+    set_fn: Callable[[Ecl310Coordinator, Ecl310Component, bool], Awaitable[None]]
 
 
 def _disinfection_day(day: int) -> Ecl310SwitchDescription:
@@ -57,24 +57,28 @@ def _disinfection_day(day: int) -> Ecl310SwitchDescription:
         component=COMPONENT_HOT_WATER,
         field="disinfection_days",
         entity_category=EntityCategory.CONFIG,
-        value_fn=lambda device, index=day: _day_is_set(device, index),
-        set_fn=lambda coordinator, on, index=day: _set_day(coordinator, index, on=on),
+        value_fn=lambda water, index=day: _day_is_set(water, index),
+        set_fn=lambda coordinator, water, on, index=day: _set_day(
+            coordinator, water, index, on=on
+        ),
     )
 
 
-def _day_is_set(device: Ecl310, day: int) -> bool | None:
+def _day_is_set(water: Ecl310Component, day: int) -> bool | None:
     """Return whether the anti-bacteria run covers one weekday."""
-    days = device.hot_water.disinfection_weekdays
+    days = cast(HotWater, water).disinfection_weekdays
     return None if days is None else day in days
 
 
-async def _set_day(coordinator: Ecl310Coordinator, day: int, *, on: bool) -> None:
+async def _set_day(
+    coordinator: Ecl310Coordinator, water: Ecl310Component, day: int, *, on: bool
+) -> None:
     """Add or remove one weekday from the anti-bacteria run.
 
     The other six days come from a fresh read of the mask rather than from the
     last poll, under a lock, so concurrent changes to different days all land.
     """
-    water = cast(HotWater, coordinator.device.hot_water)
+    water = cast(HotWater, water)
     async with coordinator.mask_lock:
         await water.async_update(notify=False)
         days = set(water.disinfection_weekdays or ())
@@ -89,9 +93,9 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
         component=COMPONENT_HEATING,
         field="pump_off_in_setback",
         entity_category=EntityCategory.CONFIG,
-        value_fn=lambda device: device.heating.pump_off_in_setback,
-        set_fn=lambda coordinator, on: cast(
-            HeatingCircuit, coordinator.device.heating
+        value_fn=lambda circuit: cast(HeatingCircuit, circuit).pump_off_in_setback,
+        set_fn=lambda _coordinator, circuit, on: cast(
+            HeatingCircuit, circuit
         ).async_set_pump_off_in_setback(on),
     ),
     Ecl310SwitchDescription(
@@ -100,9 +104,9 @@ SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
         component=COMPONENT_HEATING,
         field="hot_water_priority",
         entity_category=EntityCategory.CONFIG,
-        value_fn=lambda device: device.heating.hot_water_priority,
-        set_fn=lambda coordinator, on: cast(
-            HeatingCircuit, coordinator.device.heating
+        value_fn=lambda circuit: cast(HeatingCircuit, circuit).hot_water_priority,
+        set_fn=lambda _coordinator, circuit, on: cast(
+            HeatingCircuit, circuit
         ).async_set_hot_water_priority(on),
     ),
     *(_disinfection_day(day) for day in range(7)),
@@ -122,10 +126,23 @@ async def async_setup_entry(
             hass,
             Platform.SWITCH,
             [
-                *(Ecl310Switch(coordinator, description) for description in SWITCHES),
-                Ecl310DisinfectionSwitch(coordinator),
-                Ecl310BoostSwitch(coordinator, boost),
-                Ecl310BoostOnRaiseSwitch(coordinator, boost),
+                *(
+                    Ecl310Switch(coordinator, description)
+                    for description in per_circuit(coordinator.device, SWITCHES)
+                ),
+                *(
+                    Ecl310DisinfectionSwitch(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HOT_WATER
+                ),
+                *(
+                    [
+                        Ecl310BoostSwitch(coordinator, boost),
+                        Ecl310BoostOnRaiseSwitch(coordinator, boost),
+                    ]
+                    if boost.available
+                    else []
+                ),
             ],
         )
     )
@@ -143,15 +160,19 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
     _attr_entity_category = EntityCategory.CONFIG
     _attr_icon = "mdi:bacteria-outline"
 
-    def __init__(self, coordinator: Ecl310Coordinator) -> None:
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
         """Initialize the switch on the hot water device."""
         super().__init__(
             coordinator,
-            "disinfection",
-            COMPONENT_HOT_WATER,
+            circuit_key("disinfection", circuit),
+            circuit.component,
             ("disinfection_temperature",),
         )
         self._temperature: float | None = None
+
+    @property
+    def _water(self) -> HotWater:
+        return cast(HotWater, self._subsystem)
 
     async def async_added_to_hass(self) -> None:
         """Pick up the temperature it ran at before the restart."""
@@ -161,7 +182,7 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
         self._remember()
 
     def _remember(self) -> None:
-        setpoint = self.coordinator.device.hot_water.disinfection_setpoint
+        setpoint = self._water.disinfection_setpoint
         if setpoint is not None:
             self._temperature = setpoint
 
@@ -172,7 +193,7 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
     @property
     def is_on(self) -> bool | None:
         """Return whether the disinfection is switched on."""
-        return self.coordinator.device.hot_water.disinfection_enabled
+        return self._water.disinfection_enabled
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -184,9 +205,8 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
 
     async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Switch it on at the temperature it last had."""
-        water = cast(HotWater, self.coordinator.device.hot_water)
         await self._async_write(
-            water.async_set_disinfection_enabled(
+            self._water.async_set_disinfection_enabled(
                 enabled=True, temperature=self._temperature
             )
         )
@@ -194,8 +214,9 @@ class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
 
     async def async_turn_off(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Switch it off."""
-        water = cast(HotWater, self.coordinator.device.hot_water)
-        await self._async_write(water.async_set_disinfection_enabled(enabled=False))
+        await self._async_write(
+            self._water.async_set_disinfection_enabled(enabled=False)
+        )
         await self.coordinator.async_request_refresh()
 
 
@@ -309,7 +330,7 @@ class Ecl310Switch(Ecl310Entity, SwitchEntity):
     @property
     def is_on(self) -> bool | None:
         """Return whether the datapoint is on."""
-        return self.entity_description.value_fn(self.coordinator.device)
+        return self.entity_description.value_fn(self._subsystem)
 
     async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Switch it on."""
@@ -321,5 +342,7 @@ class Ecl310Switch(Ecl310Entity, SwitchEntity):
 
     async def _async_set(self, *, on: bool) -> None:
         """Write the value and refresh so the state reflects the controller."""
-        await self._async_write(self.entity_description.set_fn(self.coordinator, on))
+        await self._async_write(
+            self.entity_description.set_fn(self.coordinator, self._subsystem, on)
+        )
         await self.coordinator.async_request_refresh()

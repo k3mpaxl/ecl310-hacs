@@ -20,8 +20,8 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import COMPONENT_HOT_WATER, COMPONENT_SENSORS, DOMAIN, SETTABLE_MODES
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import HotWater, OperatingMode
-from .entity import Ecl310Entity
+from .ecl310_modbus import Circuit, HotWater, OperatingMode
+from .entity import Ecl310Entity, circuit_key
 
 PARALLEL_UPDATES = 1
 
@@ -38,8 +38,13 @@ async def async_setup_entry(
     entry: Ecl310ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Set up the hot water entity."""
-    async_add_entities([Ecl310WaterHeater(entry.runtime_data.coordinator)])
+    """Set up a water heater for each hot water circuit."""
+    coordinator = entry.runtime_data.coordinator
+    async_add_entities(
+        Ecl310WaterHeater(coordinator, circuit)
+        for circuit in coordinator.device.circuits
+        if circuit.kind == COMPONENT_HOT_WATER
+    )
 
 
 class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
@@ -55,12 +60,12 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
         | WaterHeaterEntityFeature.OPERATION_MODE
     )
 
-    def __init__(self, coordinator: Ecl310Coordinator) -> None:
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
         """Initialize the water heater, bounded by the setpoint's own domain."""
         super().__init__(
             coordinator,
-            key="water_heater",
-            component=COMPONENT_HOT_WATER,
+            key=circuit_key("water_heater", circuit),
+            component=circuit.component,
             fields=("mode", "setpoint"),
         )
         setpoint = self._metadata("setpoint").number
@@ -79,7 +84,7 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
     @property
     def current_temperature(self) -> float | None:
         """Return the storage temperature measured on S6."""
-        return self.coordinator.device.sensors.storage_temperature
+        return getattr(self.coordinator.device.sensors, "storage_temperature", None)
 
     @property
     def target_temperature(self) -> float | None:
@@ -111,6 +116,8 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
             # A raised setpoint may start a boost; it is told who asked, so its
             # end can be reported to that person.
             context = self._context
+            if self._component != COMPONENT_HOT_WATER:
+                return  # the boost serves the one hot water circuit
             await (
                 self.coordinator.config_entry.runtime_data.boost.async_setpoint_changed(
                     float(temperature),

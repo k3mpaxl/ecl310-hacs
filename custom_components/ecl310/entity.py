@@ -10,10 +10,11 @@ which is only known once the parent exists, so the entities cannot describe
 that relationship themselves.
 """
 
+import dataclasses
 import re
-from collections.abc import Awaitable, Iterable
+from collections.abc import Awaitable, Iterable, Iterator
 from functools import cached_property
-from typing import Any, cast
+from typing import Any, Protocol, cast
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -32,6 +33,7 @@ from .const import (
 )
 from .coordinator import Ecl310Coordinator
 from .ecl310_modbus import (
+    Circuit,
     DatapointMetadata,
     DeviceInformation,
     Ecl310,
@@ -41,24 +43,85 @@ from .ecl310_modbus import (
 #: The state attributes naming where an entity's values live on the controller.
 ATTR_PNU = "pnu"
 ATTR_TERMINAL = "terminal"
+ATTR_ECL_NAME = "ecl_name"
+
+#: A key or role that carries its circuit: ``flow_temperature_circuit_2``. The
+#: library suffixes a role this way where the application has it on two
+#: circuits; everything else goes without.
+CIRCUIT_SUFFIX = re.compile(r"_circuit_(?P<circuit>\d+)")
 
 #: A switching output's fields: ``relay_2``, ``relay_2_override``, ``triac_1``.
 OUTPUT_FIELD = re.compile(r"^(?P<kind>triac|relay)_(?P<number>\d+)(?:_\w+)?$")
 
-# Sub-devices, keyed by the library sub-system they read from: the suffix that
-# makes their identifier, and the key their name is translated under.
-SUB_DEVICES: dict[str, tuple[str, str]] = {
-    COMPONENT_HEATING: ("heating", "heating_circuit"),
-    COMPONENT_HOT_WATER: ("hot_water", "hot_water"),
+#: The key a circuit's device name is translated under, by circuit kind: as
+#: is, and with the circuit number where the application has two of the kind.
+CIRCUIT_DEVICE_NAMES: dict[str, tuple[str, str]] = {
+    COMPONENT_HEATING: ("heating_circuit", "heating_circuit_numbered"),
+    COMPONENT_HOT_WATER: ("hot_water", "hot_water_numbered"),
+}
+
+#: The descriptions declared for the default layout's circuit sub-systems, and
+#: the circuit kind and part (the circuit or its weekly program) each stands for.
+CIRCUIT_COMPONENTS: dict[str, tuple[str, bool]] = {
+    COMPONENT_HEATING: (COMPONENT_HEATING, False),
+    COMPONENT_HOT_WATER: (COMPONENT_HOT_WATER, False),
+    COMPONENT_HEATING_SCHEDULE: (COMPONENT_HEATING, True),
+    COMPONENT_HOT_WATER_SCHEDULE: (COMPONENT_HOT_WATER, True),
 }
 
 
-#: Sub-systems that belong to another sub-system's device. A circuit's weekly
-#: program is part of that circuit, not a device of its own.
-SHARED_DEVICES: dict[str, str] = {
-    COMPONENT_HEATING_SCHEDULE: COMPONENT_HEATING,
-    COMPONENT_HOT_WATER_SCHEDULE: COMPONENT_HOT_WATER,
-}
+class _CircuitDescription(Protocol):
+    key: str
+    component: str
+
+
+def circuit_key(key: str, circuit: Circuit) -> str:
+    """Return an entity key, unique where the application has two such circuits.
+
+    The default layout's keys stay as they are, so existing entities keep
+    their unique IDs.
+    """
+    return f"{key}_circuit_{circuit.number}" if circuit.numbered else key
+
+
+def per_circuit[DescriptionT: _CircuitDescription](
+    device: Ecl310, descriptions: Iterable[DescriptionT]
+) -> Iterator[DescriptionT]:
+    """Each circuit description once for every circuit of its kind.
+
+    A description declared for ``heating`` describes every heating circuit the
+    application has; one for another sub-system is passed on as it is.
+    """
+    for description in descriptions:
+        kind = CIRCUIT_COMPONENTS.get(description.component)
+        if kind is None:
+            yield description
+            continue
+        for circuit in device.circuits:
+            if circuit.kind == kind[0]:
+                yield dataclasses.replace(  # type: ignore[type-var]
+                    description,
+                    key=circuit_key(description.key, circuit),
+                    component=circuit.schedule if kind[1] else circuit.component,
+                )
+
+
+def role_name(key: str) -> tuple[str, dict[str, str]]:
+    """Return the translation key and placeholders of a role-named entity.
+
+    ``flow_temperature`` is translated as it is; ``flow_temperature_circuit_2``
+    as ``flow_temperature_circuit`` with the circuit as a placeholder.
+    """
+    match = CIRCUIT_SUFFIX.search(key)
+    if match is None:
+        return key, {}
+    return f"{CIRCUIT_SUFFIX.sub('', key)}_circuit", {"circuit": match["circuit"]}
+
+
+def role_circuit(key: str) -> int | None:
+    """Return the circuit a role key names, if it names one."""
+    match = CIRCUIT_SUFFIX.search(key)
+    return int(match["circuit"]) if match else None
 
 
 def datapoint_pnu(device: Ecl310, component: str, field: str) -> int | None:
@@ -88,11 +151,23 @@ def datapoint_terminal(device: Ecl310, component: str, field: str) -> str | None
 
 
 def device_identifiers(entry: ConfigEntry, component: str) -> set[tuple[str, str]]:
-    """Identify the device an entity of this sub-system belongs to."""
-    component = SHARED_DEVICES.get(component, component)
-    if (sub := SUB_DEVICES.get(component)) is None:
+    """Identify the device an entity of this sub-system belongs to.
+
+    A circuit is a device of its own - ``<entry>_heating``, ``<entry>_heating_2``
+    - and its weekly program belongs to it; the rest belongs to the controller.
+    """
+    circuit = component.removesuffix("_schedule")
+    if not circuit.startswith((COMPONENT_HEATING, COMPONENT_HOT_WATER)):
         return {(DOMAIN, entry.entry_id)}
-    return {(DOMAIN, f"{entry.entry_id}_{sub[0]}")}
+    return {(DOMAIN, f"{entry.entry_id}_{circuit}")}
+
+
+def circuit_device_name(circuit: Circuit) -> tuple[str, dict[str, str]]:
+    """Return the translation key and placeholders naming a circuit's device."""
+    plain, numbered = CIRCUIT_DEVICE_NAMES[circuit.kind]
+    if circuit.numbered:
+        return numbered, {"circuit": str(circuit.number)}
+    return plain, {}
 
 
 def controller_device_info(entry: ConfigEntry, info: DeviceInformation) -> DeviceInfo:
@@ -209,6 +284,17 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
         attributes: dict[str, Any] = {}
         if pnus:
             attributes[ATTR_PNU] = next(iter(pnus.values())) if len(pnus) == 1 else pnus
+        if (application := device.application) is not None:
+            language = self.coordinator.hass.config.language
+            names = {
+                field: name
+                for field, pnu in pnus.items()
+                if (name := application.menu_name(pnu, language)) is not None
+            }
+            if names:
+                attributes[ATTR_ECL_NAME] = (
+                    next(iter(names.values())) if len(names) == 1 else names
+                )
         if terminals:
             attributes[ATTR_TERMINAL] = (
                 terminals[0] if len(terminals) == 1 else terminals

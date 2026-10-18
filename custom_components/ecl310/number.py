@@ -24,7 +24,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus.subsystems.heating_circuit import CURVE_POINTS
-from .entity import Ecl310Entity, supported
+from .entity import Ecl310Entity, per_circuit, supported
 
 PARALLEL_UPDATES = 1
 
@@ -144,7 +144,10 @@ async def async_setup_entry(
         supported(
             hass,
             Platform.NUMBER,
-            (Ecl310Number(coordinator, description) for description in NUMBERS),
+            (
+                Ecl310Number(coordinator, description)
+                for description in per_circuit(coordinator.device, NUMBERS)
+            ),
         )
     )
 

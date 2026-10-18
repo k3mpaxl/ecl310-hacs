@@ -208,7 +208,8 @@ that application has, generated from Danfoss' ECL Tool reports.
 | :---------- | :------ | :-------- |
 | A237.1 | V04 | the controller this integration was built on |
 | A337.2 | V02 | a controller in the field ([issue 13](https://github.com/k3mpaxl/ecl310-hacs/issues/13)) |
-| A266.10 | V03 | not yet - help welcome ([issue 35](https://github.com/k3mpaxl/ecl310-hacs/issues/35)) |
+| A266.10 | V03 | relays and valves confirmed by an owner ([issue 35](https://github.com/k3mpaxl/ecl310-hacs/issues/35)) |
+| A367.1 | V01-V04 | not yet - help welcome ([issue 38](https://github.com/k3mpaxl/ecl310-hacs/issues/38)) |
 
 * **Detection.** The controller reports its application and version
   (PNU 2060-2063), and the setup suggests that profile.
@@ -224,9 +225,14 @@ that application has, generated from Danfoss' ECL Tool reports.
   application:
   * On A266.10, S2 is the secondary return, S4 the hot water flow and S6 the
     hot water return. On A237/A337, S6 is the storage tank.
-  * The pumps are named after what they drive where the application's relay
-    assignment is known. Otherwise the relays are shown by number, and the
-    pump overrides and *Heat available* are left out.
+  * The pumps and motorised valves are named after what they drive where the
+    application's assignment is known. Otherwise the outputs are shown by
+    number, and the pump overrides and *Heat available* are left out. The
+    valves are disabled by default: they are pulsed open and shut all day.
+* **Every circuit, whatever its kind.** The circuits come from the application:
+  a heating circuit gets a thermostat, its settings and its weekly program, a
+  hot water circuit a water heater, its settings and its program. A367.1 has
+  two heating circuits and hot water on circuit 3; each is a device of its own.
 * **Only what exists.** With a profile, the integration reads only the
   parameters that application has, and creates entities only for those.
   Entities an older version created for a parameter the application lacks are
@@ -238,6 +244,27 @@ that application has, generated from Danfoss' ECL Tool reports.
   stay unavailable - the behaviour before profiles existed. To get a profile
   for your application, open an issue with the application and version from
   the controller's start screen and a diagnostics download.
+
+### How the profiles are derived
+
+The profiles follow fixed rules from Danfoss' ECL Tool reports, so a new
+application needs no hand-written mapping:
+
+* **Circuits.** Danfoss numbers every circuit alike: the last three digits of a
+  parameter say what it is, the thousands which circuit (the manuals write
+  `1x179` for the summer cut-off - 11179 on circuit 1, 12179 on circuit 2). A
+  circuit with a heat curve (`1x175`) is a heating circuit, one with a hot
+  water setpoint (`1x190`) a hot water circuit.
+* **Sensors.** The read-only `Sx sensor reference` parameters sit in the group
+  of what the input measures: in *Flow temperature_2*, `Sx` is circuit 2's
+  flow. What a circuit aims for at a sensor is that reference, `1n250 + x`.
+* **Pumps and valves.** Danfoss wires pump `Px` to relay `x` and motorised valve
+  `Mx` to triacs `2x-1` (open) and `2x` (close). Which pump a `Px` is comes
+  from the application's guide.
+* **Names.** Entities keep the integration's names on every application. Where
+  a name would occur twice - two heating circuits, two flow sensors - both
+  carry their circuit: *Heating circuit 1*, *Flow temperature circuit 2*.
+  Installations with one circuit of each kind keep their names and entity IDs.
 
 ## How it addresses the controller
 
@@ -274,6 +301,8 @@ Each entity names where its values live, as state attributes (suggested in
   `11175`, relay 1's state PNU `4006` (register 4005), sensor S3 PNU `10203`.
 * `terminal` – the input or output on the terminal block: `S3`, `relay 2`,
   `triac 1`.
+* `ecl_name` – where the controller's own menu shows the setting, in German or
+  English as Home Assistant is set: `Optimierung > Sommer- Aus`.
 
 An entity built from several values lists them by name, e.g. the thermostat:
 `pnu: {mode: 4201, comfort_setpoint: 11180, state: 4211}`. The numbers come from

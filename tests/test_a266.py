@@ -22,10 +22,15 @@ A266_SENSORS = {10201: 3810, 10203: 5230, 10205: 2950}
 
 @pytest.mark.parametrize("application", [A266])
 @pytest.mark.parametrize("register_image", [{**HOLDING, **A266_SENSORS}])
-async def test_a266_names_its_sensors_and_hides_unknown_pumps(
+async def test_a266_names_its_sensors_pumps_and_valves(
     hass: HomeAssistant, connections: list[MockModbusConnection]
 ) -> None:
-    """S2/S4/S6 carry A266.10's meaning; relays show by number, unnamed."""
+    """S2/S4/S6 carry A266.10's meaning; pumps and valves as wired (issue 35).
+
+    The owner's installation: relay 1 the hot water circulation pump (P1),
+    relay 2 the heating pump (P2), triacs 1/2 the hot water valve (M1), triacs
+    3/4 the heating valve (M2).
+    """
     entry = await setup_entry(hass, connections)
     assert entry.data["application"] == A266
     ids = entity_ids(hass, entry)
@@ -36,15 +41,26 @@ async def test_a266_names_its_sensors_and_hides_unknown_pumps(
     assert state(ids["hot_water_return_temperature"]).state == "29.5"
     assert "storage_temperature" not in ids
 
-    # Which relay drives which pump is not known for A266 yet: no pump
-    # entities, no overrides, no "heat available" - the relays by number.
-    for key in ("heating_pump", "circulation_pump", "heating_pump_override"):
-        assert key not in ids
-    assert "heat_available" not in ids
+    attributes = {key: state(ids[key]).attributes for key in ids if state(ids[key])}
+    assert attributes["circulation_pump"]["terminal"] == "relay 1"
+    assert attributes["heating_pump"]["terminal"] == "relay 2"
+    assert "heating_pump_override" in ids
+    assert "storage_charge_pump" not in ids
+    assert "heat_available" in ids
+
     registry = er.async_get(hass)
-    for number in range(1, 7):
-        relay = registry.async_get(ids[f"relay_{number}"])
-        assert relay.disabled_by is None
+    valves = {
+        "hot_water_valve_open": "triac_1",
+        "hot_water_valve_close": "triac_2",
+        "valve_open": "triac_3",
+        "valve_close": "triac_4",
+    }
+    for key in valves:
+        # Pulsed all day, so off by default - but named.
+        assert registry.async_get(ids[key]).disabled_by is not None
+    for number in (3, 4, 5, 6):
+        assert registry.async_get(ids[f"relay_{number}"]).disabled_by is not None
+    assert "relay_1" not in ids
 
 
 async def test_a237_keeps_its_pumps_and_hides_the_spare_relays(

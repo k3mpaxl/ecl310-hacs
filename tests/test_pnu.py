@@ -113,8 +113,29 @@ async def test_a266_names_its_own_terminals(
     hot_water_flow = state(ids["hot_water_flow_temperature"]).attributes
     assert hot_water_flow["pnu"] == 10204
     assert hot_water_flow["terminal"] == "S4"
-    assert state(ids["relay_2"]).attributes["terminal"] == "relay 2"
+    assert state(ids["heating_pump"]).attributes["terminal"] == "relay 2"
 
     water_heater = state(ids["water_heater"]).attributes
     assert "storage_temperature" not in water_heater["pnu"]
     assert "terminal" not in water_heater
+
+
+async def test_the_menu_name_is_the_controllers_own(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """``ecl_name`` is where the display shows it, in the user's language."""
+    hass.config.language = "de"
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    state = hass.states.get
+
+    assert state(ids["summer_cut_off"]).attributes["ecl_name"] == (
+        "Optimierung > Sommer- Aus"
+    )
+    assert state(ids["disinfection_temperature"]).attributes["ecl_name"] == (
+        "LEGIO Desinfektion > Gewünschte T"
+    )
+    thermostat = state(ids["thermostat"]).attributes["ecl_name"]
+    assert thermostat["comfort_setpoint"] == "Allg. Parameter > T-Komfort Soll"
+    # A sensor input is no parameter: it has a PNU, but no menu entry.
+    assert "ecl_name" not in state(ids["flow_temperature"]).attributes
