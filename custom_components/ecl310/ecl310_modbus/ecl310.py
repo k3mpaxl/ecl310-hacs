@@ -19,6 +19,11 @@ from modbus_connection import (
 )
 
 from .applications import PROFILES, ApplicationProfile, Detection, async_detect
+from .configurations import (
+    RELAY_ASSIGNMENTS,
+    SENSOR_ASSIGNMENTS,
+    OutputAssignment,
+)
 from .data_model import Ecl310Component
 from .device_info import DeviceInformation
 from .subsystems import (
@@ -48,6 +53,12 @@ SCHEDULE_COMPONENT_NAMES: tuple[str, ...] = ("heating_schedule", "hot_water_sche
 
 #: Everything, for a diagnostics dump.
 ALL_COMPONENT_NAMES: tuple[str, ...] = (*COMPONENT_NAMES, *SCHEDULE_COMPONENT_NAMES)
+
+#: The sensor inputs of the A237/A337 family, and of a controller whose
+#: application has no profile: what the library read before profiles existed.
+DEFAULT_SENSORS: dict[int, str] = {
+    assignment.number: assignment.key for assignment in SENSOR_ASSIGNMENTS
+}
 
 
 @dataclass
@@ -96,6 +107,7 @@ class Ecl310:
         self.outputs = Outputs(unit)
         self.heating_schedule = HeatingSchedule(unit)
         self.hot_water_schedule = HotWaterSchedule(unit)
+        self.sensors.restrict_fields(self.sensor_assignment.values())
         if application is not None:
             for name in ALL_COMPONENT_NAMES:
                 component: Ecl310Component = getattr(self, name)
@@ -112,8 +124,29 @@ class Ecl310:
         """The unit every sub-system reads from and writes to."""
         return self._unit
 
+    @property
+    def sensor_assignment(self) -> dict[int, str]:
+        """What each sensor input measures, as the Sensors field it is read into."""
+        if self.application is not None and self.application.sensors is not None:
+            return dict(self.application.sensors)
+        return dict(DEFAULT_SENSORS)
+
+    @property
+    def relay_assignments(self) -> tuple[OutputAssignment, ...] | None:
+        """What each relay drives; ``None`` while the application's is unknown."""
+        if self.application is None or self.application.relays is None:
+            return RELAY_ASSIGNMENTS
+        if not self.application.relays:
+            return None
+        return tuple(
+            OutputAssignment(number, key, key)
+            for number, key in sorted(self.application.relays.items())
+        )
+
     def _has(self, component: Ecl310Component, field: str) -> bool:
         """Return whether the application has the parameter behind ``field``."""
+        if component is self.sensors:
+            return field in self.sensor_assignment.values()
         if self.application is None:
             return True
         metadata = component.metadata_for(field)

@@ -19,6 +19,7 @@ from collections.abc import Iterable
 from ..data_model import (
     Ecl310Component,
     parameter_number,
+    parameter_reference,
     parameter_temperature,
     register_enum,
 )
@@ -271,6 +272,16 @@ class HotWater(Ecl310Component):
         description="Temperatur, die der Frostschutz im Warmwasserkreis hält",
     )
     """Temperature frost protection holds in the hot water circuit."""
+
+    desired_flow_temperature = parameter_reference(
+        12254, description="Gewünschte Warmwasser-Vorlauftemperatur (S4-Referenz)"
+    )
+    """The hot water flow temperature the controller aims at (A266), read only."""
+
+    desired_tank_temperature = parameter_reference(
+        12256, description="Gewünschte Speichertemperatur (S6-Referenz)"
+    )
+    """The tank temperature the controller aims at right now, read only."""
 
     @property
     def disinfection_weekdays(self) -> tuple[int, ...] | None:

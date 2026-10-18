@@ -18,6 +18,7 @@ from modbus_connection.model import NumberField
 from ..data_model import (
     Ecl310Component,
     parameter_number,
+    parameter_reference,
     parameter_switch,
     parameter_temperature,
     register_enum,
@@ -252,6 +253,21 @@ class HeatingCircuit(Ecl310Component):
         ),
     )
     """Whether hot water preparation closes the heating circuit."""
+
+    desired_flow_temperature = parameter_reference(
+        11253, description="Gewünschte Vorlauftemperatur (S3-Referenz)"
+    )
+    """The flow temperature the controller aims at right now, read only."""
+
+    filtered_outdoor_temperature = parameter_reference(
+        11100, description="Gefilterte Außentemperatur (S1-Filter)"
+    )
+    """The averaged outdoor temperature the summer cut-off acts on, read only."""
+
+    return_limit_in_force = parameter_reference(
+        11255, description="Aktuelle Rücklaufbegrenzung (S5-Referenz)"
+    )
+    """The return temperature limit the controller applies now, read only."""
 
     @property
     def heating(self) -> bool | None:

@@ -30,11 +30,6 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from .const import COMPONENT_HEATING, COMPONENT_OUTPUTS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
-from .ecl310_modbus.configurations import (
-    RELAY_ASSIGNMENTS,
-    RELAY_ASSIGNMENTS_BY_KEY,
-    RELAY_ASSIGNMENTS_BY_NUMBER,
-)
 from .ecl310_modbus.subsystems.outputs import RELAY_COUNT, TRIAC_COUNT
 from .entity import Ecl310Entity, supported
 
@@ -50,8 +45,14 @@ class Ecl310BinarySensorDescription(BinarySensorEntityDescription):
     value_fn: Callable[[Ecl310], int | None]
 
 
-def _output(kind: str, number: int) -> Ecl310BinarySensorDescription:
-    """Describe one unnamed triac or relay output, by terminal number."""
+def _output(
+    kind: str, number: int, *, shown: bool = False
+) -> Ecl310BinarySensorDescription:
+    """Describe one unnamed triac or relay output, by terminal number.
+
+    Hidden by default; ``shown`` while the application's relays are not known,
+    so the pumps can at least be told apart by number.
+    """
     attribute = f"{kind}_{number}"
     return Ecl310BinarySensorDescription(
         key=attribute,
@@ -61,7 +62,7 @@ def _output(kind: str, number: int) -> Ecl310BinarySensorDescription:
         field=attribute,
         value_fn=lambda device, name=attribute: getattr(device.outputs, name),
         entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
+        entity_registry_enabled_default=shown,
     )
 
 
@@ -77,15 +78,23 @@ def _pump(key: str, number: int) -> Ecl310BinarySensorDescription:
     )
 
 
-BINARY_SENSORS: tuple[Ecl310BinarySensorDescription, ...] = (
-    *(_pump(assignment.key, assignment.number) for assignment in RELAY_ASSIGNMENTS),
-    *(_output("triac", number) for number in range(1, TRIAC_COUNT + 1)),
-    *(
-        _output("relay", number)
-        for number in range(1, RELAY_COUNT + 1)
-        if number not in RELAY_ASSIGNMENTS_BY_NUMBER
-    ),
-)
+def binary_sensors(device: Ecl310) -> tuple[Ecl310BinarySensorDescription, ...]:
+    """Describe the output sensors for this controller's application.
+
+    The pumps it names by what they drive; every other relay by number, shown
+    when the application's relay assignment is not known yet.
+    """
+    assignments = device.relay_assignments
+    named = {assignment.number for assignment in assignments or ()}
+    return (
+        *(_pump(a.key, a.number) for a in assignments or ()),
+        *(_output("triac", number) for number in range(1, TRIAC_COUNT + 1)),
+        *(
+            _output("relay", number, shown=assignments is None)
+            for number in range(1, RELAY_COUNT + 1)
+            if number not in named
+        ),
+    )
 
 
 async def async_setup_entry(
@@ -102,9 +111,13 @@ async def async_setup_entry(
             [
                 *(
                     Ecl310BinarySensor(coordinator, description)
-                    for description in BINARY_SENSORS
+                    for description in binary_sensors(coordinator.device)
                 ),
-                Ecl310HeatAvailable(coordinator),
+                *(
+                    [Ecl310HeatAvailable(coordinator, pump)]
+                    if (pump := _heating_pump(coordinator.device)) is not None
+                    else []
+                ),
             ],
         )
     )
@@ -161,6 +174,14 @@ def heat_available(
     return False
 
 
+def _heating_pump(device: Ecl310) -> int | None:
+    """Return the heating pump's relay, if the application's is known."""
+    for assignment in device.relay_assignments or ():
+        if assignment.key == "heating_pump":
+            return assignment.number
+    return None
+
+
 class Ecl310HeatAvailable(Ecl310Entity, BinarySensorEntity):
     """Whether the heating circuit is supplying heat - for radiator valves."""
 
@@ -168,12 +189,12 @@ class Ecl310HeatAvailable(Ecl310Entity, BinarySensorEntity):
     # No device class: "heat" would read hot/normal; the states are translated.
     _attr_icon = "mdi:fire-circle"
 
-    def __init__(self, coordinator: Ecl310Coordinator) -> None:
+    def __init__(self, coordinator: Ecl310Coordinator, pump_relay: int) -> None:
         """Initialize the sensor on the heating circuit's device."""
         super().__init__(
             coordinator, "heat_available", COMPONENT_HEATING, ("mode", "state")
         )
-        self._pump_field = f"relay_{RELAY_ASSIGNMENTS_BY_KEY['heating_pump'].number}"
+        self._pump_field = f"relay_{pump_relay}"
 
     @property
     def available(self) -> bool:

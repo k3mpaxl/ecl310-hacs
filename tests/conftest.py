@@ -106,6 +106,13 @@ HOLDING: dict[int, int] = {
         for day in range(7)
         for offset, value in enumerate((500, 2100, 2100, 2100, 2330, 2330))
     },
+    # What the controller works with, read on 2026-10-18 in frost protection:
+    # filtered outdoor 13.61 C, desired flow 10 C, return limit in force 60 C,
+    # desired tank 10 C (hundredths of a degree).
+    11099: 1361,
+    11252: 1000,
+    11254: 6000,
+    12255: 1000,
     # What the controller reports about itself (Danfoss VI.LG.V5.02, section
     # 6.12): build 8575, code number 087H3040, hardware H.3, software 1.56,
     # application A237.1 V04, produced in week 12 of 2017. The serial number is

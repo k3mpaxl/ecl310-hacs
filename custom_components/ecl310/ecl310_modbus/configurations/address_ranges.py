@@ -71,6 +71,13 @@ HEATING_SETPOINT_RANGE: Range = parameter_range(11177, 11181)
 HEATING_CURVE_RANGE: Range = parameter_range(11400, 11405)
 
 #: Hot water: return temperature limit (ECL parameter 12030).
+#: What the controller works with right now, read only (VI.LG.V5.02, 9.1):
+#: the filtered outdoor temperature (11100), the desired flow (11253, the S3
+#: reference) and the return limit in force (11255, the S5 reference). 11254
+#: is not served on every application, so they are separate blocks.
+HEATING_FILTERED_OUTDOOR_RANGE: Range = parameter_range(11100, 11100)
+HEATING_FLOW_REFERENCE_RANGE: Range = parameter_range(11253, 11253)
+HEATING_RETURN_REFERENCE_RANGE: Range = parameter_range(11255, 11255)
 HOT_WATER_RETURN_LIMIT_RANGE: Range = parameter_range(12030, 12030)
 
 #: Hot water: circulation pump frost temperature (ECL parameter 12076).
@@ -93,6 +100,11 @@ HOT_WATER_SETPOINT_RANGE: Range = parameter_range(12190, 12191)
 #: (12195) difference.
 HOT_WATER_CHARGE_DIFFERENCE_RANGE: Range = parameter_range(12193, 12195)
 
+#: The hot water temperature the controller wants right now: at S4, the flow,
+#: on A266 (12254); at S6, the tank, on A237/A337 (12256).
+HOT_WATER_FLOW_REFERENCE_RANGE: Range = parameter_range(12254, 12254)
+HOT_WATER_TANK_REFERENCE_RANGE: Range = parameter_range(12256, 12256)
+
 #: The weekly programs, one block per weekday: the four registers between one
 #: day and the next are not served, so they cannot be read as one span.
 HEATING_SCHEDULE_RANGES: tuple[Range, ...] = schedule_ranges(1)
@@ -113,8 +125,11 @@ REGISTER_RANGES: tuple[Range, ...] = (
     HEATING_POST_RUN_RANGE,
     HEATING_PRIORITY_RANGE,
     HEATING_FROST_RANGE,
+    HEATING_FILTERED_OUTDOOR_RANGE,
     HEATING_CURVE_SLOPE_RANGE,
     HEATING_SETPOINT_RANGE,
+    HEATING_FLOW_REFERENCE_RANGE,
+    HEATING_RETURN_REFERENCE_RANGE,
     HEATING_CURVE_RANGE,
     HOT_WATER_RETURN_LIMIT_RANGE,
     HOT_WATER_CIRCULATION_FROST_RANGE,
@@ -123,6 +138,8 @@ REGISTER_RANGES: tuple[Range, ...] = (
     HOT_WATER_CHARGE_LIMIT_RANGE,
     HOT_WATER_SETPOINT_RANGE,
     HOT_WATER_CHARGE_DIFFERENCE_RANGE,
+    HOT_WATER_FLOW_REFERENCE_RANGE,
+    HOT_WATER_TANK_REFERENCE_RANGE,
 )
 
 #: The library reads no coils; every ECL datapoint it models is a register.

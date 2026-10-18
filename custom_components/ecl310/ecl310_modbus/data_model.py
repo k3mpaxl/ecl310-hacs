@@ -285,6 +285,26 @@ def parameter_temperature(
     )
 
 
+def parameter_reference(
+    parameter_id: int, *, description: str | None = None
+) -> NumberField[float]:
+    """Create a read-only temperature the controller computes, e.g. a setpoint.
+
+    Like the sensor inputs these are hundredths of a degree, and 192.00 means
+    there is no value (the circuit is off or the input unused).
+    """
+    return register_gauge(
+        parameter_address(parameter_id),
+        0.01,
+        nan=NO_SENSOR_RAW,
+        digits=1,
+        unit="°C",
+        parameter_id=parameter_id,
+        maker_category="temperature",
+        description=description,
+    )
+
+
 def sensor_temperature(
     sensor_number: int,
     *,
