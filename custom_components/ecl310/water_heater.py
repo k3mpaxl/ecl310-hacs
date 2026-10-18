@@ -103,6 +103,7 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Write a new hot water setpoint."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is not None:
+            previous = self._hot_water.setpoint
             await self._async_write(self._hot_water.async_set_setpoint(temperature))
             await self.coordinator.async_request_refresh()
             # A raised setpoint may start a boost; it is told who asked, so its
@@ -110,7 +111,9 @@ class Ecl310WaterHeater(Ecl310Entity, WaterHeaterEntity):
             context = self._context
             await (
                 self.coordinator.config_entry.runtime_data.boost.async_setpoint_changed(
-                    float(temperature), context.user_id if context else None
+                    float(temperature),
+                    context.user_id if context else None,
+                    previous,
                 )
             )
 

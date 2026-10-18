@@ -93,8 +93,12 @@ mode back as soon as the tank reaches the setpoint - one tap for a hot shower,
 and the weekly program carries on afterwards.
 
 * **Boost when the setpoint is raised** (*Aufheizen, wenn das Ziel steigt*, a
-  configuration switch, off by default) starts a boost by itself whenever the
-  setpoint is set at least 1 K above the tank through Home Assistant.
+  configuration switch, off by default) starts a boost by itself when the
+  setpoint is raised through Home Assistant to at least 1 K above the tank.
+  * Only an actual raise counts. Writing the value the setpoint already has,
+    for example an automation that lowers it every morning, starts nothing.
+  * Frost protection is never left this way, because it is the "off" for
+    absences and holidays. Start a boost there by hand.
 * While it runs, the switch's attributes and three sensors show the start time
   and temperature, how long it has been running, the heating rate in K/min and
   when the tank should be there.
