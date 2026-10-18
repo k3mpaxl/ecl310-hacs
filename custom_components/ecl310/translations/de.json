@@ -40,6 +40,12 @@
     },
     "hot_water": {
       "name": "Warmwasser"
+    },
+    "heating_circuit_numbered": {
+      "name": "Heizkreis {circuit}"
+    },
+    "hot_water_numbered": {
+      "name": "Warmwasser {circuit}"
     }
   },
   "entity": {
@@ -52,6 +58,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -63,6 +72,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -74,6 +86,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -85,6 +100,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -96,6 +114,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -111,6 +132,163 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_open": {
+        "name": "Regelventil öffnet",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_close": {
+        "name": "Regelventil schließt",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_open": {
+        "name": "Warmwasser-Regelventil öffnet",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_close": {
+        "name": "Warmwasser-Regelventil schließt",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "heating_pump_circuit": {
+        "name": "Heizkreispumpe Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "storage_charge_pump_circuit": {
+        "name": "Speicherladepumpe Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "circulation_pump_circuit": {
+        "name": "Zirkulationspumpe Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_open_circuit": {
+        "name": "Regelventil öffnet Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_close_circuit": {
+        "name": "Regelventil schließt Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_open_circuit": {
+        "name": "Warmwasser-Regelventil öffnet Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_close_circuit": {
+        "name": "Warmwasser-Regelventil schließt Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -132,6 +310,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -145,6 +326,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -156,6 +340,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -167,6 +354,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -178,6 +368,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -189,6 +382,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -200,6 +396,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -211,6 +410,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -222,6 +424,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -233,6 +438,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -244,6 +452,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -255,6 +466,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -266,6 +480,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -277,6 +494,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -288,6 +508,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -299,6 +522,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -310,6 +536,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -321,6 +550,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -332,6 +564,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -343,6 +578,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -354,6 +592,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -365,6 +606,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -376,6 +620,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -387,6 +634,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -398,6 +648,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -416,6 +669,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -432,6 +688,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -448,6 +707,66 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "heating_pump_override_circuit": {
+        "name": "Heizkreispumpe Übersteuerung Kreis {circuit}",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "storage_charge_pump_override_circuit": {
+        "name": "Speicherladepumpe Übersteuerung Kreis {circuit}",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "circulation_pump_override_circuit": {
+        "name": "Zirkulationspumpe Übersteuerung Kreis {circuit}",
+        "state": {
+          "auto": "Automatik",
+          "off": "Dauerhaft aus",
+          "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -461,6 +780,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -479,6 +801,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -496,6 +821,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -514,6 +842,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -531,6 +862,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -542,6 +876,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -553,6 +890,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -564,6 +904,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -584,6 +927,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -595,6 +941,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -606,6 +955,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -617,6 +969,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -628,6 +983,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -639,6 +997,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -650,6 +1011,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -661,6 +1025,93 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "flow_temperature_circuit": {
+        "name": "Vorlauftemperatur Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "return_temperature_circuit": {
+        "name": "Rücklauftemperatur Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "storage_temperature_circuit": {
+        "name": "Speichertemperatur Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "secondary_return_temperature_circuit": {
+        "name": "Rücklauftemperatur Sekundärseite Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_flow_temperature_circuit": {
+        "name": "Warmwasser-Vorlauftemperatur Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_return_temperature_circuit": {
+        "name": "Warmwasser-Rücklauftemperatur Kreis {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -674,6 +1125,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -685,6 +1139,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -696,6 +1153,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -707,6 +1167,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -718,6 +1181,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -729,6 +1195,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -740,6 +1209,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -751,6 +1223,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -762,6 +1237,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -799,6 +1277,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -812,6 +1293,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -823,6 +1307,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -834,6 +1321,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -845,6 +1335,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -856,6 +1349,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -867,6 +1363,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -878,6 +1377,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -889,6 +1391,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -900,6 +1405,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -911,6 +1419,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -922,6 +1433,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -933,6 +1447,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -944,6 +1461,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -955,6 +1475,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       },
@@ -966,6 +1489,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }
@@ -985,6 +1511,9 @@
           },
           "terminal": {
             "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
           }
         }
       }

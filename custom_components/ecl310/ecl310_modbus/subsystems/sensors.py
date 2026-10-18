@@ -10,10 +10,42 @@ storage temperature on A237/A337 and the hot water return on A266.10.
 
 from __future__ import annotations
 
+import copy
+from collections.abc import Mapping
+from typing import Any
+
 from ..data_model import Ecl310Component, sensor_temperature
 
 
-class Sensors(Ecl310Component):
+class SensorInputs(Ecl310Component):
+    """Measured temperatures, one field per input an application assigns."""
+
+    @property
+    def connected_sensor_names(self) -> tuple[str, ...]:
+        """Return the inputs that currently report a reading."""
+        return self.present_field_names
+
+    @classmethod
+    def for_assignment(cls, assignment: Mapping[int, str]) -> type[SensorInputs]:
+        """A component reading each input under the role it is assigned.
+
+        A role :class:`Sensors` declares at the same input keeps its
+        description; any other - ``flow_temperature_circuit_2`` on an
+        application with two heating circuits - is declared on the spot.
+        """
+        namespace: dict[str, Any] = {}
+        for number, role in sorted(assignment.items()):
+            known = Sensors.declared_fields.get(role)
+            if known is not None and known.ecl_metadata.sensor_number == number:
+                namespace[role] = copy.copy(known)
+            else:
+                namespace[role] = sensor_temperature(
+                    number, description=f"{role} (S{number})"
+                )
+        return type("AssignedSensors", (SensorInputs,), namespace)
+
+
+class Sensors(SensorInputs):
     """The measured temperatures, named after what the input carries."""
 
     outdoor_temperature = sensor_temperature(1, description="Außentemperatur (S1)")
@@ -48,8 +80,3 @@ class Sensors(Ecl310Component):
         6, description="Rücklauftemperatur Warmwasser (S6)"
     )
     """Domestic hot water return temperature (A266.9, A266.10)."""
-
-    @property
-    def connected_sensor_names(self) -> tuple[str, ...]:
-        """Return the inputs that currently report a reading."""
-        return self.present_field_names

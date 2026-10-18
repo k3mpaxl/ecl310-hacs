@@ -40,6 +40,12 @@
     },
     "hot_water": {
       "name": "Hot water"
+    },
+    "heating_circuit_numbered": {
+      "name": "Heating circuit {circuit}"
+    },
+    "hot_water_numbered": {
+      "name": "Hot water {circuit}"
     }
   },
   "entity": {
@@ -52,6 +58,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -63,6 +72,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -74,6 +86,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -85,6 +100,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -96,6 +114,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -111,6 +132,163 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "valve_open": {
+        "name": "Control valve opening",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "valve_close": {
+        "name": "Control valve closing",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "hot_water_valve_open": {
+        "name": "Hot water control valve opening",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "hot_water_valve_close": {
+        "name": "Hot water control valve closing",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "heating_pump_circuit": {
+        "name": "Heating circuit pump circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "storage_charge_pump_circuit": {
+        "name": "Storage charge pump circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "circulation_pump_circuit": {
+        "name": "Circulation pump circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "valve_open_circuit": {
+        "name": "Control valve opening circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "valve_close_circuit": {
+        "name": "Control valve closing circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "hot_water_valve_open_circuit": {
+        "name": "Hot water control valve opening circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "hot_water_valve_close_circuit": {
+        "name": "Hot water control valve closing circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -132,6 +310,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -145,6 +326,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -156,6 +340,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -167,6 +354,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -178,6 +368,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -189,6 +382,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -200,6 +396,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -211,6 +410,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -222,6 +424,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -233,6 +438,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -244,6 +452,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -255,6 +466,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -266,6 +480,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -277,6 +494,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -288,6 +508,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -299,6 +522,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -310,6 +536,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -321,6 +550,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -332,6 +564,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -343,6 +578,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -354,6 +592,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -365,6 +606,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -376,6 +620,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -387,6 +634,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -398,6 +648,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -416,6 +669,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -432,6 +688,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -448,6 +707,66 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "heating_pump_override_circuit": {
+        "name": "Heating circuit pump override circuit {circuit}",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "storage_charge_pump_override_circuit": {
+        "name": "Storage charge pump override circuit {circuit}",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "circulation_pump_override_circuit": {
+        "name": "Circulation pump override circuit {circuit}",
+        "state": {
+          "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
+          "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
+          "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -461,6 +780,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -472,6 +794,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -483,6 +808,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -494,6 +822,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -512,6 +843,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -529,6 +863,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -547,6 +884,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -564,6 +904,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -584,6 +927,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -595,6 +941,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -606,6 +955,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -617,6 +969,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -628,6 +983,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -639,6 +997,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -650,6 +1011,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -661,6 +1025,93 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "flow_temperature_circuit": {
+        "name": "Flow temperature circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "return_temperature_circuit": {
+        "name": "Return temperature circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "storage_temperature_circuit": {
+        "name": "Storage temperature circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "secondary_return_temperature_circuit": {
+        "name": "Secondary return temperature circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "hot_water_flow_temperature_circuit": {
+        "name": "Hot water flow temperature circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "hot_water_return_temperature_circuit": {
+        "name": "Hot water return temperature circuit {circuit}",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -674,6 +1125,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -685,6 +1139,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -696,6 +1153,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -707,6 +1167,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -718,6 +1181,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -729,6 +1195,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -740,6 +1209,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -751,6 +1223,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -762,6 +1237,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -799,6 +1277,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -812,6 +1293,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -823,6 +1307,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -834,6 +1321,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -845,6 +1335,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -856,6 +1349,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -867,6 +1363,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -878,6 +1377,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -889,6 +1391,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -900,6 +1405,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -911,6 +1419,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -922,6 +1433,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -933,6 +1447,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -944,6 +1461,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -955,6 +1475,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       },
@@ -966,6 +1489,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }
@@ -985,6 +1511,9 @@
           },
           "terminal": {
             "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
           }
         }
       }

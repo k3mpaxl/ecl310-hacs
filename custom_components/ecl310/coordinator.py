@@ -15,7 +15,6 @@ from modbus_connection import (
 
 from .const import DOMAIN, LOGGER, SCAN_INTERVAL, SCHEDULE_REFRESH_EVERY
 from .ecl310_modbus import (
-    SCHEDULE_COMPONENT_NAMES,
     Ecl310,
     Ecl310Component,
     UpdateReport,
@@ -152,7 +151,7 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
         The weekly programs are not in every poll, so their entities cannot
         take their availability from the latest report the way the others do.
         """
-        if component in SCHEDULE_COMPONENT_NAMES:
+        if component in self.device.schedule_component_names:
             return component in self._schedules
         return self.data is not None and component in self.data.updated
 
@@ -256,6 +255,8 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
         self._failed = frozenset(report.failed)
         if schedules:
             self._schedules = frozenset(
-                name for name in report.updated if name in SCHEDULE_COMPONENT_NAMES
+                name
+                for name in report.updated
+                if name in self.device.schedule_component_names
             )
         return report

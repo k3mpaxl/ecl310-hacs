@@ -11,6 +11,10 @@ PROFILE = ApplicationProfile(
     application="A266.10",
     version=3,
     ecl_types=(310, 210),
+    circuits={
+        1: "heating",
+        2: "hot_water",
+    },
     sensors={
         1: "outdoor_temperature",
         2: "secondary_return_temperature",
@@ -19,7 +23,16 @@ PROFILE = ApplicationProfile(
         5: "return_temperature",
         6: "hot_water_return_temperature",
     },
-    relays={},
+    relays={
+        1: "circulation_pump",
+        2: "heating_pump",
+    },
+    triacs={
+        1: "hot_water_valve_open",
+        2: "hot_water_valve_close",
+        3: "valve_open",
+        4: "valve_close",
+    },
     parameters={
         3110: Parameter(
             "Schedule_1",

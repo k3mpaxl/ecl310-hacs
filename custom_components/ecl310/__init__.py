@@ -35,7 +35,7 @@ from .const import (
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .data import Ecl310Data
 from .ecl310_modbus import PROFILES, ApplicationProfile, Ecl310
-from .entity import SUB_DEVICES, controller_device_info, device_identifiers
+from .entity import circuit_device_name, controller_device_info, device_identifiers
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -186,12 +186,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: Ecl310ConfigEntry) -> bo
         config_entry_id=entry.entry_id,
         **controller_device_info(entry, info),
     )
-    for component in SUB_DEVICES:
+    for circuit in coordinator.device.circuits:
+        translation_key, placeholders = circuit_device_name(circuit)
         device_registry.async_get_or_create(
             config_entry_id=entry.entry_id,
-            identifiers=device_identifiers(entry, component),
+            identifiers=device_identifiers(entry, circuit.component),
             manufacturer=info.manufacturer,
-            translation_key=SUB_DEVICES[component][1],
+            translation_key=translation_key,
+            translation_placeholders=placeholders,
             via_device_id=controller.id,
         )
 

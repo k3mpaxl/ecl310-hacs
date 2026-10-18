@@ -15,8 +15,8 @@ __all__ = [
     "RELAY_ASSIGNMENTS",
     "RELAY_ASSIGNMENTS_BY_KEY",
     "RELAY_ASSIGNMENTS_BY_NUMBER",
-    "OutputAssignment",
     "SENSOR_ASSIGNMENTS",
+    "OutputAssignment",
     "SensorAssignment",
     "is_span_readable",
 ]

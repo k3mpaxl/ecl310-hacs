@@ -56,8 +56,8 @@ def test_the_library_stays_inside_each_profile(key: str) -> None:
     profile = PROFILES[key]
     device = Ecl310(None, application=profile)  # type: ignore[arg-type]
     checked = 0
-    for name in ("heating", "hot_water"):
-        component = getattr(device, name)
+    for circuit in device.circuits:
+        component = getattr(device, circuit.component)
         for field in component.resolved_fields:
             metadata = component.metadata_for(field)
             if metadata is None or metadata.parameter_id is None:
@@ -74,10 +74,14 @@ def test_the_library_stays_inside_each_profile(key: str) -> None:
 
 @pytest.mark.parametrize("key", sorted(PROFILES))
 def test_disinfection_off_is_in_every_profile(key: str) -> None:
-    """9 is how the controller stores "off", and the library knows it."""
-    parameter = PROFILES[key].parameters[12125]
+    """9 is how the controller stores "off", and the library knows it.
+
+    On whichever circuit the application has its hot water: 13125 on A367.1.
+    """
+    device = Ecl310(None, application=PROFILES[key])  # type: ignore[arg-type]
+    metadata = device.hot_water.metadata_for("disinfection_temperature")
+    parameter = PROFILES[key].parameters[metadata.parameter_id]
     assert parameter.off == parameter.minimum == parameter.default == 9
-    metadata = Ecl310(None).hot_water.metadata_for("disinfection_temperature")  # type: ignore[arg-type]
     assert metadata.number.off_value == 9
 
 

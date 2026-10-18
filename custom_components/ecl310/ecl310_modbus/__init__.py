@@ -45,10 +45,13 @@ from .device_info import MANUFACTURER, MODEL, DeviceInformation
 from .ecl310 import (
     ALL_COMPONENT_NAMES,
     COMPONENT_NAMES,
+    DEFAULT_CIRCUITS,
     DEFAULT_UNIT_ID,
     SCHEDULE_COMPONENT_NAMES,
+    Circuit,
     Ecl310,
     UpdateReport,
+    circuits_of,
 )
 from .enums import CircuitState, OperatingMode, OutputControl, Weekday
 from .exceptions import (
@@ -78,6 +81,7 @@ __all__ = [
     "ALL_COMPONENT_NAMES",
     "COIL_RANGES",
     "COMPONENT_NAMES",
+    "DEFAULT_CIRCUITS",
     "DEFAULT_UNIT_ID",
     "END_OF_DAY",
     "MANUFACTURER",
@@ -90,6 +94,7 @@ __all__ = [
     "SENSOR_ASSIGNMENTS",
     "ApplicationProfile",
     "BooleanMetadata",
+    "Circuit",
     "CircuitState",
     "DatapointMetadata",
     "Detection",
@@ -118,6 +123,7 @@ __all__ = [
     "UpdateReport",
     "Weekday",
     "async_read_system_information",
+    "circuits_of",
     "from_hours_minutes",
     "parameter_address",
     "parameter_range",

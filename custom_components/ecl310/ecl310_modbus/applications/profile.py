@@ -13,8 +13,12 @@ Profiles are generated from Danfoss' ECL Tool reports by
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass
+
+#: A report group's circuit suffix: ``Flow temperature_1``.
+GROUP_CIRCUIT = re.compile(r"_\d+$")
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,8 +60,9 @@ class Parameter:
     """A raw value the controller stores to mean "off", if the parameter has one."""
 
     circuit: int = 0
-    """The circuit the parameter belongs to: ``1`` heating, ``2`` hot water, ...;
-    ``0`` for controller-wide settings."""
+    """The circuit the parameter belongs to, ``1`` to ``6``; ``0`` for
+    controller-wide settings. Which kind of circuit it is, the profile's
+    ``circuits`` say."""
 
     name_de: str | None = None
     """The controller display's German text for the parameter, if known."""
@@ -100,6 +105,15 @@ class ApplicationProfile:
     """What each relay drives, by relay number. ``None`` for the A237/A337
     assignment; empty when the application's assignment is not known yet."""
 
+    triacs: Mapping[int, str] | None = None
+    """What each triac drives, by triac number: a motorised valve opening or
+    closing. ``None`` or empty when not known; the triacs then go by number."""
+
+    circuits: Mapping[int, str] | None = None
+    """The kind of each control circuit, by circuit number: ``heating`` or
+    ``hot_water``. ``None`` for the A237/A337 layout - heating on circuit 1,
+    hot water on circuit 2."""
+
     @property
     def title(self) -> str:
         """Display name, e.g. ``A337.2 V02``."""
@@ -108,3 +122,22 @@ class ApplicationProfile:
     def has(self, parameter_id: int) -> bool:
         """Return whether the application has ECL parameter ``parameter_id``."""
         return parameter_id in self.parameters
+
+    def menu_name(self, parameter_id: int, language: str | None) -> str | None:
+        """Where the controller's menu shows a parameter: ``Optimierung > Sommer- Aus``.
+
+        The group and the parameter as the display words them, in German for a
+        ``de`` language and English otherwise; None for a parameter the
+        application does not have.
+        """
+        from .groups import GROUP_NAMES
+
+        parameter = self.parameters.get(parameter_id)
+        if parameter is None:
+            return None
+        group = GROUP_CIRCUIT.sub("", parameter.group)
+        names = GROUP_NAMES.get(group, (group, group))
+        german = bool(language and language.lower().startswith("de"))
+        return (
+            f"{names[1] if german else names[0]} > {parameter.display_name(language)}"
+        )

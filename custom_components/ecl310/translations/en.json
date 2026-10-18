@@ -38,8 +38,14 @@
     "heating_circuit": {
       "name": "Heating circuit"
     },
+    "heating_circuit_numbered": {
+      "name": "Heating circuit {circuit}"
+    },
     "hot_water": {
       "name": "Hot water"
+    },
+    "hot_water_numbered": {
+      "name": "Hot water {circuit}"
     }
   },
   "entity": {
@@ -47,6 +53,23 @@
       "circulation_pump": {
         "name": "Circulation pump",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "circulation_pump_circuit": {
+        "name": "Circulation pump circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -62,6 +85,9 @@
           "on": "Available"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -73,6 +99,79 @@
       "heating_pump": {
         "name": "Heating circuit pump",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "heating_pump_circuit": {
+        "name": "Heating circuit pump circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_close": {
+        "name": "Hot water control valve closing",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_close_circuit": {
+        "name": "Hot water control valve closing circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_open": {
+        "name": "Hot water control valve opening",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_open_circuit": {
+        "name": "Hot water control valve opening circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -84,6 +183,9 @@
       "relay": {
         "name": "Relay {number}",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -95,6 +197,23 @@
       "storage_charge_pump": {
         "name": "Storage charge pump",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "storage_charge_pump_circuit": {
+        "name": "Storage charge pump circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -106,6 +225,65 @@
       "triac": {
         "name": "Triac {number}",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_close": {
+        "name": "Control valve closing",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_close_circuit": {
+        "name": "Control valve closing circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_open": {
+        "name": "Control valve opening",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_open_circuit": {
+        "name": "Control valve opening circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -118,6 +296,9 @@
     "climate": {
       "heating_circuit": {
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -140,6 +321,9 @@
       "charge_difference": {
         "name": "Charging difference",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -151,6 +335,9 @@
       "circulation_frost_temperature": {
         "name": "Circulation pump frost temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -162,6 +349,9 @@
       "curve_at_0": {
         "name": "Curve at 0 °C",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -173,6 +363,9 @@
       "curve_at_15": {
         "name": "Curve at 15 °C",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -184,6 +377,9 @@
       "curve_at_5": {
         "name": "Curve at 5 °C",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -195,6 +391,9 @@
       "curve_at_minus_15": {
         "name": "Curve at -15 °C",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -206,6 +405,9 @@
       "curve_at_minus_30": {
         "name": "Curve at -30 °C",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -217,6 +419,9 @@
       "curve_at_minus_5": {
         "name": "Curve at -5 °C",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -228,6 +433,9 @@
       "disinfection_duration": {
         "name": "Disinfection duration",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -239,6 +447,9 @@
       "disinfection_temperature": {
         "name": "Disinfection temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -250,6 +461,9 @@
       "heat_curve": {
         "name": "Heat curve",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -261,6 +475,9 @@
       "heating_frost_protection_temperature": {
         "name": "Frost protection temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -272,6 +489,9 @@
       "heating_return_limit": {
         "name": "Return temperature limit",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -283,6 +503,9 @@
       "hot_water_frost_protection_temperature": {
         "name": "Frost protection temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -294,6 +517,9 @@
       "hot_water_return_limit": {
         "name": "Return temperature limit",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -305,6 +531,9 @@
       "hot_water_setback_setpoint": {
         "name": "Setback temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -316,6 +545,9 @@
       "max_charge_temperature": {
         "name": "Maximum charging temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -327,6 +559,9 @@
       "max_flow_temperature": {
         "name": "Maximum flow temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -338,6 +573,9 @@
       "min_flow_temperature": {
         "name": "Minimum flow temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -349,6 +587,9 @@
       "pump_post_run": {
         "name": "Pump post-run",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -360,6 +601,9 @@
       "setback_setpoint": {
         "name": "Setback temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -371,6 +615,9 @@
       "start_difference": {
         "name": "Start difference",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -382,6 +629,9 @@
       "stop_difference": {
         "name": "Stop difference",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -393,6 +643,9 @@
       "summer_cut_off": {
         "name": "Summer cut-off",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -411,6 +664,28 @@
           "on": "Forced on"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "circulation_pump_override_circuit": {
+        "name": "Circulation pump override circuit {circuit}",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -427,6 +702,28 @@
           "on": "Forced on"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "heating_pump_override_circuit": {
+        "name": "Heating circuit pump override circuit {circuit}",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -443,6 +740,28 @@
           "on": "Forced on"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "storage_charge_pump_override_circuit": {
+        "name": "Storage charge pump override circuit {circuit}",
+        "state": {
+          "auto": "Automatic",
+          "off": "Forced off",
+          "on": "Forced on"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -456,6 +775,9 @@
       "desired_flow_temperature": {
         "name": "Desired flow temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -467,6 +789,9 @@
       "desired_hot_water_flow_temperature": {
         "name": "Desired hot water flow temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -478,6 +803,9 @@
       "desired_tank_temperature": {
         "name": "Desired tank temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -489,6 +817,9 @@
       "filtered_outdoor_temperature": {
         "name": "Filtered outdoor temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -500,6 +831,23 @@
       "flow_temperature": {
         "name": "Flow temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "flow_temperature_circuit": {
+        "name": "Flow temperature circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -518,6 +866,9 @@
           "setback": "Constant setback"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -535,6 +886,9 @@
           "setback": "Setback"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -555,6 +909,23 @@
       "hot_water_flow_temperature": {
         "name": "Hot water flow temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_flow_temperature_circuit": {
+        "name": "Hot water flow temperature circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -573,6 +944,9 @@
           "setback": "Constant setback"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -584,6 +958,23 @@
       "hot_water_return_temperature": {
         "name": "Hot water return temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_return_temperature_circuit": {
+        "name": "Hot water return temperature circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -601,6 +992,9 @@
           "setback": "Setback"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -612,6 +1006,9 @@
       "outdoor_temperature": {
         "name": "Outdoor temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -623,6 +1020,9 @@
       "return_limit_in_force": {
         "name": "Return limit in force",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -634,6 +1034,23 @@
       "return_temperature": {
         "name": "Return temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_temperature_circuit": {
+        "name": "Return temperature circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -645,6 +1062,23 @@
       "secondary_return_temperature": {
         "name": "Secondary return temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "secondary_return_temperature_circuit": {
+        "name": "Secondary return temperature circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -656,6 +1090,23 @@
       "storage_temperature": {
         "name": "Storage temperature",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "storage_temperature_circuit": {
+        "name": "Storage temperature circuit {circuit}",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -669,6 +1120,9 @@
       "disinfection": {
         "name": "Disinfection",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -680,6 +1134,9 @@
       "disinfection_friday": {
         "name": "Disinfection on Friday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -691,6 +1148,9 @@
       "disinfection_monday": {
         "name": "Disinfection on Monday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -702,6 +1162,9 @@
       "disinfection_saturday": {
         "name": "Disinfection on Saturday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -713,6 +1176,9 @@
       "disinfection_sunday": {
         "name": "Disinfection on Sunday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -724,6 +1190,9 @@
       "disinfection_thursday": {
         "name": "Disinfection on Thursday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -735,6 +1204,9 @@
       "disinfection_tuesday": {
         "name": "Disinfection on Tuesday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -746,6 +1218,9 @@
       "disinfection_wednesday": {
         "name": "Disinfection on Wednesday",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -783,6 +1258,9 @@
       "hot_water_priority": {
         "name": "Hot water priority",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -794,6 +1272,9 @@
       "pump_off_in_setback": {
         "name": "Pump off during setback",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -807,6 +1288,9 @@
       "disinfection_start": {
         "name": "Disinfection start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -818,6 +1302,9 @@
       "friday_start": {
         "name": "Friday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -829,6 +1316,9 @@
       "friday_stop": {
         "name": "Friday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -840,6 +1330,9 @@
       "monday_start": {
         "name": "Monday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -851,6 +1344,9 @@
       "monday_stop": {
         "name": "Monday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -862,6 +1358,9 @@
       "saturday_start": {
         "name": "Saturday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -873,6 +1372,9 @@
       "saturday_stop": {
         "name": "Saturday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -884,6 +1386,9 @@
       "sunday_start": {
         "name": "Sunday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -895,6 +1400,9 @@
       "sunday_stop": {
         "name": "Sunday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -906,6 +1414,9 @@
       "thursday_start": {
         "name": "Thursday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -917,6 +1428,9 @@
       "thursday_stop": {
         "name": "Thursday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -928,6 +1442,9 @@
       "tuesday_start": {
         "name": "Tuesday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -939,6 +1456,9 @@
       "tuesday_stop": {
         "name": "Tuesday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -950,6 +1470,9 @@
       "wednesday_start": {
         "name": "Wednesday period {period} start",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -961,6 +1484,9 @@
       "wednesday_stop": {
         "name": "Wednesday period {period} end",
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },
@@ -980,6 +1506,9 @@
           "setback": "Constant setback"
         },
         "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
           "pnu": {
             "name": "PNU"
           },

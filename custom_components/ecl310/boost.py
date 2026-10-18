@@ -32,7 +32,7 @@ from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 from modbus_connection import ModbusError
 
-from .const import DOMAIN, LOGGER
+from .const import COMPONENT_HOT_WATER, DOMAIN, LOGGER
 from .ecl310_modbus import OperatingMode
 
 if TYPE_CHECKING:
@@ -138,9 +138,14 @@ class HotWaterBoost:
     # -- Readings -------------------------------------------------------------
 
     @property
+    def available(self) -> bool:
+        """Whether the controller has a hot water circuit to boost."""
+        return hasattr(self.coordinator.device, COMPONENT_HOT_WATER)
+
+    @property
     def storage_temperature(self) -> float | None:
         """The tank temperature on S6."""
-        return self.coordinator.device.sensors.storage_temperature
+        return getattr(self.coordinator.device.sensors, "storage_temperature", None)
 
     @property
     def mode(self) -> OperatingMode | None:
