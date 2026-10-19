@@ -147,6 +147,11 @@ advice for your building.
   water goes into frost protection, and back to the weekly program on return.
   Frost protection is the "off" for holidays: a boost never leaves it by
   itself.
+* **Circulation pump held off.** Its override is set to *off*: hot water takes
+  a few seconds longer to reach a tap, but the tank does not lose its heat
+  into the circulation loop and lasts longer between charges. An override
+  holds until it is set back to *auto*, and the controller's frost protection
+  does not run that pump meanwhile - fine for a loop inside the heated house.
 * **Disinfection off**, as the tank is used daily.
 
 The three automations behind it (adapt entity IDs and persons):
