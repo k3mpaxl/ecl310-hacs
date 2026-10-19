@@ -112,6 +112,108 @@ and the weekly program carries on afterwards.
   `started_at`, `previous_mode` and the `user_id` of whoever started it - enough
   for an automation that tells that person their water is ready.
 
+## Saving energy: how it runs on the author's installation
+
+The integration was built to save district heating energy without anyone
+having to think about it. This is how it runs on the A237.1 it was developed
+on - a family house with a hot water tank. Take it as a starting point, not as
+advice for your building.
+
+**Heating circuit, summer**
+
+* **Summer cut-off low: 12 °C.** The heating stops once the *filtered* outdoor
+  temperature is above it - the sensor *Filtered outdoor temperature* shows the
+  value the controller actually compares, not the current reading.
+* **Minimum and maximum flow temperature both 15 °C.** On a cool summer night
+  the cut-off may not hold, and the heat curve would ask for a warm flow; with
+  both limits at 15 °C the flow stays cold whatever the curve says. Raised
+  again for the heating season.
+* **Pump off during setback** on: the circulation pump stops outside comfort
+  periods instead of moving cold water.
+
+**Hot water**
+
+* **Weekly program, not constant comfort.** The tank is only charged in the
+  hot water program's comfort period (05:00-21:00 here), and the *setback
+  temperature* is the minimum, 10 °C: outside the period nothing reheats it.
+* **Hot early, lower later.** At 05:00 an automation raises the setpoint to
+  46 °C, and with *Boost when the setpoint is raised* on, the tank is charged
+  once right away - the morning showers are covered. At 08:30 a second one
+  lowers it to 40 °C, so the tank is not kept at 46 °C for the rest of the day.
+* **One tap for more.** *Hot water boost* charges the tank once to the setpoint
+  and goes back to the program; the `ecl310_hot_water_boost_finished` event
+  sends a push to whoever started it.
+* **Nobody home, no hot water.** When the last of the adults leaves, the hot
+  water goes into frost protection, and back to the weekly program on return.
+  Frost protection is the "off" for holidays: a boost never leaves it by
+  itself.
+* **Disinfection off**, as the tank is used daily.
+
+The three automations behind it (adapt entity IDs and persons):
+
+```yaml
+- alias: "Hot water 46 °C in the morning"
+  triggers:
+    - trigger: time
+      at: "05:00:00"
+  conditions:  # someone who showers is home - not on holiday
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: person.adult_1
+          state: home
+        - condition: state
+          entity_id: person.adult_2
+          state: home
+  actions:
+    - action: water_heater.set_temperature
+      target:
+        entity_id: water_heater.hot_water
+      data:
+        temperature: 46
+
+- alias: "Hot water back to 40 °C"
+  triggers:
+    - trigger: time
+      at: "08:30:00"
+  conditions:  # only if it is higher - writing an unchanged value is pointless
+    - condition: numeric_state
+      entity_id: water_heater.hot_water
+      attribute: temperature
+      above: 40
+  actions:
+    - action: water_heater.set_temperature
+      target:
+        entity_id: water_heater.hot_water
+      data:
+        temperature: 40
+
+- alias: "Nobody home: hot water off"
+  triggers:
+    - trigger: state
+      entity_id: zone.home
+  actions:
+    - if:
+        - condition: zone.in_zone
+          target:
+            entity_id: [person.adult_1, person.adult_2]
+          options:
+            zone: zone.home
+            behavior: any
+      then:
+        - action: water_heater.set_operation_mode
+          target:
+            entity_id: water_heater.hot_water
+          data:
+            operation_mode: scheduled
+      else:
+        - action: water_heater.set_operation_mode
+          target:
+            entity_id: water_heater.hot_water
+          data:
+            operation_mode: frost_protection
+```
+
 ## Where the register map comes from
 
 Danfoss's own manual gives every setting's parameter ID and every input's
