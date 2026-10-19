@@ -315,7 +315,7 @@ that application has, generated from Danfoss' ECL Tool reports.
 | :---------- | :------ | :-------- |
 | A237.1 | V04 | the controller this integration was built on |
 | A337.2 | V02 | a controller in the field ([issue 13](https://github.com/k3mpaxl/ecl310-hacs/issues/13)) |
-| A266.10 | V03 | relays and valves confirmed by an owner ([issue 35](https://github.com/k3mpaxl/ecl310-hacs/issues/35)) |
+| A266.10 | V03 | a controller in the field: diagnostics, relays and valves ([issue 35](https://github.com/k3mpaxl/ecl310-hacs/issues/35)) |
 | A367.1 | V01-V04 | register map and refused registers match an owner's controller ([issue 38](https://github.com/k3mpaxl/ecl310-hacs/issues/38)) |
 
 * **Detection.** The controller reports its application and version
