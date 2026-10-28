@@ -25,6 +25,7 @@ from ..data_model import (
 )
 from ..enums import CircuitState, OperatingMode
 from ..exceptions import Ecl310ValueValidationError
+from .return_limit import return_limit_setting
 
 #: Register carrying the heating circuit's operating mode.
 MODE_REGISTER = 4200
@@ -64,6 +65,14 @@ def _curve_point(parameter_id: int, outdoor: int) -> NumberField[float]:
 
 class HeatingCircuit(Ecl310Component):
     """The weather-compensated space heating circuit."""
+
+    return_limit_x1 = return_limit_setting(11031)
+    return_limit_y1 = return_limit_setting(11032)
+    return_limit_x2 = return_limit_setting(11033)
+    return_limit_y2 = return_limit_setting(11034)
+    return_limit_influence_max = return_limit_setting(11035)
+    return_limit_influence_min = return_limit_setting(11036)
+    return_limit_adaptation_time = return_limit_setting(11037)
 
     mode = register_enum(
         MODE_REGISTER,

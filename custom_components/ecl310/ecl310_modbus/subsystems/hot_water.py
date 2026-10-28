@@ -25,6 +25,7 @@ from ..data_model import (
 )
 from ..enums import CircuitState, OperatingMode
 from ..exceptions import Ecl310ValueValidationError
+from .return_limit import return_limit_setting
 
 #: Register carrying the hot water circuit's operating mode.
 MODE_REGISTER = 4201
@@ -44,6 +45,10 @@ DISINFECTION_DEFAULT_TEMPERATURE = 70
 
 class HotWater(Ecl310Component):
     """Domestic hot water preparation and its disinfection function."""
+
+    return_limit_influence_max = return_limit_setting(12035)
+    return_limit_influence_min = return_limit_setting(12036)
+    return_limit_adaptation_time = return_limit_setting(12037)
 
     mode = register_enum(
         MODE_REGISTER,

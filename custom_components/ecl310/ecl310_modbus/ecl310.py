@@ -71,6 +71,14 @@ DEFAULT_SENSORS: dict[int, str] = {
     assignment.number: assignment.key for assignment in SENSOR_ASSIGNMENTS
 }
 
+# These installer settings are enabled only for the profiles verified here.
+RETURN_SETTING_PREFIXES = (
+    "return_limit_x",
+    "return_limit_y",
+    "return_limit_influence_",
+    "return_limit_adaptation_",
+)
+
 
 @dataclass(frozen=True)
 class Circuit:
@@ -164,16 +172,15 @@ class Ecl310:
             )
             setattr(self, circuit.component, kind_type(unit))
             setattr(self, circuit.schedule, schedule_component(circuit.number)(unit))
-        if application is not None:
-            for name in self.all_component_names:
-                component: Ecl310Component = getattr(self, name)
-                keep = [
-                    field
-                    for field in type(component).declared_fields
-                    if self._has(component, field)
-                ]
-                if len(keep) < len(type(component).declared_fields):
-                    component.restrict_fields(keep)
+        for name in self.all_component_names:
+            component: Ecl310Component = getattr(self, name)
+            keep = [
+                field
+                for field in type(component).declared_fields
+                if self._has(component, field)
+            ]
+            if len(keep) < len(type(component).declared_fields):
+                component.restrict_fields(keep)
 
     @property
     def component_names(self) -> tuple[str, ...]:
@@ -259,6 +266,8 @@ class Ecl310:
         if component is self.sensors:
             return field in self.sensor_assignment.values()
         if self.application is None:
+            if field.startswith(RETURN_SETTING_PREFIXES):
+                return False  # These new settings have only been verified against profiles.
             return True
         metadata = component.metadata_for(field)
         if metadata is None or metadata.parameter_id is None:
@@ -275,7 +284,7 @@ class Ecl310:
         return subsystem is not None and self._has(subsystem, field)
 
     @staticmethod
-    def parameter_ids() -> frozenset[int]:
+    def parameter_ids(*, include_installer_settings: bool = True) -> frozenset[int]:
         """Every ECL parameter this library models."""
         ids: set[int] = set()
         for component_type in (
@@ -286,7 +295,13 @@ class Ecl310:
             HeatingSchedule,
             HotWaterSchedule,
         ):
-            for descriptor in component_type.declared_fields.values():
+            for name, descriptor in component_type.declared_fields.items():
+                # Do not change the application detection probe set just by
+                # adding optional settings. They do not identify a controller.
+                if not include_installer_settings and name.startswith(
+                    RETURN_SETTING_PREFIXES
+                ):
+                    continue
                 metadata = getattr(descriptor, "ecl_metadata", None)
                 if metadata is not None and metadata.parameter_id is not None:
                     ids.add(metadata.parameter_id)
@@ -335,7 +350,11 @@ class Ecl310:
                 reported=system.application_title,
                 reported_profile=profile,
             )
-        return await async_detect(unit, candidates, preferred=cls.parameter_ids())
+        return await async_detect(
+            unit,
+            candidates,
+            preferred=cls.parameter_ids(include_installer_settings=False),
+        )
 
     @classmethod
     async def async_probe(cls, unit: ModbusUnit) -> DeviceInformation:

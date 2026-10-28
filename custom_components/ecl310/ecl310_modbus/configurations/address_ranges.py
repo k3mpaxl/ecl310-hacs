@@ -48,6 +48,10 @@ HEATING_PUMP_RANGE: Range = parameter_range(11021, 11021)
 #: Heating circuit: return temperature limit (ECL parameter 11028).
 HEATING_RETURN_LIMIT_RANGE: Range = parameter_range(11028, 11028)
 
+# Return-limit curve and influence, present only in some profiles.
+HEATING_RETURN_SETTINGS_RANGE: Range = parameter_range(11031, 11037)
+HOT_WATER_RETURN_SETTINGS_RANGE: Range = parameter_range(12035, 12037)
+
 #: Heating circuit: pump post-run time (ECL parameter 11040).
 HEATING_POST_RUN_RANGE: Range = parameter_range(11040, 11040)
 
@@ -122,6 +126,7 @@ REGISTER_RANGES: tuple[Range, ...] = (
     SENSOR_RANGE,
     HEATING_PUMP_RANGE,
     HEATING_RETURN_LIMIT_RANGE,
+    HEATING_RETURN_SETTINGS_RANGE,
     HEATING_POST_RUN_RANGE,
     HEATING_PRIORITY_RANGE,
     HEATING_FROST_RANGE,
@@ -132,6 +137,7 @@ REGISTER_RANGES: tuple[Range, ...] = (
     HEATING_RETURN_REFERENCE_RANGE,
     HEATING_CURVE_RANGE,
     HOT_WATER_RETURN_LIMIT_RANGE,
+    HOT_WATER_RETURN_SETTINGS_RANGE,
     HOT_WATER_CIRCULATION_FROST_RANGE,
     HOT_WATER_FROST_RANGE,
     HOT_WATER_DISINFECTION_RANGE,
