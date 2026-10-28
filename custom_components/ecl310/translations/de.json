@@ -653,6 +653,146 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "hot_water_return_limit_adaptation_time": {
+        "name": "Rücklaufbegrenzung Anpassungszeit",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_max": {
+        "name": "Rücklaufbegrenzung Einfluss max.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_min": {
+        "name": "Rücklaufbegrenzung Einfluss min.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_adaptation_time": {
+        "name": "Rücklaufbegrenzung Anpassungszeit",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_influence_max": {
+        "name": "Rücklaufbegrenzung Einfluss max.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_influence_min": {
+        "name": "Rücklaufbegrenzung Einfluss min.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_x1": {
+        "name": "Rücklaufbegrenzung X1 hohe Außentemperatur",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_x2": {
+        "name": "Rücklaufbegrenzung X2 tiefe Außentemperatur",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_y1": {
+        "name": "Rücklaufbegrenzung Y1 untere Grenze",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_y2": {
+        "name": "Rücklaufbegrenzung Y2 obere Grenze",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
       }
     },
     "select": {

@@ -9,7 +9,7 @@ and off.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from homeassistant.components.number import (
     NumberDeviceClass,
@@ -96,6 +96,45 @@ NUMBERS: tuple[Ecl310NumberDescription, ...] = (
     ),
     # --- the remaining heating settings ------------------------------------
     _temperature_setting(COMPONENT_HEATING, "return_limit", key="heating_return_limit"),
+    *(
+        replace(
+            _setting(
+                COMPONENT_HEATING,
+                f"return_limit_{point}",
+                unit=UnitOfTemperature.CELSIUS,
+                device_class=NumberDeviceClass.TEMPERATURE,
+            ),
+            entity_registry_enabled_default=False,
+        )
+        for point in ("x1", "y1", "x2", "y2")
+    ),
+    *(
+        replace(
+            _setting(
+                component,
+                attribute,
+                key=f"{prefix}{attribute}",
+                unit=UnitOfTime.SECONDS
+                if attribute.endswith("adaptation_time")
+                else None,
+                device_class=(
+                    NumberDeviceClass.DURATION
+                    if attribute.endswith("adaptation_time")
+                    else None
+                ),
+            ),
+            entity_registry_enabled_default=False,
+        )
+        for component, prefix in (
+            (COMPONENT_HEATING, ""),
+            (COMPONENT_HOT_WATER, "hot_water_"),
+        )
+        for attribute in (
+            "return_limit_influence_max",
+            "return_limit_influence_min",
+            "return_limit_adaptation_time",
+        )
+    ),
     _temperature_setting(
         COMPONENT_HEATING,
         "frost_protection_temperature",

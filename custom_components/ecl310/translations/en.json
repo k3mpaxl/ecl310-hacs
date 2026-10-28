@@ -528,6 +528,48 @@
           }
         }
       },
+      "hot_water_return_limit_adaptation_time": {
+        "name": "Return limit adaptation time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_max": {
+        "name": "Return limit maximum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_min": {
+        "name": "Return limit minimum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "hot_water_setback_setpoint": {
         "name": "Setback temperature",
         "state_attributes": {
@@ -586,6 +628,104 @@
       },
       "pump_post_run": {
         "name": "Pump post-run",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_adaptation_time": {
+        "name": "Return limit adaptation time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_influence_max": {
+        "name": "Return limit maximum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_influence_min": {
+        "name": "Return limit minimum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_x1": {
+        "name": "Return limit X1 high outdoor temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_x2": {
+        "name": "Return limit X2 low outdoor temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_y1": {
+        "name": "Return limit Y1 low limit",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_y2": {
+        "name": "Return limit Y2 high limit",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
