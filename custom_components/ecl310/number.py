@@ -47,6 +47,19 @@ SEASONAL_NUMBERS = (
     ("winter_cut_off", UnitOfTemperature.CELSIUS, NumberDeviceClass.TEMPERATURE),
     ("winter_filter", None, None),
 )
+ALARM_NUMBERS = (
+    ("alarm_max_flow", UnitOfTemperature.CELSIUS, NumberDeviceClass.TEMPERATURE),
+    ("alarm_flow_delay_seconds", UnitOfTime.SECONDS, NumberDeviceClass.DURATION),
+    ("alarm_flow_upper_difference", UnitOfTemperature.KELVIN, None),
+    ("alarm_flow_lower_difference", UnitOfTemperature.KELVIN, None),
+    ("alarm_flow_difference_delay", UnitOfTime.MINUTES, NumberDeviceClass.DURATION),
+    (
+        "alarm_flow_monitor_threshold",
+        UnitOfTemperature.CELSIUS,
+        NumberDeviceClass.TEMPERATURE,
+    ),
+    ("alarm_input_delay", UnitOfTime.SECONDS, NumberDeviceClass.DURATION),
+)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -111,7 +124,11 @@ NUMBERS: tuple[Ecl310NumberDescription, ...] = (
             entity_registry_enabled_default=False,
         )
         for component, prefix, values in (
-            (COMPONENT_HEATING, "", (*INSTALLATION_NUMBERS, *SEASONAL_NUMBERS)),
+            (
+                COMPONENT_HEATING,
+                "",
+                (*INSTALLATION_NUMBERS, *SEASONAL_NUMBERS, *ALARM_NUMBERS),
+            ),
             (COMPONENT_HOT_WATER, "hot_water_", INSTALLATION_NUMBERS),
         )
         for name, unit, kind in values

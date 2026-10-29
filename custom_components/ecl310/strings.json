@@ -1185,6 +1185,104 @@
             "name": "ECL menu"
           }
         }
+      },
+      "alarm_max_flow": {
+        "name": "Alarm maximum flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_delay_seconds": {
+        "name": "Alarm maximum flow delay",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_upper_difference": {
+        "name": "Alarm flow upper difference",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_lower_difference": {
+        "name": "Alarm flow lower difference",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_difference_delay": {
+        "name": "Alarm flow difference delay",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_monitor_threshold": {
+        "name": "Alarm minimum monitored flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_input_delay": {
+        "name": "Alarm input delay",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
       }
     },
     "select": {
@@ -1326,6 +1424,24 @@
         "state": {
           "m_abv": "M-ABV",
           "m_3_point": "M-3.Pkt."
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_input_polarity": {
+        "name": "Alarm input activation",
+        "state": {
+          "closed": "Contact closed",
+          "open": "Contact open"
         },
         "state_attributes": {
           "pnu": {
@@ -2050,6 +2166,34 @@
       },
       "hot_water_valve_exercise": {
         "name": "Control valve exercise",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_upper_difference_enabled": {
+        "name": "Alarm flow upper difference enabled",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "alarm_flow_lower_difference_enabled": {
+        "name": "Alarm flow lower difference enabled",
         "state_attributes": {
           "pnu": {
             "name": "PNU"

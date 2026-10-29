@@ -14,6 +14,12 @@ from ..data_model import parameter_number
 INSTALLER_NUMBERS: dict[int, tuple[int, int, int | None, str | None]] = {
     77: (-11, 20, -11, "°C"),
     78: (5, 80, None, "°C"),
+    79: (10, 110, None, "°C"),
+    80: (5, 250, None, "s"),
+    147: (0, 30, 0, "K"),
+    148: (0, 30, 0, "K"),
+    149: (1, 99, None, "min"),
+    150: (10, 50, None, "°C"),
     174: (9, 59, 9, "min"),
     184: (5, 250, None, "K"),
     185: (1, 999, None, "s"),
@@ -27,6 +33,7 @@ INSTALLER_NUMBERS: dict[int, tuple[int, int, int | None, str | None]] = {
     397: (1, 31, None, None),
     398: (0, 50, 0, "°C"),
     399: (0, 300, 0, None),
+    637: (0, 240, None, "s"),
 }
 
 INSTALLER_NUMERIC_FIELDS = frozenset({
@@ -34,9 +41,11 @@ INSTALLER_NUMERIC_FIELDS = frozenset({
     "valve_proportional_band", "valve_integral_time", "valve_running_time",
     "valve_neutral_zone", "valve_minimum_pulse", "summer_start_month",
     "summer_start_day", "summer_filter", "winter_start_month", "winter_start_day",
-    "winter_cut_off", "winter_filter",
+    "winter_cut_off", "winter_filter", "alarm_max_flow", "alarm_flow_delay_seconds",
+    "alarm_flow_upper_difference", "alarm_flow_lower_difference", "alarm_flow_difference_delay",
+    "alarm_flow_monitor_threshold", "alarm_input_delay",
 })
-INSTALLER_SWITCH_FIELDS = frozenset({"pump_exercise", "valve_exercise", "actuator_type"})
+INSTALLER_SWITCH_FIELDS = frozenset({"pump_exercise", "valve_exercise", "actuator_type", "alarm_input_polarity"})
 
 
 def installation_number(pnu: int) -> NumberField[float]:

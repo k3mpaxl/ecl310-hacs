@@ -511,3 +511,112 @@ async def test_slow_setting_reads_periodically_and_after_write(
     await coordinator.async_refresh()
     await hass.async_block_till_done()
     assert hass.states.get(eid).state == "60"
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_a266_alarm_input_and_flow_settings(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """A266 exposes its flow alarm and documented input contact polarity."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    assert "alarm_flow_upper_difference" not in ids
+    registry = er.async_get(hass)
+    for key in (
+        "alarm_max_flow",
+        "alarm_flow_delay_seconds",
+        "alarm_input_polarity",
+        "alarm_input_delay",
+    ):
+        assert registry.async_get(ids[key]).disabled_by is not None
+        registry.async_update_entity(ids[key], disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    assert hass.states.get(ids["alarm_max_flow"]).attributes["pnu"] == 11079
+    assert hass.states.get(ids["alarm_input_polarity"]).attributes["pnu"] == 11636
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {"entity_id": ids["alarm_input_polarity"], "option": "closed"},
+        blocking=True,
+    )
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    assert unit.holding[11635] == 0
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {"entity_id": ids["alarm_input_polarity"], "option": "open"},
+        blocking=True,
+    )
+    assert unit.holding[11635] == 1
+
+
+@pytest.mark.parametrize("application", ["a237_1_v04"])
+async def test_a237_alarm_difference_off_is_not_zero_kelvin(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The upper difference OFF sentinel is shown separately from a threshold."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    assert "alarm_max_flow" not in ids
+    registry = er.async_get(hass)
+    for key in ("alarm_flow_upper_difference", "alarm_flow_upper_difference_enabled"):
+        registry.async_update_entity(ids[key], disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {"entity_id": ids["alarm_flow_upper_difference"], "value": 5},
+        blocking=True,
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "switch",
+        "turn_off",
+        {"entity_id": ids["alarm_flow_upper_difference_enabled"]},
+        blocking=True,
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert connections[-1].for_unit(ENTRY_DATA["unit_id"]).holding[11146] == 0
+    assert hass.states.get(ids["alarm_flow_upper_difference"]).state == "unknown"
+
+
+@pytest.mark.parametrize("application", sorted(PROFILES))
+async def test_alarm_settings_follow_each_supported_profile(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Alarm settings and absence of x617 follow each profile and heating circuit."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    device = entry.runtime_data.coordinator.device
+    registry = er.async_get(hass)
+    for circuit in device.circuits:
+        if circuit.kind != "heating":
+            continue
+        suffix = f"_circuit_{circuit.number}" if circuit.numbered else ""
+        for name, offset in (
+            ("alarm_max_flow", 79),
+            ("alarm_flow_delay_seconds", 80),
+            ("alarm_flow_upper_difference", 147),
+            ("alarm_flow_lower_difference", 148),
+            ("alarm_flow_difference_delay", 149),
+            ("alarm_flow_monitor_threshold", 150),
+            ("alarm_input_polarity", 636),
+            ("alarm_input_delay", 637),
+        ):
+            key = name + suffix
+            pnu = 10000 + 1000 * circuit.number + offset
+            if pnu in device.application.parameters:
+                assert registry.async_get(ids[key]).disabled_by is not None
+                assert (
+                    getattr(device, circuit.component).metadata_for(name).parameter_id
+                    == pnu
+                )
+            else:
+                assert key not in ids
+        assert 10000 + 1000 * circuit.number + 617 not in device.application.parameters
