@@ -1185,6 +1185,104 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "alarm_max_flow": {
+        "name": "Alarm Vorlauf maximale Temperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_delay_seconds": {
+        "name": "Alarm Vorlauf maximal Verzögerung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_upper_difference": {
+        "name": "Alarm Vorlauf obere Abweichung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_lower_difference": {
+        "name": "Alarm Vorlauf untere Abweichung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_difference_delay": {
+        "name": "Alarm Vorlauf Abweichung Verzögerung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_monitor_threshold": {
+        "name": "Alarm Vorlauf überwacht ab",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_input_delay": {
+        "name": "Alarmeingang Verzögerung",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "select": {
@@ -1326,6 +1424,24 @@
         "state": {
           "m_abv": "M-ABV",
           "m_3_point": "M-3.Pkt."
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_input_polarity": {
+        "name": "Alarmeingang aktiv bei",
+        "state": {
+          "closed": "Kontakt geschlossen",
+          "open": "Kontakt offen"
         },
         "state_attributes": {
           "pnu": {
@@ -2050,6 +2166,34 @@
       },
       "hot_water_valve_exercise": {
         "name": "Regelventil Blockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_upper_difference_enabled": {
+        "name": "Alarm Vorlauf obere Abweichung aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "alarm_flow_lower_difference_enabled": {
+        "name": "Alarm Vorlauf untere Abweichung aktiviert",
         "state_attributes": {
           "pnu": {
             "name": "PNU"

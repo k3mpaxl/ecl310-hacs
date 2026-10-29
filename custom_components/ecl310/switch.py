@@ -41,6 +41,8 @@ OPTIONAL_HEATING_SETTINGS = (
     ("summer_filter", 0, 1),
     ("winter_cut_off", 0, 1),
     ("winter_filter", 0, 1),
+    ("alarm_flow_upper_difference", 0, 1),
+    ("alarm_flow_lower_difference", 0, 1),
 )
 OPTIONAL_CIRCUIT_SETTINGS = (
     ("pump_frost_threshold", -11, -10),

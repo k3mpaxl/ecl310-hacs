@@ -88,9 +88,48 @@ async def async_setup_entry(
                     Ecl310ActuatorType(coordinator, circuit)
                     for circuit in coordinator.device.circuits
                 ),
+                *(
+                    Ecl310AlarmInputPolarity(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HEATING
+                ),
             ],
         )
     )
+
+
+class Ecl310AlarmInputPolarity(Ecl310Entity, SelectEntity):
+    """Select whether contact closure or opening activates the alarm."""
+
+    _attr_translation_key = "alarm_input_polarity"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_registry_enabled_default = False
+    _attr_options = ["closed", "open"]
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Attach the input to its heating circuit."""
+        super().__init__(
+            coordinator,
+            circuit_key("alarm_input_polarity", circuit),
+            circuit.component,
+            ("alarm_input_polarity",),
+        )
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the contact state which triggers the alarm."""
+        value = self._subsystem.alarm_input_polarity
+        return None if value is None else self._attr_options[int(value)]
+
+    async def async_select_option(self, option: str) -> None:
+        """Write the requested trigger polarity."""
+        if option not in self._attr_options:
+            message = f"Unsupported alarm input polarity: {option}"
+            raise ValueError(message)
+        await self._async_write(
+            self._subsystem.write("alarm_input_polarity", option == "open")
+        )
+        await self.coordinator.async_request_refresh()
 
 
 class Ecl310ActuatorType(Ecl310Entity, SelectEntity):
