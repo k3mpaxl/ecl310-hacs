@@ -78,6 +78,7 @@ RETURN_SETTING_PREFIXES = (
     "return_limit_influence_",
     "return_limit_adaptation_",
     "return_limit_priority",
+    "parallel_operation",
 )
 
 
@@ -170,6 +171,7 @@ class Ecl310:
                 CIRCUIT_TYPES[circuit.kind],
                 circuit.number,
                 self.circuit_sensors(circuit),
+                application,
             )
             setattr(self, circuit.component, kind_type(unit))
             setattr(self, circuit.schedule, schedule_component(circuit.number)(unit))

@@ -42,7 +42,7 @@
 
 **Interfaces:** Existing `Ecl310.supports(component, field)`, `Ecl310Component.metadata_for(field)`, and `component.write(field, value)` remain stable. New declared setting fields must be restricted by selected profile and carry the selected profile's min, max, scale, signedness and writability. Unknown profile must expose none of the new fields.
 
-- [ ] Add tests for A266.10 PNU 11043 max 99 and A237.1 max 100; assert 100 rejected on A266 before I/O and accepted on A237, and A367 circuit 2 uses PNU 12043 where present.
+- [ ] Add tests for A266.10 PNU 11043 max 99 and A237.1 max 100; assert 100 rejected on A266 before I/O and accepted on A237, and A367 circuit 2 does not expose or read absent PNU 12043.
 - [ ] Run `PYTHONPATH=/private/tmp/ecl310-issue47-py:$PWD python3 -m pytest tests/test_installation_settings.py -q`; verify failures show the missing behavior.
 - [ ] Implement explicit per-profile validation and metadata binding, retaining field semantics and current IDs. Never mutate shared descriptor state between controllers.
 - [ ] Add a simulated refused-field test and measure read blocks for adding a contiguous group versus the baseline. Isolate optional reads so a refusal does not disable climate; explicitly document any added polling.

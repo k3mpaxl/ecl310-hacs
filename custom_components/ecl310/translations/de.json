@@ -793,6 +793,20 @@
             "name": "Klemme"
           }
         }
+      },
+      "parallel_operation": {
+        "name": "Parallelbetrieb",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "select": {

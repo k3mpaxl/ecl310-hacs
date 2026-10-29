@@ -73,6 +73,19 @@ class HeatingCircuit(Ecl310Component):
     return_limit_influence_max = return_limit_setting(11035)
     return_limit_influence_min = return_limit_setting(11036)
     return_limit_adaptation_time = return_limit_setting(11037)
+    parallel_operation = parameter_number(
+        11043,
+        1,
+        signed=False,
+        min_value=0,
+        max_value=100,
+        raw_min=0,
+        raw_max=100,
+        step=1,
+        digits=0,
+        unit="K",
+        writable=True,
+    )
     return_limit_priority = parameter_switch(
         11085,
         writable=True,
