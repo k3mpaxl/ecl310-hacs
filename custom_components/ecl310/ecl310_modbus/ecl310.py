@@ -79,6 +79,11 @@ RETURN_SETTING_PREFIXES = (
     "return_limit_adaptation_",
     "return_limit_priority",
     "parallel_operation",
+    "building_factor",
+    "auto_saving",
+    "heat_up_boost",
+    "ramp_time",
+    "optimised_stop",
 )
 
 

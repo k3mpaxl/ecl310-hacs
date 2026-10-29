@@ -66,6 +66,48 @@ def _curve_point(parameter_id: int, outdoor: int) -> NumberField[float]:
 class HeatingCircuit(Ecl310Component):
     """The weather-compensated space heating circuit."""
 
+    optimised_stop = parameter_switch(11026, writable=True)
+    auto_saving = parameter_number(
+        11011,
+        1,
+        min_value=-29,
+        max_value=10,
+        raw_min=-30,
+        raw_max=10,
+        off_value=-30,
+        step=1,
+        digits=0,
+        unit="°C",
+        writable=True,
+    )
+    heat_up_boost = parameter_number(
+        11012,
+        1,
+        signed=False,
+        min_value=1,
+        max_value=99,
+        raw_min=0,
+        raw_max=99,
+        off_value=0,
+        step=1,
+        digits=0,
+        unit="%",
+        writable=True,
+    )
+    ramp_time = parameter_number(
+        11013,
+        1,
+        signed=False,
+        min_value=1,
+        max_value=99,
+        raw_min=0,
+        raw_max=99,
+        off_value=0,
+        step=1,
+        digits=0,
+        unit="min",
+        writable=True,
+    )
     return_limit_x1 = return_limit_setting(11031)
     return_limit_y1 = return_limit_setting(11032)
     return_limit_x2 = return_limit_setting(11033)
@@ -84,6 +126,19 @@ class HeatingCircuit(Ecl310Component):
         step=1,
         digits=0,
         unit="K",
+        writable=True,
+    )
+    building_factor = parameter_number(
+        11014,
+        1,
+        signed=False,
+        min_value=10,
+        max_value=59,
+        raw_min=9,
+        raw_max=59,
+        off_value=9,
+        step=1,
+        digits=0,
         writable=True,
     )
     return_limit_priority = parameter_switch(

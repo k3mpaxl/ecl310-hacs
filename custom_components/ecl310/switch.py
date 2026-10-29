@@ -33,6 +33,12 @@ PARALLEL_UPDATES = 1
 
 #: Where the disinfection switch keeps the temperature turning it on sets.
 ATTR_TEMPERATURE_WHEN_ON = "temperature_when_on"
+OPTIONAL_HEATING_SETTINGS = (
+    ("building_factor", 9, 10),
+    ("auto_saving", -30, -29),
+    ("heat_up_boost", 0, 1),
+    ("ramp_time", 0, 1),
+)
 
 #: The attribute-name fragment each weekday is exposed under.
 WEEKDAY_KEYS: tuple[str, ...] = tuple(day.name.lower() for day in Weekday)
@@ -87,6 +93,16 @@ async def _set_day(
 
 
 SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
+    Ecl310SwitchDescription(
+        key="optimised_stop",
+        translation_key="optimised_stop",
+        component=COMPONENT_HEATING,
+        field="optimised_stop",
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+        value_fn=lambda circuit: cast(HeatingCircuit, circuit).optimised_stop,
+        set_fn=lambda _coordinator, circuit, on: circuit.write("optimised_stop", on),
+    ),
     Ecl310SwitchDescription(
         key="return_limit_priority",
         translation_key="return_limit_priority",
@@ -148,6 +164,14 @@ async def async_setup_entry(
                     if circuit.kind == COMPONENT_HOT_WATER
                 ),
                 *(
+                    Ecl310OptionalSettingSwitch(
+                        coordinator, circuit, setting, off, default
+                    )
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HEATING
+                    for setting, off, default in OPTIONAL_HEATING_SETTINGS
+                ),
+                *(
                     [
                         Ecl310BoostSwitch(coordinator, boost),
                         Ecl310BoostOnRaiseSwitch(coordinator, boost),
@@ -158,6 +182,79 @@ async def async_setup_entry(
             ],
         )
     )
+
+
+class Ecl310OptionalSettingSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
+    """Enable a setting using its last active numeric value."""
+
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_registry_enabled_default = False
+
+    def __init__(
+        self,
+        coordinator: Ecl310Coordinator,
+        circuit: Circuit,
+        setting: str,
+        off: int,
+        default: int,
+    ) -> None:
+        """Attach the switch to its heating circuit and setting."""
+        key = f"{setting}_enabled"
+        super().__init__(
+            coordinator,
+            circuit_key(key, circuit),
+            circuit.component,
+            (setting,),
+        )
+        self._attr_translation_key = key
+        self._setting, self._off, self._default = setting, off, default
+        self._last_value: float | None = None
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the last active value after a restart."""
+        await super().async_added_to_hass()
+        if (last := await self.async_get_last_state()) is not None:
+            self._last_value = last.attributes.get("last_value")
+        self._remember()
+
+    def _remember(self) -> None:
+        value = getattr(self._subsystem, self._setting)
+        if value is not None and value != self._off:
+            self._last_value = value
+
+    def _handle_coordinator_update(self) -> None:
+        self._remember()
+        super()._handle_coordinator_update()
+
+    @property
+    def is_on(self) -> bool | None:
+        """Report whether the setting is active."""
+        value = getattr(self._subsystem, self._setting)
+        return None if value is None else value != self._off
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Expose the value to restore and the register identity."""
+        return {
+            **(super().extra_state_attributes or {}),
+            "last_value": self._last_value,
+        }
+
+    async def async_turn_on(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Restore the most recently active value."""
+        await self._async_write(
+            self._subsystem.write(
+                self._setting,
+                self._last_value if self._last_value is not None else self._default,
+            )
+        )
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:  # noqa: ARG002
+        """Store the value and switch the setting off."""
+        self._remember()
+        await self._async_write(self._subsystem.write(self._setting, self._off))
+        await self.coordinator.async_request_refresh()
 
 
 class Ecl310DisinfectionSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):

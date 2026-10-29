@@ -807,6 +807,62 @@
             "name": "ECL menu"
           }
         }
+      },
+      "building_factor": {
+        "name": "Building factor",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "auto_saving": {
+        "name": "Automatic saving outdoor threshold",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "heat_up_boost": {
+        "name": "Heat-up boost",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "ramp_time": {
+        "name": "Ramp time",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
       }
     },
     "select": {
@@ -911,6 +967,25 @@
           "auto": "[%key:component::ecl310::entity::select::heating_pump_override::state::auto%]",
           "off": "[%key:component::ecl310::entity::select::heating_pump_override::state::off%]",
           "on": "[%key:component::ecl310::entity::select::heating_pump_override::state::on%]"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "parallel_operation_mode": {
+        "name": "Parallel operation mode",
+        "state": {
+          "off": "Off",
+          "conditional": "Conditional",
+          "on": "On"
         },
         "state_attributes": {
           "pnu": {
@@ -1439,6 +1514,76 @@
       },
       "return_limit_priority": {
         "name": "Return limit overrides minimum flow temperature",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "building_factor_enabled": {
+        "name": "Optimisation enabled",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "auto_saving_enabled": {
+        "name": "Automatic saving outdoor threshold enabled",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "heat_up_boost_enabled": {
+        "name": "Heat-up boost enabled",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "ramp_time_enabled": {
+        "name": "Ramp time enabled",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "optimised_stop": {
+        "name": "Optimised stop",
         "state_attributes": {
           "pnu": {
             "name": "PNU"

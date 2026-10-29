@@ -18,16 +18,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.const import Platform
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import COMPONENT_OUTPUTS
+from .const import COMPONENT_HEATING, COMPONENT_OUTPUTS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import Ecl310, OutputControl
-from .entity import Ecl310Entity, role_name, supported
+from .ecl310_modbus import Circuit, Ecl310, OutputControl
+from .entity import Ecl310Entity, circuit_key, role_name, supported
 
 PARALLEL_UPDATES = 1
+PARALLEL_FULL_ON = 100
+PARALLEL_MAX_THRESHOLD = 99
 
 #: The override positions, as the option strings Home Assistant shows.
 OPTIONS: dict[str, OutputControl] = {
@@ -71,12 +74,91 @@ async def async_setup_entry(
         supported(
             hass,
             Platform.SELECT,
-            (
-                Ecl310Select(coordinator, description)
-                for description in selects(coordinator.device)
-            ),
+            [
+                *(
+                    Ecl310Select(coordinator, description)
+                    for description in selects(coordinator.device)
+                ),
+                *(
+                    Ecl310ParallelMode(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HEATING
+                ),
+            ],
         )
     )
+
+
+class Ecl310ParallelMode(Ecl310Entity, SelectEntity, RestoreEntity):
+    """Expose OFF, conditional operation and supported full ON mode."""
+
+    _attr_translation_key = "parallel_operation_mode"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_registry_enabled_default = False
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Attach the mode to its heating circuit."""
+        super().__init__(
+            coordinator,
+            circuit_key("parallel_operation_mode", circuit),
+            circuit.component,
+            ("parallel_operation",),
+        )
+        number = self._metadata("parallel_operation").number
+        self._attr_options = ["off", "conditional"]
+        if (
+            number is not None
+            and number.max_value is not None
+            and number.max_value >= PARALLEL_FULL_ON
+        ):
+            self._attr_options.append("on")
+        self._last_threshold: float | None = None
+
+    async def async_added_to_hass(self) -> None:
+        """Recover the most recent conditional threshold."""
+        await super().async_added_to_hass()
+        if (last := await self.async_get_last_state()) is not None:
+            self._last_threshold = last.attributes.get("last_threshold")
+        self._remember()
+
+    def _remember(self) -> None:
+        value = self._subsystem.parallel_operation
+        if value is not None and 1 <= value <= PARALLEL_MAX_THRESHOLD:
+            self._last_threshold = value
+
+    def _handle_coordinator_update(self) -> None:
+        self._remember()
+        super()._handle_coordinator_update()
+
+    @property
+    def current_option(self) -> str | None:
+        """Decode the ECL's special values."""
+        value = self._subsystem.parallel_operation
+        if value is None:
+            return None
+        if value == 0:
+            return "off"
+        if value == PARALLEL_FULL_ON:
+            return "on" if "on" in self._attr_options else None
+        return "conditional" if 1 <= value <= PARALLEL_MAX_THRESHOLD else None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Expose the last threshold and PNU."""
+        return {
+            **(super().extra_state_attributes or {}),
+            "last_threshold": self._last_threshold,
+        }
+
+    async def async_select_option(self, option: str) -> None:
+        """Write only a supported mode and refresh the result."""
+        if option not in self._attr_options:
+            message = f"Unsupported parallel mode: {option}"
+            raise ValueError(message)
+        self._remember()
+        value = {"off": 0, "on": 100, "conditional": self._last_threshold or 1}[option]
+        await self._async_write(self._subsystem.write("parallel_operation", value))
+        await self.coordinator.async_request_refresh()
 
 
 class Ecl310Select(Ecl310Entity, SelectEntity):
