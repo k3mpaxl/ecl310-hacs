@@ -2,10 +2,15 @@
 # Replace EVERY placeholder with an enabled entity ID from your own installation.
 # Delete rows for settings your application or circuit does not have.
 # This card is display configuration; adding it does not change controller values.
+# WARNING: Incorrect settings can damage the controller or connected equipment.
+# WARNUNG: Falsche Einstellungen können den Regler oder die Anlage beschädigen.
+# Have changes assessed by a qualified professional / Änderungen nur fachkundig prüfen.
 type: entities
 title: ECL heating circuit — installation settings
 show_header_toggle: false
 entities:
+  - type: section
+    label: ⚠ Risk of damage / Schadensgefahr
   - type: section
     label: Return limitation
   - entity: number.replace_with_return_limit_x1

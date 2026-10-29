@@ -8,6 +8,27 @@ what has actually been tested. The build supports A237.1 V04, A266.10 V03,
 A337.2 V02 and A367.1 V01–V04 only; the generic fallback does not expose these
 new settings or diagnostics.
 
+## Important safety information
+
+> **Risk of damage:** Some settings directly affect the heating system and its
+> connected equipment. Incorrect valve, actuator, pump, frost-protection,
+> temperature-limit or alarm settings can lead to unsafe operation and may
+> damage the controller or other system components. A value accepted by the
+> ECL or shown as valid in Home Assistant is not necessarily safe for your
+> installation. Only a qualified person who understands the specific system
+> should change these settings; when in doubt, consult the installer or service
+> technician. Compare values read-only first, record the original settings and
+> use the ECL application manual before making any change.
+>
+> **Schadensgefahr:** Einige Einstellungen beeinflussen die Heizungsanlage und
+> angeschlossene Komponenten unmittelbar. Falsche Einstellungen für Ventil,
+> Stellantrieb, Pumpe, Frostschutz, Temperaturbegrenzung oder Alarme können zu
+> unsicherem Betrieb und Schäden am Regler oder an der Anlage führen. Ein vom
+> ECL oder von Home Assistant zugelassener Wert ist nicht automatisch für die
+> eigene Anlage sicher. Änderungen nur durch eine fachkundige Person vornehmen
+> lassen; im Zweifel den Heizungsfachbetrieb kontaktieren. Zuerst Werte nur
+> ablesen, Originalwerte dokumentieren und das passende ECL-Handbuch beachten.
+
 ## Install and restore
 
 1. Back up the existing `config/custom_components/ecl310` folder outside
@@ -35,7 +56,8 @@ Alarm count is a diagnostic on the controller; its `alarm_ids` and `contexts`
 attributes show active IDs and available raw context words. Meanings depend on
 the application. There is no alarm acknowledgement or clearing action: the
 Danfoss communication description names PNU 1032/1033 but does not specify the
-write protocol sufficiently to implement it safely.
+write protocol sufficiently to implement it safely. Further reliable technical
+details from the issue could allow this to be revisited.
 
 Each circuit also has a diagnostic limiter status. Its `influences` attribute
 shows `none`, `higher`, `lower`, or `changed` for documented bit pairs and
@@ -60,11 +82,11 @@ The actuator type is shown only as a disabled-by-default raw diagnostic. Its
 0/1 labels are inferred from documented defaults but not verified for every
 profile, so changing this setting through the integration is not offered.
 
-Only if a tester chooses an appropriate reversible write: record the original
-value and operating condition, change one setting, check it on the controller,
-then restore and verify the original. Never change a setting whose effect on
-the actual plant is unclear. No device write is performed automatically by
-this test procedure. Report the application and profile version, firmware,
+Any write test must be assessed for the particular system by a qualified person.
+Record the original value and operating condition, change only an appropriate
+setting, check it on the controller, then restore and verify the original if
+doing so is safe. Never change a setting whose effect on the plant is unclear.
+No device write is performed automatically by this test procedure. Report the application and profile version, firmware,
 Home Assistant version, compared PNUs, any changed/restored values and any
 unexpected behaviour. Review diagnostics and logs for private information
 before sharing them.
