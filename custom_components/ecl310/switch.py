@@ -88,6 +88,18 @@ async def _set_day(
 
 SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
     Ecl310SwitchDescription(
+        key="return_limit_priority",
+        translation_key="return_limit_priority",
+        component=COMPONENT_HEATING,
+        field="return_limit_priority",
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+        value_fn=lambda circuit: cast(HeatingCircuit, circuit).return_limit_priority,
+        set_fn=lambda _coordinator, circuit, on: circuit.write(
+            "return_limit_priority", on
+        ),
+    ),
+    Ecl310SwitchDescription(
         key="pump_off_in_setback",
         translation_key="pump_off_in_setback",
         component=COMPONENT_HEATING,

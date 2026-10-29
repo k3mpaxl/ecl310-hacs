@@ -1422,6 +1422,20 @@
             "name": "Terminal"
           }
         }
+      },
+      "return_limit_priority": {
+        "name": "Return limit overrides minimum flow temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "time": {

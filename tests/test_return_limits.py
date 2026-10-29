@@ -148,12 +148,18 @@ async def test_unknown_application_does_not_poll_new_settings(
     await hass.async_block_till_done()
     ids = entity_ids(hass, entry)
     assert not any(key in ids for key in HEATING_FIELDS)
+    assert "return_limit_priority" not in ids
     device: Ecl310 = entry.runtime_data.coordinator.device
     assert not device.supports("heating", "return_limit_x1")
     assert "return_limit_x1" not in device.heating.resolved_fields
+    assert "return_limit_priority" not in device.heating.resolved_fields
     unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
     assert not any(
         event.address <= 11030 < event.address + event.count
+        for event in unit.read_events
+    )
+    assert not any(
+        event.address <= 11084 < event.address + event.count
         for event in unit.read_events
     )
 
@@ -170,3 +176,73 @@ async def test_refused_setting_does_not_disable_heating(
     assert "return_limit_x1" in coordinator.refused("heating")
     assert "heating" not in coordinator.data.failed
     assert hass.states.get(ids["thermostat"]).state not in ("unavailable", "unknown")
+
+
+@pytest.mark.parametrize(
+    ("application", "settings"),
+    [
+        ("a266_10_v03", [("return_limit_priority", 11085, "heating")]),
+        (
+            "a367_1_v04",
+            [
+                ("return_limit_priority_circuit_1", 11085, "heating_1"),
+                ("return_limit_priority_circuit_2", 12085, "heating_2"),
+            ],
+        ),
+    ],
+)
+@pytest.mark.parametrize("register_image", [{**HOLDING, 11084: 1, 12084: 0}])
+async def test_return_priority_reads_and_writes_each_heating_circuit(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    settings: list[tuple[str, int, str]],
+) -> None:
+    """The return limit can override minimum flow, on the right circuit."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    registry = er.async_get(hass)
+    devices = dr.async_get(hass)
+    for key, _, component in settings:
+        entity = registry.async_get(ids[key])
+        assert entity.disabled_by == er.RegistryEntryDisabler.INTEGRATION
+        assert entity.entity_category == EntityCategory.CONFIG
+        circuit_device = devices.async_get_device_by_identifier(
+            (DOMAIN, f"{entry.entry_id}_{component}"), entry.entry_id
+        )
+        assert entity.device_id == circuit_device.id
+        registry.async_update_entity(ids[key], disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    for key, pnu, _ in settings:
+        state = hass.states.get(ids[key])
+        assert state.attributes["pnu"] == pnu
+        assert state.state == ("on" if pnu == 11085 else "off")
+        for service, raw in (("turn_on", 1), ("turn_off", 0)):
+            await hass.services.async_call(
+                "switch", service, {"entity_id": ids[key]}, blocking=True
+            )
+            assert unit.holding[pnu - 1] == raw
+    assert "hot_water_return_limit_priority" not in ids
+
+
+@pytest.mark.parametrize("application", sorted(PROFILES))
+async def test_return_priority_follows_each_supported_profile(
+    hass: HomeAssistant, connections: list[MockModbusConnection], application: str
+) -> None:
+    """Each supported profile exposes its heating circuit priorities only."""
+    entry = await setup_entry(hass, connections)
+    device = entry.runtime_data.coordinator.device
+    ids = entity_ids(hass, entry)
+    for circuit in device.circuits:
+        if circuit.kind != "heating":
+            continue
+        pnu = 10085 + 1000 * circuit.number
+        key = "return_limit_priority"
+        if circuit.numbered:
+            key += f"_circuit_{circuit.number}"
+        assert pnu in device.application.parameters
+        assert key in ids
+        component = getattr(device, circuit.component)
+        assert component.metadata_for("return_limit_priority").parameter_id == pnu

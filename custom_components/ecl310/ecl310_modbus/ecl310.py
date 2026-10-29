@@ -77,6 +77,7 @@ RETURN_SETTING_PREFIXES = (
     "return_limit_y",
     "return_limit_influence_",
     "return_limit_adaptation_",
+    "return_limit_priority",
 )
 
 

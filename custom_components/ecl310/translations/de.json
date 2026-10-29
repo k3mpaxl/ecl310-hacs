@@ -1422,6 +1422,20 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "return_limit_priority": {
+        "name": "Rücklaufbegrenzung Vorrang vor minimalem Vorlauf",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "time": {

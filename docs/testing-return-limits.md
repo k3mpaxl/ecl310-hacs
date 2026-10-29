@@ -1,7 +1,9 @@
 # Testing the return-limit settings (issue 47)
 
 This is a **test branch**, not a HACS release. It adds the return-limit curve
-(X1/Y1/X2/Y2), maximum and minimum influence, and adaptation time. It covers
+(X1/Y1/X2/Y2), maximum and minimum influence, adaptation time, and priority
+over the minimum flow temperature (PNU 11085, and 12085 on heating circuit 2
+where available). It covers
 A237.1 V04, A266.10 V03, A337.2 V02 and A367.1 V01–V04. It does not yet add
 all other installation settings, alarm handling, or limiter-status flags.
 
@@ -28,7 +30,9 @@ circuit's device page, show disabled entities and enable the return-limit
 settings available for that circuit. They appear under Configuration; the
 entity attributes show the PNU and ECL menu name. Not every application or
 circuit has every parameter. A266.10 V03 has seven on heating circuit 1 and
-three influence/adaptation settings on hot water circuit 2.
+three influence/adaptation settings on hot water circuit 2. The priority
+switch on the heating circuit allows the return limit to override the minimum
+flow temperature when on; when off, the minimum flow limit is not overridden.
 
 First compare the displayed values and PNU numbers with the ECL display,
 including negative values. Existing climate, water heater and pump entities
