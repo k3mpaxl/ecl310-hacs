@@ -16,7 +16,12 @@ def _fields() -> dict:
         "mask_high": register_integer(parameter_address(1024), signed=False),
         "mask_low": register_integer(parameter_address(1025), signed=False),
     }
-    fields.update({f"context_{n}": register_integer(parameter_address(1039 + n), signed=False) for n in range(1, 33)})
+    fields.update(
+        {
+            f"context_{n}": register_integer(parameter_address(1039 + n), signed=False)
+            for n in range(1, 33)
+        }
+    )
     return fields
 
 
@@ -27,4 +32,6 @@ def active_alarm_ids(low: int | None, high: int | None) -> list[int] | None:
     """Decode the masks, or return unknown if either mask is missing."""
     if low is None or high is None:
         return None
-    return [n for n in range(1, 33) if (low if n <= 16 else high) & (1 << ((n - 1) % 16))]
+    return [
+        n for n in range(1, 33) if (low if n <= 16 else high) & (1 << ((n - 1) % 16))
+    ]
