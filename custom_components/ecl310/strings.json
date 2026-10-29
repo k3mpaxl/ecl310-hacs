@@ -1457,6 +1457,9 @@
       }
     },
     "sensor": {
+      "active_alarms": {
+        "name": "Active alarms"
+      },
       "outdoor_temperature": {
         "name": "Outdoor temperature",
         "state_attributes": {

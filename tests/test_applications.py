@@ -327,7 +327,9 @@ async def test_a_block_failing_as_a_whole_is_split(
     unit = _unit(connections)
     unit.read_events.clear()
     await entry.runtime_data.coordinator.async_refresh()
-    blocks = {(e.address, e.count) for e in unit.read_events if e.address < 4065}
+    blocks = {
+        (e.address, e.count) for e in unit.read_events if 3999 <= e.address < 4065
+    }
     assert blocks == {(3999, 12), (4025, 6)}
 
 

@@ -1457,6 +1457,9 @@
       }
     },
     "sensor": {
+      "active_alarms": {
+        "name": "Aktive Alarme"
+      },
       "flow_temperature": {
         "name": "Vorlauftemperatur",
         "state_attributes": {
