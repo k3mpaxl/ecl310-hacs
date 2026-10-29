@@ -73,6 +73,13 @@ class HeatingCircuit(Ecl310Component):
     return_limit_influence_max = return_limit_setting(11035)
     return_limit_influence_min = return_limit_setting(11036)
     return_limit_adaptation_time = return_limit_setting(11037)
+    return_limit_priority = parameter_switch(
+        11085,
+        writable=True,
+        maker_key="Priorität",
+        maker_category="circuit",
+        description="Rücklaufbegrenzung darf minimale Vorlauftemperatur übersteuern",
+    )
 
     mode = register_enum(
         MODE_REGISTER,
