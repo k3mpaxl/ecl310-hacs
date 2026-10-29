@@ -49,7 +49,7 @@ class HotWater(Ecl310Component):
     """Domestic hot water preparation and its disinfection function."""
     pump_exercise = parameter_switch(12022, writable=True)
     valve_exercise = parameter_switch(12023, writable=True)
-    actuator_type = parameter_switch(12024, writable=True)
+    actuator_type = parameter_switch(12024)
     pump_frost_threshold = installation_number(12077)
     pump_heat_threshold = installation_number(12078)
     valve_motor_protection = installation_number(12174)

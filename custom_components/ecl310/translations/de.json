@@ -1457,6 +1457,9 @@
       }
     },
     "sensor": {
+      "actuator_type_raw": {
+        "name": "Stellantriebstyp (Rohwert)"
+      },
       "limiter_status": {
         "name": "Begrenzerstatus"
       },

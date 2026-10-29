@@ -26,10 +26,10 @@ An entity's PNU attribute is the authoritative identification for comparison.
 | Existing flow, disinfection and climate | Existing integration regression suite | No new physical confirmation |
 | Return limit, influence and priority | Profile presence, addresses, validation, writes and refusal paths | PNU 11085/12085 not confirmed on hardware |
 | Optimisation and OFF sentinels | Seven profiles, boundaries, special values and restore behaviour | New controls await physical comparison |
-| Valve, pump and seasonal settings | Profile domains/circuit offsets and representative writes; A367 circuit 2 | Actuator 0/1 mapping inferred from XML and guide defaults; not confirmed on device |
+| Valve, pump and seasonal settings | Profile domains/circuit offsets and representative writes; A367 circuit 2 | Actuator x024 is read-only raw: 0/1 labels are inferred and writable selection awaits verified mapping |
 | Alarm settings | Profile availability and A266 input polarity/seconds | x617 absent from all seven XML profiles; no entity |
 | Alarm masks and contexts | Simulated ID 1 and ID 18, context 1057, zero masks, partial refusal | Alarm meaning application-specific; clearing 1032/1033 unavailable because write semantics are undocumented |
-| Limiter status | Simulated bit pairs, circuit addresses, firmware gates and refusal | Later firmware flags can remain unknown; no device validation |
+| Limiter status | Simulated bit pairs, reserved bits, circuit addresses, firmware gates and refusal | Later firmware flags can remain unknown; no device validation |
 
 Sources: local Danfoss ECL Tool XML reports for the seven profile versions;
 [Danfoss communication description AQ074886472234de-000601](https://assets.danfoss.com/documents/latest/206109/AQ074886472234de-000602.pdf),
