@@ -19,6 +19,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import EntityCategory, Platform, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .boost import HotWaterBoost
@@ -26,7 +27,14 @@ from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_SENSORS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
 from .ecl310_modbus.subsystems.alarms import active_alarm_ids
-from .entity import Ecl310Entity, per_circuit, role_name, supported
+from .ecl310_modbus.subsystems.limiter import decode_limiter
+from .entity import (
+    Ecl310Entity,
+    device_identifiers,
+    per_circuit,
+    role_name,
+    supported,
+)
 
 PARALLEL_UPDATES = 0
 
@@ -155,6 +163,11 @@ async def async_setup_entry(
                     [Ecl310AlarmSensor(coordinator)]
                     if coordinator.device.application is not None
                     else []
+                ),
+                *(
+                    Ecl310LimiterSensor(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if coordinator.device.application is not None
                 ),
                 *(
                     Ecl310BoostSensor(coordinator, boost, description)
@@ -290,4 +303,62 @@ class Ecl310AlarmSensor(Ecl310Entity, SensorEntity):
                 if f"context_{n}" not in refused
                 and getattr(self._subsystem, f"context_{n}") is not None
             }
+        return attrs
+
+
+class Ecl310LimiterSensor(Ecl310Entity, SensorEntity):
+    """Show the ECL's per-circuit limiter directions and raw words."""
+
+    _attr_translation_key = "limiter_status"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_icon = "mdi:chart-bell-curve-cumulative"
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Any) -> None:
+        """Attach the diagnostic to its circuit device."""
+        super().__init__(
+            coordinator,
+            f"limiter_status_circuit_{circuit.number}",
+            f"limiter_{circuit.number}",
+            tuple(f"word_{i}" for i in range(1, 5)),
+        )
+        self._attr_device_info = DeviceInfo(
+            identifiers=device_identifiers(coordinator.config_entry, circuit.component)
+        )
+        self._circuit_number = circuit.number
+
+    def _decoded(self) -> dict[str, str | None] | None:
+        system = self.coordinator.device.system
+        words = tuple(getattr(self._subsystem, f"word_{i}") for i in range(1, 5))
+        if system is None or any(value is None for value in words):
+            return None
+        if self._circuit_number >= 5:  # noqa: PLR2004
+            try:
+                version = tuple(int(p) for p in (system.software or "").split("."))
+                if len(version) != 2 or version < (1, 60):  # noqa: PLR2004
+                    return None
+            except ValueError:
+                return None
+        return decode_limiter(words, system.software, system.build)
+
+    @property
+    def native_value(self) -> str | None:
+        """Report partial when some influences are unknown for the firmware."""
+        decoded = self._decoded()
+        if decoded is None:
+            return None
+        if any(value is None for value in decoded.values()):
+            return "partial"
+        return (
+            "active" if any(value != "none" for value in decoded.values()) else "none"
+        )
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Include decoded directions and the unchanged source words."""
+        attrs = super().extra_state_attributes or {}
+        if self.available and (decoded := self._decoded()) is not None:
+            attrs["influences"] = decoded
+            attrs["raw_words"] = [
+                getattr(self._subsystem, f"word_{i}") for i in range(1, 5)
+            ]
         return attrs

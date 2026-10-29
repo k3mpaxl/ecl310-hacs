@@ -1457,6 +1457,9 @@
       }
     },
     "sensor": {
+      "limiter_status": {
+        "name": "Begrenzerstatus"
+      },
       "active_alarms": {
         "name": "Aktive Alarme"
       },

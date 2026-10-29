@@ -43,6 +43,7 @@ from .subsystems import (
 )
 from .system_info import SystemInformation, async_read_system_information
 from .subsystems.alarms import Alarms
+from .subsystems.limiter import limiter_component
 from .subsystems.installation_settings import (
     INSTALLER_NUMERIC_FIELDS,
     INSTALLER_SWITCH_FIELDS,
@@ -187,6 +188,8 @@ class Ecl310:
             )
             setattr(self, circuit.component, kind_type(unit))
             setattr(self, circuit.schedule, schedule_component(circuit.number)(unit))
+            if application is not None:
+                setattr(self, f"limiter_{circuit.number}", limiter_component(circuit.number)(unit))
         for name in self.all_component_names:
             component: Ecl310Component = getattr(self, name)
             keep = [
@@ -205,6 +208,7 @@ class Ecl310:
             *(circuit.component for circuit in self.circuits),
             "outputs",
             *(("alarms",) if self.application is not None else ()),
+            *(f"limiter_{c.number}" for c in self.circuits if self.application is not None),
         )
 
     @property
