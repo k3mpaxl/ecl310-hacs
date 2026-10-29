@@ -42,6 +42,10 @@ from .subsystems import (
     schedule_component,
 )
 from .system_info import SystemInformation, async_read_system_information
+from .subsystems.installation_settings import (
+    INSTALLER_NUMERIC_FIELDS,
+    INSTALLER_SWITCH_FIELDS,
+)
 
 if TYPE_CHECKING:
     from modbus_connection import ModbusUnit
@@ -274,7 +278,10 @@ class Ecl310:
         if component is self.sensors:
             return field in self.sensor_assignment.values()
         if self.application is None:
-            if field.startswith(RETURN_SETTING_PREFIXES):
+            if (
+                field.startswith(RETURN_SETTING_PREFIXES)
+                or field in INSTALLER_NUMERIC_FIELDS | INSTALLER_SWITCH_FIELDS
+            ):
                 return False  # These new settings have only been verified against profiles.
             return True
         metadata = component.metadata_for(field)
@@ -306,8 +313,9 @@ class Ecl310:
             for name, descriptor in component_type.declared_fields.items():
                 # Do not change the application detection probe set just by
                 # adding optional settings. They do not identify a controller.
-                if not include_installer_settings and name.startswith(
-                    RETURN_SETTING_PREFIXES
+                if not include_installer_settings and (
+                    name.startswith(RETURN_SETTING_PREFIXES)
+                    or name in INSTALLER_NUMERIC_FIELDS | INSTALLER_SWITCH_FIELDS
                 ):
                     continue
                 metadata = getattr(descriptor, "ecl_metadata", None)
@@ -379,12 +387,16 @@ class Ecl310:
         return device.info
 
     async def _async_poll(
-        self, names: tuple[str, ...], report: UpdateReport
+        self, names: tuple[str, ...], report: UpdateReport, *, installer: bool = True
     ) -> UpdateReport:
         """Read each named sub-system on its own, recording what happened."""
         for name in names:
             try:
-                await getattr(self, name).async_update(notify=False)
+                component = getattr(self, name)
+                if not installer and any(c.component == name for c in self.circuits):
+                    await component.async_update_operating(notify=False)
+                else:
+                    await component.async_update(notify=False)
             except ModbusConnectionError:
                 raise  # the link is down; the rest would only wait for timeouts
             except ModbusTimeoutError as err:
@@ -402,7 +414,9 @@ class Ecl310:
         for name in report.updated:
             getattr(self, name).notify()
 
-    async def async_update(self, *, schedules: bool = False) -> UpdateReport:
+    async def async_update(
+        self, *, schedules: bool = False, installer: bool = True
+    ) -> UpdateReport:
         """Refresh the sub-systems and report what answered.
 
         The weekly programs are left out unless ``schedules`` asks for them:
@@ -412,7 +426,7 @@ class Ecl310:
         names = self.component_names
         if schedules:
             names = self.all_component_names
-        report = await self._async_poll(names, UpdateReport())
+        report = await self._async_poll(names, UpdateReport(), installer=installer)
         self._notify(report)
         return report
 

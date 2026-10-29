@@ -276,3 +276,238 @@ async def test_optimisation_settings_follow_every_profile(
                 assert registry.async_get(ids[key]).disabled_by is not None
             else:
                 assert key not in ids
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_a266_control_valve_and_pump_threshold_are_circuit_specific(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """A266 exposes the hot-water valve and its 80 C pump threshold on circuit 2."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    registry = er.async_get(hass)
+    motor_id = ids["hot_water_valve_running_time"]
+    threshold_id = ids["hot_water_pump_heat_threshold"]
+    actuator_id = ids["hot_water_actuator_type"]
+    for eid in (motor_id, threshold_id, actuator_id):
+        assert registry.async_get(eid).disabled_by is not None
+        registry.async_update_entity(eid, disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    assert hass.states.get(motor_id).attributes["pnu"] == 12186
+    assert hass.states.get(threshold_id).attributes["max"] == 80
+    assert hass.states.get(threshold_id).attributes["pnu"] == 12078
+    assert hass.states.get(actuator_id).attributes["pnu"] == 12024
+    await hass.services.async_call(
+        "number", "set_value", {"entity_id": motor_id, "value": 75}, blocking=True
+    )
+    assert connections[-1].for_unit(ENTRY_DATA["unit_id"]).holding[12185] == 75
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_actuator_select_maps_documented_modes(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The A266 hot-water actuator select writes 0 for ABV and 1 for motor."""
+    entry = await setup_entry(hass, connections)
+    eid = entity_ids(hass, entry)["hot_water_actuator_type"]
+    registry = er.async_get(hass)
+    registry.async_update_entity(eid, disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    for option, raw in (("m_abv", 0), ("m_3_point", 1)):
+        await hass.services.async_call(
+            "select",
+            "select_option",
+            {"entity_id": eid, "option": option},
+            blocking=True,
+        )
+        assert unit.holding[12023] == raw
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_seasonal_filter_can_reach_300_and_restore_off(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The 16-bit summer filter reaches 300 and zero is an OFF sentinel."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    registry = er.async_get(hass)
+    for key in ("summer_filter", "summer_filter_enabled"):
+        registry.async_update_entity(ids[key], disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {"entity_id": ids["summer_filter"], "value": 300},
+        blocking=True,
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    assert unit.holding[11394] == 300
+    await hass.services.async_call(
+        "switch", "turn_off", {"entity_id": ids["summer_filter_enabled"]}, blocking=True
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert unit.holding[11394] == 0
+    assert hass.states.get(ids["summer_filter"]).state == "unknown"
+    await hass.services.async_call(
+        "switch", "turn_on", {"entity_id": ids["summer_filter_enabled"]}, blocking=True
+    )
+    assert unit.holding[11394] == 300
+
+
+@pytest.mark.parametrize("application", ["a337_2_v02"])
+async def test_absent_seasonal_settings_are_not_registered(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """A337 V02 has no new summer/winter filter or date settings."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    for key in (
+        "summer_start_month",
+        "summer_start_day",
+        "summer_filter",
+        "winter_cut_off",
+        "winter_filter",
+    ):
+        assert key not in ids
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+@pytest.mark.parametrize(
+    "setting",
+    [
+        ("hot_water_pump_frost_threshold", 12076, -11, 2),
+        ("hot_water_valve_motor_protection", 12173, 9, 20),
+    ],
+)
+async def test_circuit_installer_off_values_round_trip(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    setting: tuple[str, int, int, int],
+) -> None:
+    """Negative and motor OFF sentinels round-trip on A266 circuit 2."""
+    name, address, off, active = setting
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    registry = er.async_get(hass)
+    for key in (name, name + "_enabled"):
+        registry.async_update_entity(ids[key], disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "number", "set_value", {"entity_id": ids[name], "value": active}, blocking=True
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    await hass.services.async_call(
+        "switch", "turn_off", {"entity_id": ids[name + "_enabled"]}, blocking=True
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    assert unit.holding[address] == (off & 0xFFFF)
+    assert hass.states.get(ids[name]).state == "unknown"
+    await hass.services.async_call(
+        "switch", "turn_on", {"entity_id": ids[name + "_enabled"]}, blocking=True
+    )
+    assert unit.holding[address] == active
+
+
+@pytest.mark.parametrize("application", sorted(PROFILES))
+async def test_valve_and_pump_settings_follow_supported_profiles(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Both circuit kinds expose only installer PNUs actually in their profile."""
+    entry = await setup_entry(hass, connections)
+    device = entry.runtime_data.coordinator.device
+    ids = entity_ids(hass, entry)
+    registry = er.async_get(hass)
+    for circuit in device.circuits:
+        prefix = "hot_water_" if circuit.kind == "hot_water" else ""
+        suffix = f"_circuit_{circuit.number}" if circuit.numbered else ""
+        for name, offset in (
+            ("pump_exercise", 22),
+            ("valve_exercise", 23),
+            ("actuator_type", 24),
+            ("pump_frost_threshold", 77),
+            ("pump_heat_threshold", 78),
+            ("valve_motor_protection", 174),
+            ("valve_proportional_band", 184),
+            ("valve_integral_time", 185),
+            ("valve_running_time", 186),
+            ("valve_neutral_zone", 187),
+            ("valve_minimum_pulse", 189),
+        ):
+            key = prefix + name + suffix
+            pnu = 10000 + circuit.number * 1000 + offset
+            if pnu not in device.application.parameters:
+                assert key not in ids
+                continue
+            assert registry.async_get(ids[key]).disabled_by is not None
+            component = getattr(device, circuit.component)
+            assert component.metadata_for(name).parameter_id == pnu
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_installer_registers_are_polled_on_a_slow_cadence(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Routine refreshes read climate but omit unchanged installer registers."""
+    entry = await setup_entry(hass, connections)
+    coordinator = entry.runtime_data.coordinator
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    unit.read_events.clear()
+    await coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert any(
+        event.address <= 11179 < event.address + event.count
+        for event in unit.read_events
+    )
+    for addr in (11042, 11076, 11185, 11394):
+        assert not any(
+            event.address <= addr < event.address + event.count
+            for event in unit.read_events
+        )
+    assert "heating" not in coordinator.data.failed
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_slow_setting_reads_periodically_and_after_write(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """External changes appear on the slow cycle; writes trigger readback sooner."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    eid = ids["valve_running_time"]
+    registry = er.async_get(hass)
+    registry.async_update_entity(eid, disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    coordinator = entry.runtime_data.coordinator
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    original = hass.states.get(eid).state
+    unit.holding[11185] = 77
+    await coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get(eid).state == original
+    for _ in range(9):
+        await coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get(eid).state == "77"
+    await hass.services.async_call(
+        "number", "set_value", {"entity_id": eid, "value": 60}, blocking=True
+    )
+    await coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get(eid).state == "60"

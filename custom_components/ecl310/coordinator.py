@@ -139,6 +139,7 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
         self.device = device
         self._failed: frozenset[str] = frozenset()
         self._polls = 0
+        self._installer_dirty = False
         self._schedules: frozenset[str] = frozenset()
         self._refused: dict[str, frozenset[str]] = {}
         #: Held across a read-modify-write of a register that packs several
@@ -154,6 +155,10 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
         if component in self.device.schedule_component_names:
             return component in self._schedules
         return self.data is not None and component in self.data.updated
+
+    def mark_installer_dirty(self) -> None:
+        """Ensure the next refresh reads the settings after a write."""
+        self._installer_dirty = True
 
     def refused(self, component: str) -> frozenset[str]:
         """Return the fields of a sub-system the controller does not serve."""
@@ -237,9 +242,12 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
     async def _async_update_data(self) -> UpdateReport:
         """Poll the controller and report which sub-systems answered."""
         schedules = self._polls % SCHEDULE_REFRESH_EVERY == 0
+        installer = schedules or self._installer_dirty
         self._polls += 1
         try:
-            report = await self.device.async_update(schedules=schedules)
+            report = await self.device.async_update(
+                schedules=schedules, installer=installer
+            )
             await self._async_recover(report)
         except ModbusError as err:
             message = f"Error communicating with the controller: {err}"
@@ -249,6 +257,9 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
             errors = list(report.failed.values())
             message = f"No sub-system answered: {errors[0]}"
             raise UpdateFailed(message)
+
+        if installer:
+            self._installer_dirty = False
 
         for name in sorted(report.failed.keys() - self._failed):
             LOGGER.warning("Failed to fetch %s: %s", name, report.failed[name])

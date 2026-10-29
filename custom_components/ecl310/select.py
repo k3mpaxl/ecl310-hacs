@@ -23,7 +23,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import COMPONENT_HEATING, COMPONENT_OUTPUTS
+from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_OUTPUTS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import Circuit, Ecl310, OutputControl
 from .entity import Ecl310Entity, circuit_key, role_name, supported
@@ -84,9 +84,48 @@ async def async_setup_entry(
                     for circuit in coordinator.device.circuits
                     if circuit.kind == COMPONENT_HEATING
                 ),
+                *(
+                    Ecl310ActuatorType(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                ),
             ],
         )
     )
+
+
+class Ecl310ActuatorType(Ecl310Entity, SelectEntity):
+    """Select thermal ABV (0) or three-point motor (1)."""
+
+    _attr_translation_key = "actuator_type"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_registry_enabled_default = False
+    _attr_options = ["m_abv", "m_3_point"]
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Attach the actuator to its application circuit."""
+        prefix = "hot_water_" if circuit.kind == COMPONENT_HOT_WATER else ""
+        super().__init__(
+            coordinator,
+            circuit_key(f"{prefix}actuator_type", circuit),
+            circuit.component,
+            ("actuator_type",),
+        )
+
+    @property
+    def current_option(self) -> str | None:
+        """Decode the selector from the controller."""
+        value = self._subsystem.actuator_type
+        return None if value is None else self._attr_options[int(value)]
+
+    async def async_select_option(self, option: str) -> None:
+        """Write an allowed actuator type."""
+        if option not in self._attr_options:
+            message = f"Unsupported actuator type: {option}"
+            raise ValueError(message)
+        await self._async_write(
+            self._subsystem.write("actuator_type", option == "m_3_point")
+        )
+        await self.coordinator.async_request_refresh()
 
 
 class Ecl310ParallelMode(Ecl310Entity, SelectEntity, RestoreEntity):

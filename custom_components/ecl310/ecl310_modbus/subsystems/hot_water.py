@@ -20,12 +20,14 @@ from ..data_model import (
     Ecl310Component,
     parameter_number,
     parameter_reference,
+    parameter_switch,
     parameter_temperature,
     register_enum,
 )
 from ..enums import CircuitState, OperatingMode
 from ..exceptions import Ecl310ValueValidationError
 from .return_limit import return_limit_setting
+from .installation_settings import installation_number
 
 #: Register carrying the hot water circuit's operating mode.
 MODE_REGISTER = 4201
@@ -45,6 +47,18 @@ DISINFECTION_DEFAULT_TEMPERATURE = 70
 
 class HotWater(Ecl310Component):
     """Domestic hot water preparation and its disinfection function."""
+    pump_exercise = parameter_switch(12022, writable=True)
+    valve_exercise = parameter_switch(12023, writable=True)
+    actuator_type = parameter_switch(12024, writable=True)
+    pump_frost_threshold = installation_number(12077)
+    pump_heat_threshold = installation_number(12078)
+    valve_motor_protection = installation_number(12174)
+    valve_proportional_band = installation_number(12184)
+    valve_integral_time = installation_number(12185)
+    valve_running_time = installation_number(12186)
+    valve_neutral_zone = installation_number(12187)
+    valve_minimum_pulse = installation_number(12189)
+
 
     return_limit_influence_max = return_limit_setting(12035)
     return_limit_influence_min = return_limit_setting(12036)
