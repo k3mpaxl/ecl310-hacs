@@ -807,6 +807,62 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "building_factor": {
+        "name": "Gebäudefaktor",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "auto_saving": {
+        "name": "Automatisches Sparen Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "heat_up_boost": {
+        "name": "Schnellaufheizen",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "ramp_time": {
+        "name": "Rampenfunktion",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "select": {
@@ -911,6 +967,25 @@
           "auto": "Automatik",
           "off": "Dauerhaft aus",
           "on": "Dauerhaft ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "parallel_operation_mode": {
+        "name": "Parallelbetrieb Betriebsart",
+        "state": {
+          "off": "Aus",
+          "conditional": "Bedingt",
+          "on": "Ein"
         },
         "state_attributes": {
           "pnu": {
@@ -1439,6 +1514,76 @@
       },
       "return_limit_priority": {
         "name": "Rücklaufbegrenzung Vorrang vor minimalem Vorlauf",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "building_factor_enabled": {
+        "name": "Optimierung aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "auto_saving_enabled": {
+        "name": "Automatisches Sparen Außentemperatur aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "heat_up_boost_enabled": {
+        "name": "Schnellaufheizen aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "ramp_time_enabled": {
+        "name": "Rampenfunktion aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "optimised_stop": {
+        "name": "Optimierter Stopp",
         "state_attributes": {
           "pnu": {
             "name": "PNU"

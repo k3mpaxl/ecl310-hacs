@@ -113,13 +113,26 @@ def circuit_component(
         moved = _moved(field, shift) if shift else field
         if name in references and moved.ecl_metadata.parameter_id != references[name]:
             moved = _at_parameter(field, references[name])
-        if name == "parallel_operation" and profile is not None:
+        if (
+            name
+            in {
+                "parallel_operation",
+                "building_factor",
+                "auto_saving",
+                "heat_up_boost",
+                "ramp_time",
+            }
+            and profile is not None
+        ):
             metadata = moved.ecl_metadata
             parameter = profile.parameters.get(metadata.parameter_id)
             if parameter is not None:
                 moved = copy.copy(moved)
                 minimum = parameter.minimum / parameter.scale
                 maximum = parameter.maximum / parameter.scale
+                off_value = metadata.number.off_value
+                if off_value is not None and off_value == minimum:
+                    minimum += 1 / parameter.scale
                 number = dataclasses.replace(
                     metadata.number,
                     min_value=minimum,
@@ -128,7 +141,9 @@ def circuit_component(
                     raw_max=parameter.maximum,
                 )
                 moved.ecl_metadata = dataclasses.replace(metadata, number=number)
-                moved.writable = _number_validator(min_value=minimum, max_value=maximum)
+                moved.writable = _number_validator(
+                    min_value=minimum, max_value=maximum, off_value=off_value
+                )
         if moved is not field:
             namespace[name] = moved
             shifts[field.address] = moved.address - field.address

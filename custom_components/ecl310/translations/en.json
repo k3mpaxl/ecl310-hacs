@@ -318,6 +318,34 @@
       }
     },
     "number": {
+      "auto_saving": {
+        "name": "Automatic saving outdoor threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "building_factor": {
+        "name": "Building factor",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "charge_difference": {
         "name": "Charging difference",
         "state_attributes": {
@@ -460,6 +488,20 @@
       },
       "heat_curve": {
         "name": "Heat curve",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "heat_up_boost": {
+        "name": "Heat-up boost",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -642,6 +684,20 @@
       },
       "pump_post_run": {
         "name": "Pump post-run",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "ramp_time": {
+        "name": "Ramp time",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -873,6 +929,25 @@
           "auto": "Automatic",
           "off": "Forced off",
           "on": "Forced on"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "parallel_operation_mode": {
+        "name": "Parallel operation mode",
+        "state": {
+          "conditional": "Conditional",
+          "off": "Off",
+          "on": "On"
         },
         "state_attributes": {
           "ecl_name": {
@@ -1271,6 +1346,34 @@
       }
     },
     "switch": {
+      "auto_saving_enabled": {
+        "name": "Automatic saving outdoor threshold enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "building_factor_enabled": {
+        "name": "Optimisation enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "disinfection": {
         "name": "Disinfection",
         "state_attributes": {
@@ -1383,6 +1486,20 @@
           }
         }
       },
+      "heat_up_boost_enabled": {
+        "name": "Heat-up boost enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "hot_water_boost": {
         "name": "Hot water boost",
         "state_attributes": {
@@ -1423,8 +1540,36 @@
           }
         }
       },
+      "optimised_stop": {
+        "name": "Optimised stop",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "pump_off_in_setback": {
         "name": "Pump off during setback",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "ramp_time_enabled": {
+        "name": "Ramp time enabled",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"

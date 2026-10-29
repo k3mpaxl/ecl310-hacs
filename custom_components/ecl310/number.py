@@ -102,6 +102,27 @@ NUMBERS: tuple[Ecl310NumberDescription, ...] = (
         ),
         entity_registry_enabled_default=False,
     ),
+    replace(
+        _setting(COMPONENT_HEATING, "building_factor"),
+        entity_registry_enabled_default=False,
+    ),
+    replace(
+        _temperature_setting(COMPONENT_HEATING, "auto_saving"),
+        entity_registry_enabled_default=False,
+    ),
+    replace(
+        _setting(COMPONENT_HEATING, "heat_up_boost", unit="%"),
+        entity_registry_enabled_default=False,
+    ),
+    replace(
+        _setting(
+            COMPONENT_HEATING,
+            "ramp_time",
+            unit=UnitOfTime.MINUTES,
+            device_class=NumberDeviceClass.DURATION,
+        ),
+        entity_registry_enabled_default=False,
+    ),
     *(
         replace(
             _setting(
@@ -225,6 +246,9 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
                 self._attr_native_max_value = float(number.max_value)
             if number.step is not None:
                 self._attr_native_step = float(number.step)
+        if description.attribute == "parallel_operation":
+            self._attr_native_min_value = 1
+            self._attr_native_max_value = 99
 
     @property
     def native_value(self) -> float | None:
@@ -234,6 +258,11 @@ class Ecl310Number(Ecl310Entity, NumberEntity):
         reads unknown, and a switch of its own turns it back on.
         """
         value = getattr(self._subsystem, self.entity_description.attribute)
+        if self.entity_description.attribute == "parallel_operation" and value in (
+            0,
+            100,
+        ):
+            return None
         if value is not None and value == self._off_value:
             return None
         return value
