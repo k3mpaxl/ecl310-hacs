@@ -5,6 +5,12 @@
 > [installation and test instructions](docs/testing-return-limits.md) and
 > [profile/verification matrix](docs/issue-47-test-matrix.md). This is not a
 > released HACS version.
+> **Risk of damage / Schadensgefahr:** Incorrect installation settings can
+> damage the controller or connected equipment. Have changes assessed by a
+> qualified heating professional; see the safety information in the test
+> instructions. / Falsche Anlageneinstellungen können Regler oder Anlage
+> beschädigen. Änderungen durch eine Fachkraft beurteilen lassen; siehe
+> Sicherheitshinweise in der Testanleitung.
 
 
 [![HACS Custom][hacs-shield]][hacs]
