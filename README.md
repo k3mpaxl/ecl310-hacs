@@ -1,5 +1,12 @@
 # Danfoss ECL Comfort 310 for Home Assistant
 
+> **Issue 47 test build:** For the separate test branch covering additional
+> installation settings and read-only alarm/limiter diagnostics, see the
+> [installation and test instructions](docs/testing-return-limits.md) and
+> [profile/verification matrix](docs/issue-47-test-matrix.md). This is not a
+> released HACS version.
+
+
 [![HACS Custom][hacs-shield]][hacs]
 [![GitHub Release][release-shield]][releases]
 [![License][license-shield]](LICENSE)

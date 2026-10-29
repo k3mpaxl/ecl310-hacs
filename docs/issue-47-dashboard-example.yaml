@@ -1,0 +1,24 @@
+# Optional Home Assistant entities card, to paste into the dashboard editor.
+# Replace EVERY placeholder with an enabled entity ID from your own installation.
+# Delete rows for settings your application or circuit does not have.
+# This card is display configuration; adding it does not change controller values.
+type: entities
+title: ECL heating circuit — installation settings
+show_header_toggle: false
+entities:
+  - type: section
+    label: Return limitation
+  - entity: number.replace_with_return_limit_x1
+  - entity: number.replace_with_return_limit_y1
+  - type: section
+    label: Optimisation
+  - entity: number.replace_with_building_factor
+  - entity: switch.replace_with_building_factor_enabled
+  - type: section
+    label: Valve and pump
+  - entity: number.replace_with_valve_running_time
+  - entity: number.replace_with_pump_frost_threshold
+  - type: section
+    label: Diagnostics
+  - entity: sensor.replace_with_limiter_status
+  - entity: sensor.replace_with_active_alarms

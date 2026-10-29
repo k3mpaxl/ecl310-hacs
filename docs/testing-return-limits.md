@@ -1,46 +1,87 @@
-# Testing the return-limit settings (issue 47)
+# Testing the issue 47 installation and diagnostics build
 
-This is a **test branch**, not a HACS release. It adds the return-limit curve
-(X1/Y1/X2/Y2), maximum and minimum influence, adaptation time, and priority
-over the minimum flow temperature (PNU 11085, and 12085 on heating circuit 2
-where available). It covers
-A237.1 V04, A266.10 V03, A337.2 V02 and A367.1 V01–V04. It does not yet add
-all other installation settings, alarm handling, or limiter-status flags.
+This is a **test branch**, not a HACS release. It adds profile-specific return
+limit, optimisation, control valve, pump, seasonal and alarm settings, plus
+read-only alarm and limiter diagnostics. See the
+[profile and verification matrix](issue-47-test-matrix.md) for availability and
+what has actually been tested. The build supports A237.1 V04, A266.10 V03,
+A337.2 V02 and A367.1 V01–V04 only; the generic fallback does not expose these
+new settings or diagnostics.
 
-## Install the branch manually
+## Install and restore
 
-1. Back up the existing `config/custom_components/ecl310` folder somewhere
-   outside `custom_components`, and keep the backup until testing is finished.
-2. Download the branch as a ZIP from
-   [test/issue-47-return-limits](https://github.com/k3mpaxl/ecl310-hacs/archive/refs/heads/test/issue-47-return-limits.zip)
-   and extract it. Inside it, find `custom_components/ecl310`.
-3. Replace the existing `config/custom_components/ecl310` folder with that
-   extracted `ecl310` folder, keeping the backup from step 1. Do not merge the
-   folders: a clean replacement prevents obsolete files from remaining.
-4. Restart Home Assistant. Check the ECL integration has loaded and the
-   expected application is selected under its configuration.
+1. Back up the existing `config/custom_components/ecl310` folder outside
+   `custom_components` and keep the backup until testing is finished.
+2. Download the [test branch ZIP](https://github.com/k3mpaxl/ecl310-hacs/archive/refs/heads/test/issue-47-return-limits.zip)
+   and extract it. Find `custom_components/ecl310` inside the archive.
+3. Replace the entire existing `config/custom_components/ecl310` folder with
+   the extracted folder; do not merge them.
+4. Restart Home Assistant and check the integration loads and identifies the
+   expected application and version.
+5. To roll back, replace the test folder with the backup and restart Home
+   Assistant. HACS may overwrite manually installed files during an update.
 
-To return to the previous version, replace the test folder with your backup
-and restart Home Assistant. HACS may replace manual files on a later update.
+## Enable and compare
 
-## What to check
+New writable installation entities are disabled by default. On the ECL heating
+or hot-water circuit device page, open the disabled entities list and enable
+only the controls you need. They appear in Configuration; their attributes
+include the ECL PNU and, where available, the menu name. Some settings use an
+additional enable switch to represent the ECL's special OFF value. A number
+may show `unknown` while its corresponding switch is off. Parallel operation
+uses a mode selector and a threshold only in conditional mode.
 
-The new entities are **disabled by default**. On the ECL heating or hot water
-circuit's device page, show disabled entities and enable the return-limit
-settings available for that circuit. They appear under Configuration; the
-entity attributes show the PNU and ECL menu name. Not every application or
-circuit has every parameter. A266.10 V03 has seven on heating circuit 1 and
-three influence/adaptation settings on hot water circuit 2. The priority
-switch on the heating circuit allows the return limit to override the minimum
-flow temperature when on; when off, the minimum flow limit is not overridden.
+Alarm count is a diagnostic on the controller; its `alarm_ids` and `contexts`
+attributes show active IDs and available raw context words. Meanings depend on
+the application. There is no alarm acknowledgement or clearing action: the
+Danfoss communication description names PNU 1032/1033 but does not specify the
+write protocol sufficiently to implement it safely.
 
-First compare the displayed values and PNU numbers with the ECL display,
-including negative values. Existing climate, water heater and pump entities
-should continue to work. If you choose to test writing, note the original value,
-change one suitable setting, verify it on the ECL and restore the original.
-Only adjust a setting if you understand its effect on your installation.
+Each circuit also has a diagnostic limiter status. Its `influences` attribute
+shows `none`, `higher`, `lower`, or `changed` for documented bit pairs and
+`null` for fields unavailable on that firmware; `raw_words` preserves the
+four original words. `partial` means some influences are unknown. Unknown
+firmware, unsupported versions or missing registers must not be read as no
+influence. A refused word makes that circuit's diagnostic unavailable.
 
-Please report the application and version, controller software version, Home
-Assistant version, PNUs and displayed values you compared, and any errors or
-unexpected behaviour. Review diagnostics and logs for information you do not
-want to publish before attaching them to GitHub.
+Home Assistant groups entities into Configuration and Diagnostic sections on a
+device page, but those categories do not reproduce the ECL menu hierarchy.
+The optional [dashboard example](issue-47-dashboard-example.yaml) uses separate
+sections and requires your actual entity IDs. See the official documentation
+for [entity categories](https://contributors.home-assistant.io/core/quality-scale/entity-category/)
+and the [entities card](https://www.home-assistant.io/dashboards/entities/).
+
+On A237.1 V04 or A266.10 V03, compare values and PNU attributes with the ECL
+display first, including negative values, OFF states, the active alarms and
+limiter status. Check that existing climate, water heater and pump entities
+still work. For A266.10, compare the heating and hot-water circuits separately.
+For A367.1, the two heating circuits and circuit 3 hot water are distinct.
+The actuator type's raw mapping is inferred from documented factory defaults;
+its real-device confirmation is outstanding.
+
+Only if a tester chooses an appropriate reversible write: record the original
+value and operating condition, change one setting, check it on the controller,
+then restore and verify the original. Never change a setting whose effect on
+the actual plant is unclear. No device write is performed automatically by
+this test procedure. Report the application and profile version, firmware,
+Home Assistant version, compared PNUs, any changed/restored values and any
+unexpected behaviour. Review diagnostics and logs for private information
+before sharing them.
+
+## Polling and integration maintenance
+
+Ordinary operating values and diagnostics are read every 30 seconds. Installer
+settings are read initially, every tenth cycle (about five minutes), and after
+an integration write. External changes can therefore take up to five minutes
+to appear. Disabling an entity does not stop its Modbus register from being
+polled. Optional refused registers are isolated and may remain unavailable. In a simulated
+A266.10 with the full test build, one routine update made 28 read requests and
+one installer update made 48, excluding weekly schedules and recovery retries.
+The earlier return-limit-only test branch made 27 per ordinary update; real
+controllers and refused registers can change these numbers.
+
+The `ecl310_modbus` library is vendored in this repository. This branch changes
+its profile binding, polling and diagnostic components; reconcile those changes
+with the upstream `ecl310-modbus` project before any future re-vendoring. The
+operating-only planner uses an internal `modbus-connection` API, so compatibility
+must be checked when updating that dependency.
