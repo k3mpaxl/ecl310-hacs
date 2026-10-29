@@ -123,6 +123,22 @@ def role_sensors(device: Ecl310) -> tuple[Ecl310SensorDescription, ...]:
 
 #: Per circuit: what the controller is working with, and its mode and status.
 CIRCUIT_SENSORS: tuple[Ecl310SensorDescription, ...] = (
+    Ecl310SensorDescription(
+        key="actuator_type",
+        translation_key="actuator_type_raw",
+        component=COMPONENT_HEATING,
+        field="actuator_type",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+    Ecl310SensorDescription(
+        key="hot_water_actuator_type",
+        translation_key="actuator_type_raw",
+        component=COMPONENT_HOT_WATER,
+        field="actuator_type",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
     _temperature("desired_flow_temperature", COMPONENT_HEATING),
     _temperature("filtered_outdoor_temperature", COMPONENT_HEATING),
     _temperature("return_limit_in_force", COMPONENT_HEATING, diagnostic=True),
@@ -267,6 +283,8 @@ class Ecl310Sensor(Ecl310Entity, SensorEntity):
         value = getattr(self._subsystem, self.entity_description.field)
         if isinstance(value, IntEnum):
             return value.name.lower()
+        if isinstance(value, bool):
+            return int(value)
         return value
 
 
@@ -346,7 +364,12 @@ class Ecl310LimiterSensor(Ecl310Entity, SensorEntity):
         decoded = self._decoded()
         if decoded is None:
             return None
-        if any(value is None for value in decoded.values()):
+        words = tuple(getattr(self._subsystem, f"word_{i}") for i in range(1, 5))
+        if (
+            any(value is None for value in decoded.values())
+            or words[0] & 0x0C00
+            or words[3] & 0xFF00
+        ):
             return "partial"
         return (
             "active" if any(value != "none" for value in decoded.values()) else "none"

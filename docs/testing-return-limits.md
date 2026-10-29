@@ -40,7 +40,7 @@ write protocol sufficiently to implement it safely.
 Each circuit also has a diagnostic limiter status. Its `influences` attribute
 shows `none`, `higher`, `lower`, or `changed` for documented bit pairs and
 `null` for fields unavailable on that firmware; `raw_words` preserves the
-four original words. `partial` means some influences are unknown. Unknown
+four original words. `partial` means some influences are unknown or reserved bits are set. Unknown
 firmware, unsupported versions or missing registers must not be read as no
 influence. A refused word makes that circuit's diagnostic unavailable.
 
@@ -56,8 +56,9 @@ display first, including negative values, OFF states, the active alarms and
 limiter status. Check that existing climate, water heater and pump entities
 still work. For A266.10, compare the heating and hot-water circuits separately.
 For A367.1, the two heating circuits and circuit 3 hot water are distinct.
-The actuator type's raw mapping is inferred from documented factory defaults;
-its real-device confirmation is outstanding.
+The actuator type is shown only as a disabled-by-default raw diagnostic. Its
+0/1 labels are inferred from documented defaults but not verified for every
+profile, so changing this setting through the integration is not offered.
 
 Only if a tester chooses an appropriate reversible write: record the original
 value and operating condition, change one setting, check it on the controller,

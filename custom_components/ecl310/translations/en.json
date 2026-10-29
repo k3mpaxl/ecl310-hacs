@@ -1460,6 +1460,9 @@
       "active_alarms": {
         "name": "Active alarms"
       },
+      "actuator_type_raw": {
+        "name": "Actuator type (raw)"
+      },
       "desired_flow_temperature": {
         "name": "Desired flow temperature",
         "state_attributes": {

@@ -306,26 +306,23 @@ async def test_a266_control_valve_and_pump_threshold_are_circuit_specific(
 
 
 @pytest.mark.parametrize("application", ["a266_10_v03"])
-async def test_actuator_select_maps_documented_modes(
+async def test_actuator_mode_is_read_only_until_mapping_is_verified(
     hass: HomeAssistant, connections: list[MockModbusConnection]
 ) -> None:
-    """The A266 hot-water actuator select writes 0 for ABV and 1 for motor."""
+    """Unknown actuator labels must never offer a physical write."""
     entry = await setup_entry(hass, connections)
     eid = entity_ids(hass, entry)["hot_water_actuator_type"]
+    assert eid.startswith("sensor.")
     registry = er.async_get(hass)
     registry.async_update_entity(eid, disabled_by=None)
     await hass.async_block_till_done()
     await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
-    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
-    for option, raw in (("m_abv", 0), ("m_3_point", 1)):
-        await hass.services.async_call(
-            "select",
-            "select_option",
-            {"entity_id": eid, "option": option},
-            blocking=True,
-        )
-        assert unit.holding[12023] == raw
+    assert hass.states.get(eid).state == "1"
+    descriptor = type(entry.runtime_data.coordinator.device.hot_water).declared_fields[
+        "actuator_type"
+    ]
+    assert not descriptor.writable
 
 
 @pytest.mark.parametrize("application", ["a266_10_v03"])

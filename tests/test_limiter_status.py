@@ -70,3 +70,26 @@ async def test_partial_limiter_read_is_unavailable(
     ids = entity_ids(hass, entry)
     assert hass.states.get(ids["limiter_status_circuit_1"]).state == "unavailable"
     assert hass.states.get(ids["thermostat"]).state not in ("unavailable", "unknown")
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+@pytest.mark.parametrize(("word_index", "reserved_bit"), [(0, 10), (3, 8), (3, 15)])
+async def test_reserved_limiter_bits_do_not_claim_no_influence(
+    hass: HomeAssistant,
+    connections: list[MockModbusConnection],
+    word_index: int,
+    reserved_bit: int,
+) -> None:
+    """A reserved bit set cannot be decoded as a definite all-clear."""
+    from dataclasses import replace
+
+    entry = await setup_entry(hass, connections)
+    device = entry.runtime_data.coordinator.device
+    device.system = replace(device.system, software="1.60", build=9000)
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    unit.holding[4219 + word_index] = 1 << reserved_bit
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    state = hass.states.get(entity_ids(hass, entry)["limiter_status_circuit_1"])
+    assert state.state == "partial"
+    assert state.attributes["raw_words"][word_index] == 1 << reserved_bit
