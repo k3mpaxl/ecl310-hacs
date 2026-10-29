@@ -66,7 +66,7 @@ async def test_every_subsystem_reads_and_shows_what_the_owner_saw(
     entry = await setup_entry(hass, connections)
     coordinator = entry.runtime_data.coordinator
     assert coordinator.data.failed == {}
-    assert len(coordinator.data.updated) == 6
+    assert set(coordinator.device.all_component_names) == set(coordinator.data.updated)
     assert not any(coordinator.refused(name) for name in coordinator.data.updated)
 
     ids = entity_ids(hass, entry)
