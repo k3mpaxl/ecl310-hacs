@@ -556,6 +556,34 @@
           }
         }
       },
+      "hot_water_pump_frost_threshold": {
+        "name": "Pump frost protection outdoor threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_pump_heat_threshold": {
+        "name": "Pump start flow threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "hot_water_return_limit": {
         "name": "Return temperature limit",
         "state_attributes": {
@@ -626,6 +654,90 @@
           }
         }
       },
+      "hot_water_valve_integral_time": {
+        "name": "Control valve integral time Tn",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_minimum_pulse": {
+        "name": "Control valve minimum pulse (20 ms units)",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_motor_protection": {
+        "name": "Control valve motor protection",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_neutral_zone": {
+        "name": "Control valve neutral zone",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_proportional_band": {
+        "name": "Control valve proportional band Xp",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_running_time": {
+        "name": "Control valve running time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "max_charge_temperature": {
         "name": "Maximum charging temperature",
         "state_attributes": {
@@ -670,6 +782,34 @@
       },
       "parallel_operation": {
         "name": "Parallel operation",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_frost_threshold": {
+        "name": "Pump frost protection outdoor threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_heat_threshold": {
+        "name": "Pump start flow threshold",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -863,9 +1003,209 @@
             "name": "Terminal"
           }
         }
+      },
+      "summer_filter": {
+        "name": "Summer cut-off filter",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "summer_start_day": {
+        "name": "Summer cut-off start day",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "summer_start_month": {
+        "name": "Summer cut-off start month",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_integral_time": {
+        "name": "Control valve integral time Tn",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_minimum_pulse": {
+        "name": "Control valve minimum pulse (20 ms units)",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_motor_protection": {
+        "name": "Control valve motor protection",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_neutral_zone": {
+        "name": "Control valve neutral zone",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_proportional_band": {
+        "name": "Control valve proportional band Xp",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_running_time": {
+        "name": "Control valve running time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_cut_off": {
+        "name": "Winter cut-off threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_filter": {
+        "name": "Winter cut-off filter",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_start_day": {
+        "name": "Winter cut-off start day",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_start_month": {
+        "name": "Winter cut-off start month",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "select": {
+      "actuator_type": {
+        "name": "Control valve actuator type",
+        "state": {
+          "m_3_point": "M-3.Pkt.",
+          "m_abv": "M-ABV"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "circulation_pump_override": {
         "name": "Circulation pump override",
         "state": {
@@ -1540,8 +1880,64 @@
           }
         }
       },
+      "hot_water_pump_exercise": {
+        "name": "Pump exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_exercise": {
+        "name": "Control valve exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "optimised_stop": {
         "name": "Optimised stop",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_exercise": {
+        "name": "Pump exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_frost_threshold_enabled": {
+        "name": "Pump frost protection outdoor threshold enabled",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -1584,6 +1980,76 @@
       },
       "return_limit_priority": {
         "name": "Return limit overrides minimum flow temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "summer_filter_enabled": {
+        "name": "Summer cut-off filter enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_exercise": {
+        "name": "Control valve exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_motor_protection_enabled": {
+        "name": "Control valve motor protection enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_cut_off_enabled": {
+        "name": "Winter cut-off threshold enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_filter_enabled": {
+        "name": "Winter cut-off filter enabled",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"

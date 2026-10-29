@@ -330,6 +330,7 @@ class Ecl310Entity(CoordinatorEntity[Ecl310Coordinator]):
         """
         try:
             await write
+            self.coordinator.mark_installer_dirty()
         except ValueError as err:
             raise ServiceValidationError(
                 translation_domain=DOMAIN,

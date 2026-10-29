@@ -28,6 +28,26 @@ from .entity import Ecl310Entity, per_circuit, supported
 
 PARALLEL_UPDATES = 1
 
+INSTALLATION_NUMBERS = (
+    ("pump_frost_threshold", UnitOfTemperature.CELSIUS, NumberDeviceClass.TEMPERATURE),
+    ("pump_heat_threshold", UnitOfTemperature.CELSIUS, NumberDeviceClass.TEMPERATURE),
+    ("valve_motor_protection", UnitOfTime.MINUTES, NumberDeviceClass.DURATION),
+    ("valve_proportional_band", UnitOfTemperature.KELVIN, None),
+    ("valve_integral_time", UnitOfTime.SECONDS, NumberDeviceClass.DURATION),
+    ("valve_running_time", UnitOfTime.SECONDS, NumberDeviceClass.DURATION),
+    ("valve_neutral_zone", UnitOfTemperature.KELVIN, None),
+    ("valve_minimum_pulse", None, None),
+)
+SEASONAL_NUMBERS = (
+    ("summer_start_month", None, None),
+    ("summer_start_day", None, None),
+    ("summer_filter", None, None),
+    ("winter_start_month", None, None),
+    ("winter_start_day", None, None),
+    ("winter_cut_off", UnitOfTemperature.CELSIUS, NumberDeviceClass.TEMPERATURE),
+    ("winter_filter", None, None),
+)
+
 
 @dataclass(frozen=True, kw_only=True)
 class Ecl310NumberDescription(NumberEntityDescription):
@@ -83,6 +103,19 @@ def _temperature_setting(
 
 
 NUMBERS: tuple[Ecl310NumberDescription, ...] = (
+    *(
+        replace(
+            _setting(
+                component, name, key=f"{prefix}{name}", unit=unit, device_class=kind
+            ),
+            entity_registry_enabled_default=False,
+        )
+        for component, prefix, values in (
+            (COMPONENT_HEATING, "", (*INSTALLATION_NUMBERS, *SEASONAL_NUMBERS)),
+            (COMPONENT_HOT_WATER, "hot_water_", INSTALLATION_NUMBERS),
+        )
+        for name, unit, kind in values
+    ),
     _temperature_setting(COMPONENT_HEATING, "setback_setpoint"),
     _temperature_setting(COMPONENT_HEATING, "summer_cut_off"),
     _temperature_setting(COMPONENT_HEATING, "min_flow_temperature"),

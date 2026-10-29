@@ -38,6 +38,13 @@ OPTIONAL_HEATING_SETTINGS = (
     ("auto_saving", -30, -29),
     ("heat_up_boost", 0, 1),
     ("ramp_time", 0, 1),
+    ("summer_filter", 0, 1),
+    ("winter_cut_off", 0, 1),
+    ("winter_filter", 0, 1),
+)
+OPTIONAL_CIRCUIT_SETTINGS = (
+    ("pump_frost_threshold", -11, -10),
+    ("valve_motor_protection", 9, 10),
 )
 
 #: The attribute-name fragment each weekday is exposed under.
@@ -92,7 +99,31 @@ async def _set_day(
         await water.async_set_disinfection_weekdays(sorted(days))
 
 
+def _exercise_switch(
+    component: str, prefix: str, field: str
+) -> Ecl310SwitchDescription:
+    """Create a disabled-by-default pump or valve exercise switch."""
+    return Ecl310SwitchDescription(
+        key=f"{prefix}{field}",
+        translation_key=f"{prefix}{field}",
+        component=component,
+        field=field,
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+        value_fn=lambda circuit: getattr(circuit, field),
+        set_fn=lambda _coordinator, circuit, on: circuit.write(field, on),
+    )
+
+
 SWITCHES: tuple[Ecl310SwitchDescription, ...] = (
+    *(
+        _exercise_switch(component, prefix, field)
+        for component, prefix in (
+            (COMPONENT_HEATING, ""),
+            (COMPONENT_HOT_WATER, "hot_water_"),
+        )
+        for field in ("pump_exercise", "valve_exercise")
+    ),
     Ecl310SwitchDescription(
         key="optimised_stop",
         translation_key="optimised_stop",
@@ -172,6 +203,13 @@ async def async_setup_entry(
                     for setting, off, default in OPTIONAL_HEATING_SETTINGS
                 ),
                 *(
+                    Ecl310OptionalSettingSwitch(
+                        coordinator, circuit, setting, off, default
+                    )
+                    for circuit in coordinator.device.circuits
+                    for setting, off, default in OPTIONAL_CIRCUIT_SETTINGS
+                ),
+                *(
                     [
                         Ecl310BoostSwitch(coordinator, boost),
                         Ecl310BoostOnRaiseSwitch(coordinator, boost),
@@ -199,14 +237,19 @@ class Ecl310OptionalSettingSwitch(Ecl310Entity, SwitchEntity, RestoreEntity):
         default: int,
     ) -> None:
         """Attach the switch to its heating circuit and setting."""
-        key = f"{setting}_enabled"
+        translation_key = f"{setting}_enabled"
+        key = (
+            f"hot_water_{translation_key}"
+            if circuit.kind == COMPONENT_HOT_WATER
+            else translation_key
+        )
         super().__init__(
             coordinator,
             circuit_key(key, circuit),
             circuit.component,
             (setting,),
         )
-        self._attr_translation_key = key
+        self._attr_translation_key = translation_key
         self._setting, self._off, self._default = setting, off, default
         self._last_value: float | None = None
 

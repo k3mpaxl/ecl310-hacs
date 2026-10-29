@@ -26,6 +26,7 @@ from ..data_model import (
 from ..enums import CircuitState, OperatingMode
 from ..exceptions import Ecl310ValueValidationError
 from .return_limit import return_limit_setting
+from .installation_settings import installation_number
 
 #: Register carrying the heating circuit's operating mode.
 MODE_REGISTER = 4200
@@ -65,6 +66,25 @@ def _curve_point(parameter_id: int, outdoor: int) -> NumberField[float]:
 
 class HeatingCircuit(Ecl310Component):
     """The weather-compensated space heating circuit."""
+    pump_exercise = parameter_switch(11022, writable=True)
+    valve_exercise = parameter_switch(11023, writable=True)
+    actuator_type = parameter_switch(11024, writable=True)
+    pump_frost_threshold = installation_number(11077)
+    pump_heat_threshold = installation_number(11078)
+    valve_motor_protection = installation_number(11174)
+    valve_proportional_band = installation_number(11184)
+    valve_integral_time = installation_number(11185)
+    valve_running_time = installation_number(11186)
+    valve_neutral_zone = installation_number(11187)
+    valve_minimum_pulse = installation_number(11189)
+    summer_start_month = installation_number(11392)
+    summer_start_day = installation_number(11393)
+    summer_filter = installation_number(11395)
+    winter_start_month = installation_number(11396)
+    winter_start_day = installation_number(11397)
+    winter_cut_off = installation_number(11398)
+    winter_filter = installation_number(11399)
+
 
     optimised_stop = parameter_switch(11026, writable=True)
     auto_saving = parameter_number(

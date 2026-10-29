@@ -25,6 +25,7 @@ from ..data_model import Ecl310Component, _number_validator
 from ..applications import ApplicationProfile
 from .heating_circuit import HeatingCircuit
 from .hot_water import HotWater
+from .installation_settings import INSTALLER_NUMERIC_FIELDS
 from .schedule import HeatingSchedule, HotWaterSchedule, Schedule, build_schedule
 
 #: The circuit kinds, and the sub-system each is read by.
@@ -115,7 +116,7 @@ def circuit_component(
             moved = _at_parameter(field, references[name])
         if (
             name
-            in {
+            in INSTALLER_NUMERIC_FIELDS | {
                 "parallel_operation",
                 "building_factor",
                 "auto_saving",

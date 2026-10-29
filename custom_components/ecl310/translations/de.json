@@ -863,6 +863,328 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "pump_frost_threshold": {
+        "name": "Pumpenfrostschutz Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_pump_frost_threshold": {
+        "name": "Pumpenfrostschutz Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_heat_threshold": {
+        "name": "Pumpe Einschalten ab Vorlauf-Sollwert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_pump_heat_threshold": {
+        "name": "Pumpe Einschalten ab Vorlauf-Sollwert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_motor_protection": {
+        "name": "Regelventil Motorschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_motor_protection": {
+        "name": "Regelventil Motorschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_proportional_band": {
+        "name": "Regelventil Proportionalband Xp",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_proportional_band": {
+        "name": "Regelventil Proportionalband Xp",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_integral_time": {
+        "name": "Regelventil Nachstellzeit Tn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_integral_time": {
+        "name": "Regelventil Nachstellzeit Tn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_running_time": {
+        "name": "Regelventil Laufzeit",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_running_time": {
+        "name": "Regelventil Laufzeit",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_neutral_zone": {
+        "name": "Regelventil neutrale Zone",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_neutral_zone": {
+        "name": "Regelventil neutrale Zone",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_minimum_pulse": {
+        "name": "Regelventil Mindeststellimpuls (20-ms-Schritte)",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_minimum_pulse": {
+        "name": "Regelventil Mindeststellimpuls (20-ms-Schritte)",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_start_month": {
+        "name": "Sommerabschaltung Startmonat",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_start_day": {
+        "name": "Sommerabschaltung Starttag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_filter": {
+        "name": "Sommerabschaltung Filter",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_start_month": {
+        "name": "Winterabschaltung Startmonat",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_start_day": {
+        "name": "Winterabschaltung Starttag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_cut_off": {
+        "name": "Winterabschaltung Grenzwert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_filter": {
+        "name": "Winterabschaltung Filter",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "select": {
@@ -986,6 +1308,24 @@
           "off": "Aus",
           "conditional": "Bedingt",
           "on": "Ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "actuator_type": {
+        "name": "Regelventil Stellantriebstyp",
+        "state": {
+          "m_abv": "M-ABV",
+          "m_3_point": "M-3.Pkt."
         },
         "state_attributes": {
           "pnu": {
@@ -1584,6 +1924,132 @@
       },
       "optimised_stop": {
         "name": "Optimierter Stopp",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_frost_threshold_enabled": {
+        "name": "Pumpenfrostschutz Außentemperatur aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_motor_protection_enabled": {
+        "name": "Regelventil Motorschutz aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_filter_enabled": {
+        "name": "Sommerabschaltung Filter aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_cut_off_enabled": {
+        "name": "Winterabschaltung Grenzwert aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_filter_enabled": {
+        "name": "Winterabschaltung Filter aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_exercise": {
+        "name": "Pumpenblockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_pump_exercise": {
+        "name": "Pumpenblockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_exercise": {
+        "name": "Regelventil Blockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_exercise": {
+        "name": "Regelventil Blockierschutz",
         "state_attributes": {
           "pnu": {
             "name": "PNU"
