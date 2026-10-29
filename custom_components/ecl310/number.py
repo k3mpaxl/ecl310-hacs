@@ -96,6 +96,12 @@ NUMBERS: tuple[Ecl310NumberDescription, ...] = (
     ),
     # --- the remaining heating settings ------------------------------------
     _temperature_setting(COMPONENT_HEATING, "return_limit", key="heating_return_limit"),
+    replace(
+        _setting(
+            COMPONENT_HEATING, "parallel_operation", unit=UnitOfTemperature.KELVIN
+        ),
+        entity_registry_enabled_default=False,
+    ),
     *(
         replace(
             _setting(

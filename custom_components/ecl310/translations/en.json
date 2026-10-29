@@ -626,6 +626,20 @@
           }
         }
       },
+      "parallel_operation": {
+        "name": "Parallel operation",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "pump_post_run": {
         "name": "Pump post-run",
         "state_attributes": {

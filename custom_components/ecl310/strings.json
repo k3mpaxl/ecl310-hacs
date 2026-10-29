@@ -793,6 +793,20 @@
             "name": "ECL menu"
           }
         }
+      },
+      "parallel_operation": {
+        "name": "Parallel operation",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
       }
     },
     "select": {

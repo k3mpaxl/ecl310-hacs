@@ -21,7 +21,8 @@ import dataclasses
 from typing import Any
 
 from ..addresses import parameter_address, schedule_ranges
-from ..data_model import Ecl310Component
+from ..data_model import Ecl310Component, _number_validator
+from ..applications import ApplicationProfile
 from .heating_circuit import HeatingCircuit
 from .hot_water import HotWater
 from .schedule import HeatingSchedule, HotWaterSchedule, Schedule, build_schedule
@@ -91,6 +92,7 @@ def circuit_component(
     kind_type: type[Ecl310Component],
     circuit: int,
     sensors: dict[str, int] | None = None,
+    profile: ApplicationProfile | None = None,
 ) -> type[Ecl310Component]:
     """Return ``kind_type`` reading circuit ``circuit`` instead of its own.
 
@@ -111,6 +113,22 @@ def circuit_component(
         moved = _moved(field, shift) if shift else field
         if name in references and moved.ecl_metadata.parameter_id != references[name]:
             moved = _at_parameter(field, references[name])
+        if name == "parallel_operation" and profile is not None:
+            metadata = moved.ecl_metadata
+            parameter = profile.parameters.get(metadata.parameter_id)
+            if parameter is not None:
+                moved = copy.copy(moved)
+                minimum = parameter.minimum / parameter.scale
+                maximum = parameter.maximum / parameter.scale
+                number = dataclasses.replace(
+                    metadata.number,
+                    min_value=minimum,
+                    max_value=maximum,
+                    raw_min=parameter.minimum,
+                    raw_max=parameter.maximum,
+                )
+                moved.ecl_metadata = dataclasses.replace(metadata, number=number)
+                moved.writable = _number_validator(min_value=minimum, max_value=maximum)
         if moved is not field:
             namespace[name] = moved
             shifts[field.address] = moved.address - field.address
