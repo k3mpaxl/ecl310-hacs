@@ -57,7 +57,7 @@ async def test_circuit_diagnostics_are_independent(
         ("limiter_status_circuit_3", "changed"),
     ]:
         state = hass.states.get(ids[key])
-        assert state.attributes["influences"]["return_limit"] == expected
+        assert state.attributes["return_limit"] == expected
 
 
 @pytest.mark.parametrize("application", ["a266_10_v03"])

@@ -265,9 +265,15 @@ class Ecl310Sensor(Ecl310Entity, SensorEntity):
 
 
 class Ecl310LimiterSensor(Ecl310Entity, SensorEntity):
-    """Show the ECL's per-circuit limiter directions and raw words."""
+    """Show what pushes a circuit's setpoint up or down, in words.
+
+    Each influence that is active is an attribute of its own, so Home Assistant
+    can show its name and its direction in the user's language.
+    """
 
     _attr_translation_key = "limiter_status"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = ["none", "active", "partial"]
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:tune-vertical"
 
@@ -317,10 +323,16 @@ class Ecl310LimiterSensor(Ecl310Entity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Include decoded directions and the unchanged source words."""
+        """Include the active influences and the unchanged source words."""
         attrs = super().extra_state_attributes or {}
         if self.available and (decoded := self._decoded()) is not None:
-            attrs["influences"] = decoded
+            attrs.update(
+                {
+                    name: direction
+                    for name, direction in decoded.items()
+                    if direction not in (None, "none")
+                }
+            )
             attrs["raw_words"] = [
                 getattr(self._subsystem, f"word_{i}") for i in range(1, 5)
             ]

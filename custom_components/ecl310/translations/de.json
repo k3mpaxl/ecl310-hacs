@@ -1374,7 +1374,242 @@
     },
     "sensor": {
       "limiter_status": {
-        "name": "Begrenzerstatus"
+        "name": "Begrenzerstatus",
+        "state": {
+          "none": "Kein Einfluss",
+          "active": "Beeinflusst",
+          "partial": "Teilweise bekannt"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "raw_words": {
+            "name": "Rohdaten des Begrenzers"
+          },
+          "return_limit": {
+            "name": "Rücklaufbegrenzung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "room_limit": {
+            "name": "Raumtemperaturbegrenzung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "wind": {
+            "name": "Windeinfluss",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "compensation_1": {
+            "name": "Kompensation 1",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "compensation_2": {
+            "name": "Kompensation 2",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "parallel_priority": {
+            "name": "Parallelbetrieb / Vorrang",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "flow_power_limit": {
+            "name": "Volumenstrom-/Leistungsbegrenzung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "holiday": {
+            "name": "Urlaub",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_override": {
+            "name": "Externe Übersteuerung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "eca_override": {
+            "name": "Übersteuerung durch Raumgerät (ECA)",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "disinfection": {
+            "name": "Desinfektion",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "boost": {
+            "name": "Schnellaufheizen",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "ramp": {
+            "name": "Rampenfunktion",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "slave_request": {
+            "name": "Anforderung vom Slave-Regler",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "heating_off": {
+            "name": "Heizung aus",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "hot_water_priority": {
+            "name": "Warmwasser-Vorrang",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "hot_water_influence": {
+            "name": "Warmwasser-Einfluss",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "scada_offset": {
+            "name": "SCADA-Verschiebung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "scada_hot_water_override": {
+            "name": "SCADA-Warmwasser-Übersteuerung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_setpoint": {
+            "name": "Externer Sollwert",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_stop": {
+            "name": "Externer Stopp",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "fan_stop": {
+            "name": "Lüfter-Stopp",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_on": {
+            "name": "Extern ein",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "timeout_override": {
+            "name": "Ablauf der Übersteuerung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "output_temperature_stop": {
+            "name": "Stopp durch Ausgangstemperatur",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "floor_drying": {
+            "name": "Estrichtrocknung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "low_flow": {
+            "name": "Geringer Durchfluss",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          }
+        }
       },
       "flow_temperature": {
         "name": "Vorlauftemperatur",

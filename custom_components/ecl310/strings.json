@@ -1374,7 +1374,242 @@
     },
     "sensor": {
       "limiter_status": {
-        "name": "Limiter status"
+        "name": "Limiter status",
+        "state": {
+          "none": "No influence",
+          "active": "Influenced",
+          "partial": "Partly known"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "raw_words": {
+            "name": "Raw limiter words"
+          },
+          "return_limit": {
+            "name": "Return temperature limit",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "room_limit": {
+            "name": "Room temperature limit",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "wind": {
+            "name": "Wind influence",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "compensation_1": {
+            "name": "Compensation 1",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "compensation_2": {
+            "name": "Compensation 2",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "parallel_priority": {
+            "name": "Parallel operation / priority",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "flow_power_limit": {
+            "name": "Flow / power limit",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "holiday": {
+            "name": "Holiday",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "external_override": {
+            "name": "External override",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "eca_override": {
+            "name": "Room unit override (ECA)",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "disinfection": {
+            "name": "Disinfection",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "boost": {
+            "name": "Heat-up boost",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "ramp": {
+            "name": "Ramp function",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "slave_request": {
+            "name": "Request from slave controller",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "heating_off": {
+            "name": "Heating off",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "hot_water_priority": {
+            "name": "Hot water priority",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "hot_water_influence": {
+            "name": "Hot water influence",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "scada_offset": {
+            "name": "SCADA offset",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "scada_hot_water_override": {
+            "name": "SCADA hot water override",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "external_setpoint": {
+            "name": "External setpoint",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "external_stop": {
+            "name": "External stop",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "fan_stop": {
+            "name": "Fan stop",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "external_on": {
+            "name": "External on",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "timeout_override": {
+            "name": "Override timeout",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "output_temperature_stop": {
+            "name": "Output temperature stop",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "floor_drying": {
+            "name": "Floor drying",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          },
+          "low_flow": {
+            "name": "Low flow",
+            "state": {
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint",
+              "changed": "Changes the setpoint"
+            }
+          }
+        }
       },
       "outdoor_temperature": {
         "name": "Outdoor temperature",
