@@ -1061,7 +1061,7 @@
         }
       },
       "valve_minimum_pulse": {
-        "name": "Regelventil Mindeststellimpuls (20-ms-Schritte)",
+        "name": "Regelventil Mindeststellimpuls",
         "state_attributes": {
           "pnu": {
             "name": "PNU"
@@ -1075,7 +1075,7 @@
         }
       },
       "hot_water_valve_minimum_pulse": {
-        "name": "Regelventil Mindeststellimpuls (20-ms-Schritte)",
+        "name": "Regelventil Mindeststellimpuls",
         "state_attributes": {
           "pnu": {
             "name": "PNU"

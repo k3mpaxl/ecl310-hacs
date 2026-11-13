@@ -50,6 +50,8 @@ SEASONAL_NUMBERS = (
     ("winter_cut_off", UnitOfTemperature.CELSIUS, NumberDeviceClass.TEMPERATURE),
     ("winter_filter", None, None),
 )
+
+
 @dataclass(frozen=True, kw_only=True)
 class Ecl310NumberDescription(NumberEntityDescription):
     """Describes a writable numeric datapoint.

@@ -107,6 +107,7 @@ TIMES: tuple[Ecl310TimeDescription, ...] = tuple(
     for stop in (False, True)
 )
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
@@ -188,4 +189,3 @@ class Ecl310Time(Ecl310Entity, TimeEntity):
     def _schedule(self) -> Schedule:
         """The schedule component this entity writes to."""
         return cast(Schedule, self._subsystem)
-

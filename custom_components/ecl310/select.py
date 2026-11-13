@@ -270,7 +270,9 @@ class Ecl310ParallelMode(Ecl310Entity, SelectEntity, RestoreEntity):
     def _remember(self) -> None:
         value = self._subsystem.parallel_operation
         if value is not None and 1 <= value <= PARALLEL_MAX_THRESHOLD:
-            self.coordinator.memory.remember(self._component, "parallel_operation", value)
+            self.coordinator.memory.remember(
+                self._component, "parallel_operation", value
+            )
 
     def _handle_coordinator_update(self) -> None:
         self._remember()

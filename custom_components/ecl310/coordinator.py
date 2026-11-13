@@ -14,12 +14,12 @@ from modbus_connection import (
 )
 
 from .const import DOMAIN, LOGGER, SCAN_INTERVAL, SCHEDULE_REFRESH_EVERY
-from .memory import SettingMemory
 from .ecl310_modbus import (
     Ecl310,
     Ecl310Component,
     UpdateReport,
 )
+from .memory import SettingMemory
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Sequence
