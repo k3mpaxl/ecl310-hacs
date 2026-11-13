@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 from homeassistant.config_entries import SOURCE_USER
-from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
+from homeassistant.const import STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers import device_registry as dr
@@ -263,7 +263,7 @@ async def test_the_disinfection_can_be_switched_off_and_on(
 
     assert hass.states.get(ids["disinfection"]).state == "off"
     temperature = hass.states.get(ids["disinfection_temperature"])
-    assert temperature.state == STATE_UNKNOWN
+    assert float(temperature.state) == 70  # off: the temperature it will start at
     assert temperature.attributes["min"] == 10
     assert temperature.attributes["max"] == 110
 
@@ -281,7 +281,7 @@ async def test_the_disinfection_can_be_switched_off_and_on(
     assert unit.holding[DISINFECTION] == 65
     await call("switch", "turn_off", "disinfection")
     assert unit.holding[DISINFECTION] == 9
-    assert hass.states.get(ids["disinfection_temperature"]).state == STATE_UNKNOWN
+    assert float(hass.states.get(ids["disinfection_temperature"]).state) == 65
     await call("switch", "turn_on", "disinfection")
     assert unit.holding[DISINFECTION] == 65
 
@@ -327,7 +327,9 @@ async def test_a_block_failing_as_a_whole_is_split(
     unit = _unit(connections)
     unit.read_events.clear()
     await entry.runtime_data.coordinator.async_refresh()
-    blocks = {(e.address, e.count) for e in unit.read_events if e.address < 4065}
+    blocks = {
+        (e.address, e.count) for e in unit.read_events if 3999 <= e.address < 4065
+    }
     assert blocks == {(3999, 12), (4025, 6)}
 
 

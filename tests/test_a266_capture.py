@@ -102,5 +102,5 @@ async def test_the_disinfection_runs_on_sundays_at_70(
     assert state(ids["disinfection_temperature"]).state == "70"
     assert state(ids["disinfection_sunday"]).state == "on"
     assert state(ids["disinfection_monday"]).state == "off"
-    assert state(ids["disinfection_start"]).state == "22:30:00"
+    assert state(ids["disinfection_start"]).state == "22:30"
     assert state(ids["disinfection_duration"]).state == "90"

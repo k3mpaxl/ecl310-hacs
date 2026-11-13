@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import pytest
 from homeassistant.config_entries import SOURCE_USER
-from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from modbus_connection.mock import MockModbusConnection
@@ -66,7 +65,7 @@ async def test_every_subsystem_reads_and_shows_what_the_owner_saw(
     entry = await setup_entry(hass, connections)
     coordinator = entry.runtime_data.coordinator
     assert coordinator.data.failed == {}
-    assert len(coordinator.data.updated) == 6
+    assert set(coordinator.device.all_component_names) == set(coordinator.data.updated)
     assert not any(coordinator.refused(name) for name in coordinator.data.updated)
 
     ids = entity_ids(hass, entry)
@@ -87,7 +86,8 @@ async def test_disinfection_is_off_with_friday_stored(
     ids = entity_ids(hass, entry)
     state = hass.states.get
     assert state(ids["disinfection"]).state == "off"
-    assert state(ids["disinfection_temperature"]).state == STATE_UNKNOWN
+    # Off: the number shows the temperature turning it on will set.
+    assert float(state(ids["disinfection_temperature"]).state) == 70
     assert state(ids["disinfection_friday"]).state == "on"
     for day in ("monday", "tuesday", "wednesday", "thursday", "saturday", "sunday"):
         assert state(ids[f"disinfection_{day}"]).state == "off"

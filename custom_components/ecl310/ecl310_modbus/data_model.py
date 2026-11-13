@@ -20,6 +20,7 @@ from modbus_connection.model import (
     Component,
     NumberField,
 )
+from modbus_connection.model._planning import ReadPlan
 from modbus_connection.model import (
     boolean as _modbus_boolean,
 )
@@ -128,6 +129,7 @@ def _number_metadata(
     raw_min: int | None,
     raw_max: int | None,
     off_value: float | int | None = None,
+    default_value: float | int | None = None,
 ) -> DatapointMetadata:
     """Build the neutral metadata for a numeric datapoint."""
     return DatapointMetadata(
@@ -147,6 +149,7 @@ def _number_metadata(
             raw_min=raw_min,
             raw_max=raw_max,
             off_value=off_value,
+            default_value=default_value,
         ),
     )
 
@@ -210,6 +213,7 @@ def register_gauge(
     raw_min: int | None = None,
     raw_max: int | None = None,
     off_value: float | int | None = None,
+    default_value: float | int | None = None,
     parameter_id: int | None = None,
     sensor_number: int | None = None,
     maker_key: str | None = None,
@@ -250,6 +254,7 @@ def register_gauge(
             raw_min=raw_min,
             raw_max=raw_max,
             off_value=off_value,
+            default_value=default_value,
         ),
     )
 
@@ -437,6 +442,42 @@ class Ecl310Component(Component):
     coil_ranges = COIL_RANGES
     max_span = MAX_BLOCK_SPAN
     max_gap = MAX_BLOCK_GAP
+
+    def _invalidate_caches(self) -> None:
+        """Drop the operating-only plan when the set of fields changes."""
+        self.__dict__.pop("_operating_plan", None)
+        super()._invalidate_caches()
+
+    async def async_update_operating(self, *, notify: bool = True) -> None:
+        """Read live fields without re-reading infrequently changed settings."""
+        from .ecl310 import RETURN_SETTING_PREFIXES
+        from .subsystems.installation_settings import (
+            INSTALLER_NUMERIC_FIELDS,
+            INSTALLER_SWITCH_FIELDS,
+        )
+
+        def is_installer(name: str) -> bool:
+            return name.startswith(RETURN_SETTING_PREFIXES) or name in (
+                INSTALLER_NUMERIC_FIELDS | INSTALLER_SWITCH_FIELDS
+            )
+
+        if (plan := self.__dict__.get("_operating_plan")) is None:
+            items = [
+                item
+                for item in self._read_items
+                if not is_installer(item.resolved.field.name)
+            ]
+            plan = ReadPlan.build(
+                items,
+                self._resolved_ranges(),
+                max_gap=self.max_gap,
+                max_span=self.max_span,
+            )
+            self._operating_plan = plan
+        await plan.execute(self._unit, collect_raw=False)
+        self._verify_read()
+        if notify:
+            self.notify()
 
     def metadata_for(self, field: str) -> DatapointMetadata | None:
         """Return the neutral ECL metadata for a declared field."""

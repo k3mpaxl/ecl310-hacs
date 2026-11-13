@@ -219,6 +219,33 @@ The three automations behind it (adapt entity IDs and persons):
             operation_mode: frost_protection
 ```
 
+## Installer settings
+
+Besides the everyday settings, the integration offers the ones of the ECL's
+*Settings* menu that an installer sets once: return temperature limit,
+optimisation, control valve, pump and the summer/winter cut-off. They sit on
+the device of their circuit, only the ones your application has exist, and
+they are **disabled until you enable them** (under *Configuration* on the
+device page).
+
+> **Risk of damage / Schadensgefahr:** Wrong installer settings can damage the
+> controller or the connected equipment. Have changes assessed by a qualified
+> heating professional. / Falsche Anlageneinstellungen können Regler oder Anlage
+> beschädigen. Änderungen von einer Fachkraft beurteilen lassen.
+
+They are made to be easy to use:
+
+- **Plain words, real units.** The control valve's actuator is a choice
+  (thermal actuator or gear motor), the minimum pulse is shown in milliseconds
+  (the controller's display counts it in steps of 20 ms, so 3 there is 60 ms
+  here), and the disinfection start is a dropdown of half hours.
+- **Settings that can be off come as a switch and a number.** The switch turns
+  the setting on and off; the number sets its value and keeps showing the last
+  one while the setting is off.
+
+[Installer settings](docs/installation-settings.md) explains what each one
+does – and what the actuator type means for the others.
+
 ## Where the register map comes from
 
 Danfoss's own manual gives every setting's parameter ID and every input's

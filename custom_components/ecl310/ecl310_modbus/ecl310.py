@@ -42,6 +42,11 @@ from .subsystems import (
     schedule_component,
 )
 from .system_info import SystemInformation, async_read_system_information
+from .subsystems.limiter import limiter_component
+from .subsystems.installation_settings import (
+    INSTALLER_NUMERIC_FIELDS,
+    INSTALLER_SWITCH_FIELDS,
+)
 
 if TYPE_CHECKING:
     from modbus_connection import ModbusUnit
@@ -70,6 +75,21 @@ ALL_COMPONENT_NAMES: tuple[str, ...] = (*COMPONENT_NAMES, *SCHEDULE_COMPONENT_NA
 DEFAULT_SENSORS: dict[int, str] = {
     assignment.number: assignment.key for assignment in SENSOR_ASSIGNMENTS
 }
+
+# These installer settings are enabled only for the profiles verified here.
+RETURN_SETTING_PREFIXES = (
+    "return_limit_x",
+    "return_limit_y",
+    "return_limit_influence_",
+    "return_limit_adaptation_",
+    "return_limit_priority",
+    "parallel_operation",
+    "building_factor",
+    "auto_saving",
+    "heat_up_boost",
+    "ramp_time",
+    "optimised_stop",
+)
 
 
 @dataclass(frozen=True)
@@ -161,19 +181,21 @@ class Ecl310:
                 CIRCUIT_TYPES[circuit.kind],
                 circuit.number,
                 self.circuit_sensors(circuit),
+                application,
             )
             setattr(self, circuit.component, kind_type(unit))
             setattr(self, circuit.schedule, schedule_component(circuit.number)(unit))
-        if application is not None:
-            for name in self.all_component_names:
-                component: Ecl310Component = getattr(self, name)
-                keep = [
-                    field
-                    for field in type(component).declared_fields
-                    if self._has(component, field)
-                ]
-                if len(keep) < len(type(component).declared_fields):
-                    component.restrict_fields(keep)
+            if application is not None:
+                setattr(self, f"limiter_{circuit.number}", limiter_component(circuit.number)(unit))
+        for name in self.all_component_names:
+            component: Ecl310Component = getattr(self, name)
+            keep = [
+                field
+                for field in type(component).declared_fields
+                if self._has(component, field)
+            ]
+            if len(keep) < len(type(component).declared_fields):
+                component.restrict_fields(keep)
 
     @property
     def component_names(self) -> tuple[str, ...]:
@@ -182,6 +204,7 @@ class Ecl310:
             "sensors",
             *(circuit.component for circuit in self.circuits),
             "outputs",
+            *(f"limiter_{c.number}" for c in self.circuits if self.application is not None),
         )
 
     @property
@@ -259,6 +282,11 @@ class Ecl310:
         if component is self.sensors:
             return field in self.sensor_assignment.values()
         if self.application is None:
+            if (
+                field.startswith(RETURN_SETTING_PREFIXES)
+                or field in INSTALLER_NUMERIC_FIELDS | INSTALLER_SWITCH_FIELDS
+            ):
+                return False  # These new settings have only been verified against profiles.
             return True
         metadata = component.metadata_for(field)
         if metadata is None or metadata.parameter_id is None:
@@ -275,7 +303,7 @@ class Ecl310:
         return subsystem is not None and self._has(subsystem, field)
 
     @staticmethod
-    def parameter_ids() -> frozenset[int]:
+    def parameter_ids(*, include_installer_settings: bool = True) -> frozenset[int]:
         """Every ECL parameter this library models."""
         ids: set[int] = set()
         for component_type in (
@@ -286,7 +314,14 @@ class Ecl310:
             HeatingSchedule,
             HotWaterSchedule,
         ):
-            for descriptor in component_type.declared_fields.values():
+            for name, descriptor in component_type.declared_fields.items():
+                # Do not change the application detection probe set just by
+                # adding optional settings. They do not identify a controller.
+                if not include_installer_settings and (
+                    name.startswith(RETURN_SETTING_PREFIXES)
+                    or name in INSTALLER_NUMERIC_FIELDS | INSTALLER_SWITCH_FIELDS
+                ):
+                    continue
                 metadata = getattr(descriptor, "ecl_metadata", None)
                 if metadata is not None and metadata.parameter_id is not None:
                     ids.add(metadata.parameter_id)
@@ -335,7 +370,11 @@ class Ecl310:
                 reported=system.application_title,
                 reported_profile=profile,
             )
-        return await async_detect(unit, candidates, preferred=cls.parameter_ids())
+        return await async_detect(
+            unit,
+            candidates,
+            preferred=cls.parameter_ids(include_installer_settings=False),
+        )
 
     @classmethod
     async def async_probe(cls, unit: ModbusUnit) -> DeviceInformation:
@@ -352,12 +391,16 @@ class Ecl310:
         return device.info
 
     async def _async_poll(
-        self, names: tuple[str, ...], report: UpdateReport
+        self, names: tuple[str, ...], report: UpdateReport, *, installer: bool = True
     ) -> UpdateReport:
         """Read each named sub-system on its own, recording what happened."""
         for name in names:
             try:
-                await getattr(self, name).async_update(notify=False)
+                component = getattr(self, name)
+                if not installer and any(c.component == name for c in self.circuits):
+                    await component.async_update_operating(notify=False)
+                else:
+                    await component.async_update(notify=False)
             except ModbusConnectionError:
                 raise  # the link is down; the rest would only wait for timeouts
             except ModbusTimeoutError as err:
@@ -375,7 +418,9 @@ class Ecl310:
         for name in report.updated:
             getattr(self, name).notify()
 
-    async def async_update(self, *, schedules: bool = False) -> UpdateReport:
+    async def async_update(
+        self, *, schedules: bool = False, installer: bool = True
+    ) -> UpdateReport:
         """Refresh the sub-systems and report what answered.
 
         The weekly programs are left out unless ``schedules`` asks for them:
@@ -385,7 +430,7 @@ class Ecl310:
         names = self.component_names
         if schedules:
             names = self.all_component_names
-        report = await self._async_poll(names, UpdateReport())
+        report = await self._async_poll(names, UpdateReport(), installer=installer)
         self._notify(report)
         return report
 

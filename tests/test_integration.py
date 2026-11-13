@@ -313,7 +313,11 @@ async def test_the_anti_bacteria_run(
 
     assert hass.states.get(ids["disinfection_saturday"]).state == "on"
     assert hass.states.get(ids["disinfection_monday"]).state == "off"
-    assert hass.states.get(ids["disinfection_start"]).state == "05:00:00"
+    start = hass.states.get(ids["disinfection_start"])
+    assert start.state == "05:00"
+    # Only the half hours the controller counts in can be chosen.
+    assert len(start.attributes["options"]) == 48
+    assert start.attributes["options"][:3] == ["00:00", "00:30", "01:00"]
 
     await hass.services.async_call(
         "switch",
@@ -324,15 +328,33 @@ async def test_the_anti_bacteria_run(
     await hass.async_block_till_done()
     assert await unit.read_holding_registers(12121, 1) == [0b0100001]
 
-    # 04:45 falls in the 04:30 slot; the controller counts half hours.
+    # 04:30 is the ninth half-hour slot, which is what the controller stores.
     await hass.services.async_call(
-        "time",
-        "set_value",
-        {"entity_id": ids["disinfection_start"], "time": "04:45:00"},
+        "select",
+        "select_option",
+        {"entity_id": ids["disinfection_start"], "option": "04:30"},
         blocking=True,
     )
     await hass.async_block_till_done()
     assert await unit.read_holding_registers(12122, 1) == [9]
+
+
+async def test_the_old_disinfection_start_time_entity_is_removed(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The start used to be a time entity; an update must not leave it behind."""
+    entry = MockConfigEntry(
+        domain=DOMAIN, data=ENTRY_DATA, unique_id="192.168.1.100:502:1"
+    )
+    entry.add_to_hass(hass)
+    registry = er.async_get(hass)
+    old = registry.async_get_or_create(
+        "time", DOMAIN, f"{entry.entry_id}_disinfection_start", config_entry=entry
+    )
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert registry.async_get(old.entity_id) is None
+    assert entity_ids(hass, entry)["disinfection_start"].startswith("select.")
 
 
 async def test_the_heat_curve_and_its_points(
@@ -371,8 +393,8 @@ async def test_every_entity_has_a_unique_id_of_its_own(
     unique_ids = [entity.unique_id for entity in entries]
     assert len(unique_ids) == len(set(unique_ids))
 
-    # 42 boundaries per circuit, plus the anti-bacteria start.
-    assert len([e for e in entries if e.domain == "time"]) == 85
+    # 42 boundaries per circuit; the anti-bacteria start is a select.
+    assert len([e for e in entries if e.domain == "time"]) == 84
     for component in ("heating_schedule", "hot_water_schedule"):
         boundaries = [e for e in entries if f"_{component}_" in e.unique_id]
         assert len(boundaries) == 42, component

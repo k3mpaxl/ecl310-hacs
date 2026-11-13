@@ -318,6 +318,34 @@
       }
     },
     "number": {
+      "auto_saving": {
+        "name": "Automatic saving outdoor threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "building_factor": {
+        "name": "Building factor",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "charge_difference": {
         "name": "Charging difference",
         "state_attributes": {
@@ -472,6 +500,20 @@
           }
         }
       },
+      "heat_up_boost": {
+        "name": "Heat-up boost",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "heating_frost_protection_temperature": {
         "name": "Frost protection temperature",
         "state_attributes": {
@@ -514,6 +556,34 @@
           }
         }
       },
+      "hot_water_pump_frost_threshold": {
+        "name": "Pump frost protection outdoor threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_pump_heat_threshold": {
+        "name": "Pump start flow threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "hot_water_return_limit": {
         "name": "Return temperature limit",
         "state_attributes": {
@@ -528,8 +598,134 @@
           }
         }
       },
+      "hot_water_return_limit_adaptation_time": {
+        "name": "Return limit adaptation time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_max": {
+        "name": "Return limit maximum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_min": {
+        "name": "Return limit minimum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "hot_water_setback_setpoint": {
         "name": "Setback temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_integral_time": {
+        "name": "Control valve integral time Tn",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_minimum_pulse": {
+        "name": "Control valve minimum pulse",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_motor_protection": {
+        "name": "Control valve motor protection",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_neutral_zone": {
+        "name": "Control valve neutral zone",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_proportional_band": {
+        "name": "Control valve proportional band Xp",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_running_time": {
+        "name": "Control valve running time",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -584,8 +780,162 @@
           }
         }
       },
+      "parallel_operation": {
+        "name": "Parallel operation",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_frost_threshold": {
+        "name": "Pump frost protection outdoor threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_heat_threshold": {
+        "name": "Pump start flow threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "pump_post_run": {
         "name": "Pump post-run",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "ramp_time": {
+        "name": "Ramp time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_adaptation_time": {
+        "name": "Return limit adaptation time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_influence_max": {
+        "name": "Return limit maximum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_influence_min": {
+        "name": "Return limit minimum influence",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_x1": {
+        "name": "Return limit X1 high outdoor temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_x2": {
+        "name": "Return limit X2 low outdoor temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_y1": {
+        "name": "Return limit Y1 low limit",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_y2": {
+        "name": "Return limit Y2 high limit",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -653,9 +1003,209 @@
             "name": "Terminal"
           }
         }
+      },
+      "summer_filter": {
+        "name": "Summer cut-off filter",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "summer_start_day": {
+        "name": "Summer cut-off start day",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "summer_start_month": {
+        "name": "Summer cut-off start month",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_integral_time": {
+        "name": "Control valve integral time Tn",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_minimum_pulse": {
+        "name": "Control valve minimum pulse",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_motor_protection": {
+        "name": "Control valve motor protection",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_neutral_zone": {
+        "name": "Control valve neutral zone",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_proportional_band": {
+        "name": "Control valve proportional band Xp",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_running_time": {
+        "name": "Control valve running time",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_cut_off": {
+        "name": "Winter cut-off threshold",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_filter": {
+        "name": "Winter cut-off filter",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_start_day": {
+        "name": "Winter cut-off start day",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_start_month": {
+        "name": "Winter cut-off start month",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
       }
     },
     "select": {
+      "actuator_type": {
+        "name": "Control valve actuator",
+        "state": {
+          "gear_motor": "Gear motor (3-point)",
+          "thermal": "Thermal actuator (M-ABV)"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "circulation_pump_override": {
         "name": "Circulation pump override",
         "state": {
@@ -694,6 +1244,20 @@
           }
         }
       },
+      "disinfection_start": {
+        "name": "Disinfection start",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "heating_pump_override": {
         "name": "Heating circuit pump override",
         "state": {
@@ -719,6 +1283,43 @@
           "auto": "Automatic",
           "off": "Forced off",
           "on": "Forced on"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "optimisation_basis": {
+        "name": "Optimisation based on",
+        "state": {
+          "outdoor": "Outdoor temperature",
+          "room": "Room temperature"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "parallel_operation_mode": {
+        "name": "Parallel operation mode",
+        "state": {
+          "conditional": "Conditional",
+          "off": "Off",
+          "on": "On"
         },
         "state_attributes": {
           "ecl_name": {
@@ -1003,6 +1604,244 @@
           }
         }
       },
+      "limiter_status": {
+        "name": "Limiter status",
+        "state": {
+          "active": "Influenced",
+          "none": "No influence",
+          "partial": "Partly known"
+        },
+        "state_attributes": {
+          "boost": {
+            "name": "Heat-up boost",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "compensation_1": {
+            "name": "Compensation 1",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "compensation_2": {
+            "name": "Compensation 2",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "disinfection": {
+            "name": "Disinfection",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "eca_override": {
+            "name": "Room unit override (ECA)",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "external_on": {
+            "name": "External on",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "external_override": {
+            "name": "External override",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "external_setpoint": {
+            "name": "External setpoint",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "external_stop": {
+            "name": "External stop",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "fan_stop": {
+            "name": "Fan stop",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "floor_drying": {
+            "name": "Floor drying",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "flow_power_limit": {
+            "name": "Flow / power limit",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "heating_off": {
+            "name": "Heating off",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "holiday": {
+            "name": "Holiday",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "hot_water_influence": {
+            "name": "Hot water influence",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "hot_water_priority": {
+            "name": "Hot water priority",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "low_flow": {
+            "name": "Low flow",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "output_temperature_stop": {
+            "name": "Output temperature stop",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "parallel_priority": {
+            "name": "Parallel operation / priority",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "ramp": {
+            "name": "Ramp function",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "raw_words": {
+            "name": "Raw limiter words"
+          },
+          "return_limit": {
+            "name": "Return temperature limit",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "room_limit": {
+            "name": "Room temperature limit",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "scada_hot_water_override": {
+            "name": "SCADA hot water override",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "scada_offset": {
+            "name": "SCADA offset",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "slave_request": {
+            "name": "Request from slave controller",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "timeout_override": {
+            "name": "Override timeout",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          },
+          "wind": {
+            "name": "Wind influence",
+            "state": {
+              "changed": "Changes the setpoint",
+              "higher": "Raises the setpoint",
+              "lower": "Lowers the setpoint"
+            }
+          }
+        }
+      },
       "outdoor_temperature": {
         "name": "Outdoor temperature",
         "state_attributes": {
@@ -1117,6 +1956,34 @@
       }
     },
     "switch": {
+      "auto_saving_enabled": {
+        "name": "Automatic saving outdoor threshold enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "building_factor_enabled": {
+        "name": "Optimisation enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "disinfection": {
         "name": "Disinfection",
         "state_attributes": {
@@ -1229,6 +2096,20 @@
           }
         }
       },
+      "heat_up_boost_enabled": {
+        "name": "Heat-up boost enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "hot_water_boost": {
         "name": "Hot water boost",
         "state_attributes": {
@@ -1269,8 +2150,176 @@
           }
         }
       },
+      "hot_water_pump_exercise": {
+        "name": "Pump exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "hot_water_valve_exercise": {
+        "name": "Control valve exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "optimised_stop": {
+        "name": "Optimised stop",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_exercise": {
+        "name": "Pump exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "pump_frost_threshold_enabled": {
+        "name": "Pump frost protection outdoor threshold enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "pump_off_in_setback": {
         "name": "Pump off during setback",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "ramp_time_enabled": {
+        "name": "Ramp time enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "return_limit_priority": {
+        "name": "Return limit overrides minimum flow temperature",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "summer_filter_enabled": {
+        "name": "Summer cut-off filter enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_exercise": {
+        "name": "Control valve exercise",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "valve_motor_protection_enabled": {
+        "name": "Control valve motor protection enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_cut_off_enabled": {
+        "name": "Winter cut-off threshold enabled",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "winter_filter_enabled": {
+        "name": "Winter cut-off filter enabled",
         "state_attributes": {
           "ecl_name": {
             "name": "ECL menu"
@@ -1285,20 +2334,6 @@
       }
     },
     "time": {
-      "disinfection_start": {
-        "name": "Disinfection start",
-        "state_attributes": {
-          "ecl_name": {
-            "name": "ECL menu"
-          },
-          "pnu": {
-            "name": "PNU"
-          },
-          "terminal": {
-            "name": "Terminal"
-          }
-        }
-      },
       "friday_start": {
         "name": "Friday period {period} start",
         "state_attributes": {

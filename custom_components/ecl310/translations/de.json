@@ -653,6 +653,538 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "hot_water_return_limit_adaptation_time": {
+        "name": "Rücklaufbegrenzung Anpassungszeit",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_max": {
+        "name": "Rücklaufbegrenzung Einfluss max.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "hot_water_return_limit_influence_min": {
+        "name": "Rücklaufbegrenzung Einfluss min.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_adaptation_time": {
+        "name": "Rücklaufbegrenzung Anpassungszeit",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_influence_max": {
+        "name": "Rücklaufbegrenzung Einfluss max.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_influence_min": {
+        "name": "Rücklaufbegrenzung Einfluss min.",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_x1": {
+        "name": "Rücklaufbegrenzung X1 hohe Außentemperatur",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_x2": {
+        "name": "Rücklaufbegrenzung X2 tiefe Außentemperatur",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_y1": {
+        "name": "Rücklaufbegrenzung Y1 untere Grenze",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "return_limit_y2": {
+        "name": "Rücklaufbegrenzung Y2 obere Grenze",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          }
+        }
+      },
+      "parallel_operation": {
+        "name": "Parallelbetrieb",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "building_factor": {
+        "name": "Gebäudefaktor",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "auto_saving": {
+        "name": "Automatisches Sparen Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "heat_up_boost": {
+        "name": "Schnellaufheizen",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "ramp_time": {
+        "name": "Rampenfunktion",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_frost_threshold": {
+        "name": "Pumpenfrostschutz Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_pump_frost_threshold": {
+        "name": "Pumpenfrostschutz Außentemperatur",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_heat_threshold": {
+        "name": "Pumpe Einschalten ab Vorlauf-Sollwert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_pump_heat_threshold": {
+        "name": "Pumpe Einschalten ab Vorlauf-Sollwert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_motor_protection": {
+        "name": "Regelventil Motorschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_motor_protection": {
+        "name": "Regelventil Motorschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_proportional_band": {
+        "name": "Regelventil Proportionalband Xp",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_proportional_band": {
+        "name": "Regelventil Proportionalband Xp",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_integral_time": {
+        "name": "Regelventil Nachstellzeit Tn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_integral_time": {
+        "name": "Regelventil Nachstellzeit Tn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_running_time": {
+        "name": "Regelventil Laufzeit",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_running_time": {
+        "name": "Regelventil Laufzeit",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_neutral_zone": {
+        "name": "Regelventil neutrale Zone",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_neutral_zone": {
+        "name": "Regelventil neutrale Zone",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_minimum_pulse": {
+        "name": "Regelventil Mindeststellimpuls",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_minimum_pulse": {
+        "name": "Regelventil Mindeststellimpuls",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_start_month": {
+        "name": "Sommerabschaltung Startmonat",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_start_day": {
+        "name": "Sommerabschaltung Starttag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_filter": {
+        "name": "Sommerabschaltung Filter",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_start_month": {
+        "name": "Winterabschaltung Startmonat",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_start_day": {
+        "name": "Winterabschaltung Starttag",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_cut_off": {
+        "name": "Winterabschaltung Grenzwert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_filter": {
+        "name": "Winterabschaltung Filter",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "select": {
@@ -769,9 +1301,316 @@
             "name": "ECL-Menü"
           }
         }
+      },
+      "parallel_operation_mode": {
+        "name": "Parallelbetrieb Betriebsart",
+        "state": {
+          "off": "Aus",
+          "conditional": "Bedingt",
+          "on": "Ein"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "actuator_type": {
+        "name": "Regelventil Stellantrieb",
+        "state": {
+          "thermal": "Thermischer Stellantrieb (M-ABV)",
+          "gear_motor": "Getriebemotor (3-Punkt)"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "disinfection_start": {
+        "name": "Desinfektionsbeginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "optimisation_basis": {
+        "name": "Optimierung nach",
+        "state": {
+          "outdoor": "Außentemperatur",
+          "room": "Raumtemperatur"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
       }
     },
     "sensor": {
+      "limiter_status": {
+        "name": "Begrenzerstatus",
+        "state": {
+          "none": "Kein Einfluss",
+          "active": "Beeinflusst",
+          "partial": "Teilweise bekannt"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          },
+          "raw_words": {
+            "name": "Rohdaten des Begrenzers"
+          },
+          "return_limit": {
+            "name": "Rücklaufbegrenzung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "room_limit": {
+            "name": "Raumtemperaturbegrenzung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "wind": {
+            "name": "Windeinfluss",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "compensation_1": {
+            "name": "Kompensation 1",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "compensation_2": {
+            "name": "Kompensation 2",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "parallel_priority": {
+            "name": "Parallelbetrieb / Vorrang",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "flow_power_limit": {
+            "name": "Volumenstrom-/Leistungsbegrenzung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "holiday": {
+            "name": "Urlaub",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_override": {
+            "name": "Externe Übersteuerung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "eca_override": {
+            "name": "Übersteuerung durch Raumgerät (ECA)",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "disinfection": {
+            "name": "Desinfektion",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "boost": {
+            "name": "Schnellaufheizen",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "ramp": {
+            "name": "Rampenfunktion",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "slave_request": {
+            "name": "Anforderung vom Slave-Regler",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "heating_off": {
+            "name": "Heizung aus",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "hot_water_priority": {
+            "name": "Warmwasser-Vorrang",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "hot_water_influence": {
+            "name": "Warmwasser-Einfluss",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "scada_offset": {
+            "name": "SCADA-Verschiebung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "scada_hot_water_override": {
+            "name": "SCADA-Warmwasser-Übersteuerung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_setpoint": {
+            "name": "Externer Sollwert",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_stop": {
+            "name": "Externer Stopp",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "fan_stop": {
+            "name": "Lüfter-Stopp",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "external_on": {
+            "name": "Extern ein",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "timeout_override": {
+            "name": "Ablauf der Übersteuerung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "output_temperature_stop": {
+            "name": "Stopp durch Ausgangstemperatur",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "floor_drying": {
+            "name": "Estrichtrocknung",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          },
+          "low_flow": {
+            "name": "Geringer Durchfluss",
+            "state": {
+              "higher": "Hebt den Sollwert an",
+              "lower": "Senkt den Sollwert ab",
+              "changed": "Verändert den Sollwert"
+            }
+          }
+        }
+      },
       "flow_temperature": {
         "name": "Vorlauftemperatur",
         "state_attributes": {
@@ -1282,11 +2121,9 @@
             "name": "ECL-Menü"
           }
         }
-      }
-    },
-    "time": {
-      "disinfection_start": {
-        "name": "Desinfektionsbeginn",
+      },
+      "return_limit_priority": {
+        "name": "Rücklaufbegrenzung Vorrang vor minimalem Vorlauf",
         "state_attributes": {
           "pnu": {
             "name": "PNU"
@@ -1299,6 +2136,204 @@
           }
         }
       },
+      "building_factor_enabled": {
+        "name": "Optimierung aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "auto_saving_enabled": {
+        "name": "Automatisches Sparen Außentemperatur aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "heat_up_boost_enabled": {
+        "name": "Schnellaufheizen aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "ramp_time_enabled": {
+        "name": "Rampenfunktion aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "optimised_stop": {
+        "name": "Optimierter Stopp",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_frost_threshold_enabled": {
+        "name": "Pumpenfrostschutz Außentemperatur aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_motor_protection_enabled": {
+        "name": "Regelventil Motorschutz aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "summer_filter_enabled": {
+        "name": "Sommerabschaltung Filter aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_cut_off_enabled": {
+        "name": "Winterabschaltung Grenzwert aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "winter_filter_enabled": {
+        "name": "Winterabschaltung Filter aktiviert",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "pump_exercise": {
+        "name": "Pumpenblockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_pump_exercise": {
+        "name": "Pumpenblockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "valve_exercise": {
+        "name": "Regelventil Blockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "hot_water_valve_exercise": {
+        "name": "Regelventil Blockierschutz",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      }
+    },
+    "time": {
       "friday_start": {
         "name": "Freitag Zeitraum {period} Beginn",
         "state_attributes": {

@@ -25,6 +25,8 @@ from ..data_model import (
 )
 from ..enums import CircuitState, OperatingMode
 from ..exceptions import Ecl310ValueValidationError
+from .return_limit import return_limit_setting
+from .installation_settings import installation_number
 
 #: Register carrying the heating circuit's operating mode.
 MODE_REGISTER = 4200
@@ -64,6 +66,109 @@ def _curve_point(parameter_id: int, outdoor: int) -> NumberField[float]:
 
 class HeatingCircuit(Ecl310Component):
     """The weather-compensated space heating circuit."""
+    pump_exercise = parameter_switch(11022, writable=True)
+    valve_exercise = parameter_switch(11023, writable=True)
+    actuator_type = parameter_switch(11024, writable=True)
+    optimisation_basis = parameter_switch(11020, writable=True)
+    pump_frost_threshold = installation_number(11077)
+    pump_heat_threshold = installation_number(11078)
+    valve_motor_protection = installation_number(11174)
+    valve_proportional_band = installation_number(11184)
+    valve_integral_time = installation_number(11185)
+    valve_running_time = installation_number(11186)
+    valve_neutral_zone = installation_number(11187)
+    valve_minimum_pulse = installation_number(11189)
+    summer_start_month = installation_number(11392)
+    summer_start_day = installation_number(11393)
+    summer_filter = installation_number(11395)
+    winter_start_month = installation_number(11396)
+    winter_start_day = installation_number(11397)
+    winter_cut_off = installation_number(11398)
+    winter_filter = installation_number(11399)
+
+
+    optimised_stop = parameter_switch(11026, writable=True)
+    auto_saving = parameter_number(
+        11011,
+        1,
+        min_value=-29,
+        max_value=10,
+        raw_min=-30,
+        raw_max=10,
+        off_value=-30,
+        step=1,
+        digits=0,
+        unit="°C",
+        writable=True,
+    )
+    heat_up_boost = parameter_number(
+        11012,
+        1,
+        signed=False,
+        min_value=1,
+        max_value=99,
+        raw_min=0,
+        raw_max=99,
+        off_value=0,
+        step=1,
+        digits=0,
+        unit="%",
+        writable=True,
+    )
+    ramp_time = parameter_number(
+        11013,
+        1,
+        signed=False,
+        min_value=1,
+        max_value=99,
+        raw_min=0,
+        raw_max=99,
+        off_value=0,
+        step=1,
+        digits=0,
+        unit="min",
+        writable=True,
+    )
+    return_limit_x1 = return_limit_setting(11031)
+    return_limit_y1 = return_limit_setting(11032)
+    return_limit_x2 = return_limit_setting(11033)
+    return_limit_y2 = return_limit_setting(11034)
+    return_limit_influence_max = return_limit_setting(11035)
+    return_limit_influence_min = return_limit_setting(11036)
+    return_limit_adaptation_time = return_limit_setting(11037)
+    parallel_operation = parameter_number(
+        11043,
+        1,
+        signed=False,
+        min_value=0,
+        max_value=100,
+        raw_min=0,
+        raw_max=100,
+        step=1,
+        digits=0,
+        unit="K",
+        writable=True,
+    )
+    building_factor = parameter_number(
+        11014,
+        1,
+        signed=False,
+        min_value=10,
+        max_value=59,
+        raw_min=9,
+        raw_max=59,
+        off_value=9,
+        step=1,
+        digits=0,
+        writable=True,
+    )
+    return_limit_priority = parameter_switch(
+        11085,
+        writable=True,
+        maker_key="Priorität",
+        maker_category="circuit",
+        description="Rücklaufbegrenzung darf minimale Vorlauftemperatur übersteuern",
+    )
 
     mode = register_enum(
         MODE_REGISTER,
