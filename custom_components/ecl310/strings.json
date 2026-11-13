@@ -1322,10 +1322,42 @@
         }
       },
       "actuator_type": {
-        "name": "Control valve actuator type",
+        "name": "Control valve actuator",
         "state": {
-          "m_abv": "M-ABV",
-          "m_3_point": "M-3.Pkt."
+          "thermal": "Thermal actuator (M-ABV)",
+          "gear_motor": "Gear motor (3-point)"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "disinfection_start": {
+        "name": "Disinfection start",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          },
+          "ecl_name": {
+            "name": "ECL menu"
+          }
+        }
+      },
+      "optimisation_basis": {
+        "name": "Optimisation based on",
+        "state": {
+          "outdoor": "Outdoor temperature",
+          "room": "Room temperature"
         },
         "state_attributes": {
           "pnu": {
@@ -1341,9 +1373,6 @@
       }
     },
     "sensor": {
-      "actuator_type_raw": {
-        "name": "Actuator type (raw)"
-      },
       "limiter_status": {
         "name": "Limiter status"
       },
@@ -2254,20 +2283,6 @@
       },
       "sunday_stop": {
         "name": "Sunday period {period} end",
-        "state_attributes": {
-          "pnu": {
-            "name": "PNU"
-          },
-          "terminal": {
-            "name": "Terminal"
-          },
-          "ecl_name": {
-            "name": "ECL menu"
-          }
-        }
-      },
-      "disinfection_start": {
-        "name": "Disinfection start",
         "state_attributes": {
           "pnu": {
             "name": "PNU"

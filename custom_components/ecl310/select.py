@@ -16,6 +16,7 @@ to do nothing.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.const import EntityCategory, Platform
@@ -25,12 +26,13 @@ from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import (
     COMPONENT_HEATING,
+    COMPONENT_HOT_WATER,
     COMPONENT_OUTPUTS,
     PARALLEL_FULL_ON,
     PARALLEL_MAX_THRESHOLD,
 )
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
-from .ecl310_modbus import Circuit, Ecl310, OutputControl
+from .ecl310_modbus import Circuit, Ecl310, HotWater, OutputControl
 from .entity import Ecl310Entity, circuit_key, role_name, supported
 
 PARALLEL_UPDATES = 1
@@ -87,9 +89,144 @@ async def async_setup_entry(
                     for circuit in coordinator.device.circuits
                     if circuit.kind == COMPONENT_HEATING
                 ),
+                *(
+                    Ecl310OptimisationBasis(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HEATING
+                ),
+                *(
+                    Ecl310ActuatorType(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                ),
+                *(
+                    Ecl310DisinfectionStart(coordinator, circuit)
+                    for circuit in coordinator.device.circuits
+                    if circuit.kind == COMPONENT_HOT_WATER
+                ),
             ],
         )
     )
+
+
+class Ecl310ActuatorType(Ecl310Entity, SelectEntity):
+    """The kind of actuator that moves a circuit's control valve.
+
+    It decides how the controller drives the valve. A gear motor gets short
+    open and close pulses (3-point control), which motor protection, Xp, Tn,
+    running time, neutral zone and minimum pulse tune. A thermal actuator
+    (Danfoss M-ABV) gets a pulse-width signal and ignores those settings.
+    """
+
+    _attr_translation_key = "actuator_type"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_registry_enabled_default = False
+    _attr_options = ["thermal", "gear_motor"]
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Attach the actuator type to its circuit."""
+        key = (
+            "hot_water_actuator_type"
+            if circuit.kind == COMPONENT_HOT_WATER
+            else "actuator_type"
+        )
+        super().__init__(
+            coordinator,
+            circuit_key(key, circuit),
+            circuit.component,
+            ("actuator_type",),
+        )
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the actuator type the controller drives."""
+        value = self._subsystem.actuator_type
+        if value is None:
+            return None
+        return "gear_motor" if value else "thermal"
+
+    async def async_select_option(self, option: str) -> None:
+        """Tell the controller which actuator it drives."""
+        await self._async_write(
+            self._subsystem.write("actuator_type", option == "gear_motor")
+        )
+        await self.coordinator.async_request_refresh()
+
+
+class Ecl310OptimisationBasis(Ecl310Entity, SelectEntity):
+    """Whether optimised start and stop follow the outdoor or the room temperature.
+
+    The room temperature only counts where the controller measures it.
+    """
+
+    _attr_translation_key = "optimisation_basis"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_entity_registry_enabled_default = False
+    _attr_options = ["outdoor", "room"]
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Attach the setting to its heating circuit."""
+        super().__init__(
+            coordinator,
+            circuit_key("optimisation_basis", circuit),
+            circuit.component,
+            ("optimisation_basis",),
+        )
+
+    @property
+    def current_option(self) -> str | None:
+        """Return what the optimisation follows."""
+        value = self._subsystem.optimisation_basis
+        if value is None:
+            return None
+        return "room" if value else "outdoor"
+
+    async def async_select_option(self, option: str) -> None:
+        """Choose what the optimisation follows."""
+        await self._async_write(
+            self._subsystem.write("optimisation_basis", option == "room")
+        )
+        await self.coordinator.async_request_refresh()
+
+
+class Ecl310DisinfectionStart(Ecl310Entity, SelectEntity):
+    """When the anti-bacteria run starts.
+
+    The controller counts it in half-hour slots from midnight, so it is offered
+    as the 48 half hours of the day and nothing in between.
+    """
+
+    _attr_translation_key = "disinfection_start"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_options = [
+        f"{hour:02d}:{minute:02d}" for hour in range(24) for minute in (0, 30)
+    ]
+
+    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
+        """Attach the start to its hot water circuit."""
+        super().__init__(
+            coordinator,
+            circuit_key("disinfection_start", circuit),
+            circuit.component,
+            ("disinfection_start",),
+        )
+
+    @property
+    def _water(self) -> HotWater:
+        return cast(HotWater, self._subsystem)
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the start of the anti-bacteria run."""
+        start = self._water.disinfection_start_time
+        return None if start is None else f"{start[0]:02d}:{start[1]:02d}"
+
+    async def async_select_option(self, option: str) -> None:
+        """Write the start."""
+        hour, minute = (int(part) for part in option.split(":"))
+        await self._async_write(
+            self._water.async_set_disinfection_start_time(hour, minute)
+        )
+        await self.coordinator.async_request_refresh()
 
 
 class Ecl310ParallelMode(Ecl310Entity, SelectEntity, RestoreEntity):

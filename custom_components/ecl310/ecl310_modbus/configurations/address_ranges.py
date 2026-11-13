@@ -58,7 +58,7 @@ HEATING_OPTIMISED_STOP_RANGE: Range = parameter_range(11026, 11026)
 INSTALLATION_RANGES: tuple[Range, ...] = tuple(
     parameter_range(base + low, base + high)
     for base in (11000, 12000)
-    for low, high in ((22, 24), (77, 78), (174, 174), (184, 187), (189, 189),
+    for low, high in ((20, 20), (22, 24), (77, 78), (174, 174), (184, 187), (189, 189),
                       (392, 393), (395, 399))
 )
 HOT_WATER_RETURN_SETTINGS_RANGE: Range = parameter_range(12035, 12037)

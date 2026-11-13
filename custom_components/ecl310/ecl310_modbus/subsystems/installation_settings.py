@@ -19,7 +19,7 @@ INSTALLER_NUMBERS: dict[int, tuple[int, int, int | None, str | None]] = {
     185: (1, 999, None, "s"),
     186: (5, 250, None, "s"),
     187: (1, 9, None, "K"),
-    189: (2, 50, None, None),
+    189: (2, 50, None, "ms"),
     392: (1, 12, None, None),
     393: (1, 31, None, None),
     395: (0, 300, 0, None),
@@ -29,6 +29,10 @@ INSTALLER_NUMBERS: dict[int, tuple[int, int, int | None, str | None]] = {
     399: (0, 300, 0, None),
 }
 
+#: Display units per raw count, where that is not 1: the minimum pulse is
+#: counted in steps of 20 ms.
+INSTALLER_SCALES: dict[int, int] = {189: 20}
+
 INSTALLER_NUMERIC_FIELDS = frozenset({
     "pump_frost_threshold", "pump_heat_threshold", "valve_motor_protection",
     "valve_proportional_band", "valve_integral_time", "valve_running_time",
@@ -36,15 +40,29 @@ INSTALLER_NUMERIC_FIELDS = frozenset({
     "summer_start_day", "summer_filter", "winter_start_month", "winter_start_day",
     "winter_cut_off", "winter_filter",
 })
-INSTALLER_SWITCH_FIELDS = frozenset({"pump_exercise", "valve_exercise", "actuator_type"})
+INSTALLER_SWITCH_FIELDS = frozenset(
+    {"pump_exercise", "valve_exercise", "actuator_type", "optimisation_basis"}
+)
 
 
 def installation_number(pnu: int) -> NumberField[float]:
     """Build a known field; its exact limits are rebound from its profile."""
-    raw_min, raw_max, off, unit = INSTALLER_NUMBERS[pnu % 1000]
-    minimum = raw_min + 1 if off == raw_min else raw_min
+    function = pnu % 1000
+    raw_min, raw_max, off, unit = INSTALLER_NUMBERS[function]
+    scale = INSTALLER_SCALES.get(function, 1)
+    minimum = (raw_min + 1 if off == raw_min else raw_min) * scale
     return parameter_number(
-        pnu, 1, signed=raw_min < 0, min_value=minimum, max_value=raw_max,
-        raw_min=raw_min, raw_max=raw_max, off_value=off, step=1, digits=0,
-        unit=unit, writable=True, maker_category="circuit",
+        pnu,
+        scale,
+        signed=raw_min < 0,
+        min_value=minimum,
+        max_value=raw_max * scale,
+        raw_min=raw_min,
+        raw_max=raw_max,
+        off_value=None if off is None else off * scale,
+        step=scale,
+        digits=0,
+        unit=unit,
+        writable=True,
+        maker_category="circuit",
     )

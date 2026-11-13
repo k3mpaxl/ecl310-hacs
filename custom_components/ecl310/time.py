@@ -24,19 +24,19 @@ from typing import cast
 from homeassistant.components.time import TimeEntity, TimeEntityDescription
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     COMPONENT_HEATING_SCHEDULE,
     COMPONENT_HOT_WATER,
     COMPONENT_HOT_WATER_SCHEDULE,
+    DOMAIN,
 )
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import (
     END_OF_DAY,
     PERIODS,
-    Circuit,
-    HotWater,
     Schedule,
     Weekday,
     from_hours_minutes,
@@ -56,9 +56,6 @@ SCHEDULES: dict[str, str] = {
 #: The last minute a ``datetime.time`` can hold, which is what a register
 #: reading 24:00 is shown as.
 LAST_MINUTE = time(23, 59)
-
-#: The minute a half-hour slot starts on.
-HALF_HOUR = 30
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -110,15 +107,6 @@ TIMES: tuple[Ecl310TimeDescription, ...] = tuple(
     for stop in (False, True)
 )
 
-#: The anti-bacteria run starts on a half hour, which the controller counts in
-#: half-hour slots rather than as a time. It is a time of day all the same.
-DISINFECTION_START = TimeEntityDescription(
-    key="disinfection_start",
-    translation_key="disinfection_start",
-    entity_category=EntityCategory.CONFIG,
-)
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: Ecl310ConfigEntry,
@@ -126,23 +114,33 @@ async def async_setup_entry(
 ) -> None:
     """Set up the weekly program entities."""
     coordinator = entry.runtime_data.coordinator
+    _remove_disinfection_start(hass, entry, coordinator)
     async_add_entities(
         supported(
             hass,
             Platform.TIME,
-            [
-                *(
-                    Ecl310Time(coordinator, description)
-                    for description in per_circuit(coordinator.device, TIMES)
-                ),
-                *(
-                    Ecl310DisinfectionStart(coordinator, circuit)
-                    for circuit in coordinator.device.circuits
-                    if circuit.kind == COMPONENT_HOT_WATER
-                ),
-            ],
+            (
+                Ecl310Time(coordinator, description)
+                for description in per_circuit(coordinator.device, TIMES)
+            ),
         )
     )
+
+
+def _remove_disinfection_start(
+    hass: HomeAssistant, entry: Ecl310ConfigEntry, coordinator: Ecl310Coordinator
+) -> None:
+    """Remove the time entity the disinfection start used to be.
+
+    It is a select now, which offers only the half hours the controller counts in.
+    """
+    registry = er.async_get(hass)
+    for circuit in coordinator.device.circuits:
+        if circuit.kind != COMPONENT_HOT_WATER:
+            continue
+        unique_id = f"{entry.entry_id}_{circuit_key('disinfection_start', circuit)}"
+        if entity_id := registry.async_get_entity_id(Platform.TIME, DOMAIN, unique_id):
+            registry.async_remove(entity_id)
 
 
 class Ecl310Time(Ecl310Entity, TimeEntity):
@@ -191,38 +189,3 @@ class Ecl310Time(Ecl310Entity, TimeEntity):
         """The schedule component this entity writes to."""
         return cast(Schedule, self._subsystem)
 
-
-class Ecl310DisinfectionStart(Ecl310Entity, TimeEntity):
-    """When the anti-bacteria run starts.
-
-    The controller counts this one in half-hour slots from midnight, so a time
-    in between is rounded down to the half hour it falls in - which is what
-    the ECL's own editor offers.
-    """
-
-    entity_description = DISINFECTION_START
-
-    def __init__(self, coordinator: Ecl310Coordinator, circuit: Circuit) -> None:
-        """Initialize the entity on a hot water circuit."""
-        super().__init__(
-            coordinator,
-            circuit_key(DISINFECTION_START.key, circuit),
-            circuit.component,
-            ("disinfection_start",),
-        )
-
-    @property
-    def native_value(self) -> time | None:
-        """Return the start of the anti-bacteria run."""
-        start = cast(HotWater, self._subsystem).disinfection_start_time
-        return None if start is None else time(*start)
-
-    async def async_set_value(self, value: time) -> None:
-        """Write the start, rounded down to the half hour."""
-        water = cast(HotWater, self._subsystem)
-        await self._async_write(
-            water.async_set_disinfection_start_time(
-                value.hour, HALF_HOUR if value.minute >= HALF_HOUR else 0
-            )
-        )
-        await self.coordinator.async_request_refresh()

@@ -39,7 +39,7 @@ INSTALLATION_NUMBERS = (
     ("valve_integral_time", UnitOfTime.SECONDS, NumberDeviceClass.DURATION),
     ("valve_running_time", UnitOfTime.SECONDS, NumberDeviceClass.DURATION),
     ("valve_neutral_zone", UnitOfTemperature.KELVIN, None),
-    ("valve_minimum_pulse", None, None),
+    ("valve_minimum_pulse", UnitOfTime.MILLISECONDS, NumberDeviceClass.DURATION),
 )
 SEASONAL_NUMBERS = (
     ("summer_start_month", None, None),
@@ -350,7 +350,10 @@ class Ecl310Number(Ecl310Entity, NumberEntity, RestoreEntity):
         return self.native_min_value
 
     async def async_set_native_value(self, value: float) -> None:
-        """Write a new setpoint."""
+        """Write a new setpoint, on the step the controller counts in."""
+        step = self._attr_native_step
+        if step is not None and step > 1:
+            value = round(value / step) * step
         await self._async_write(
             self._subsystem.write(self.entity_description.attribute, value)
         )

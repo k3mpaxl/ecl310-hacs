@@ -1189,10 +1189,10 @@
     },
     "select": {
       "actuator_type": {
-        "name": "Control valve actuator type",
+        "name": "Control valve actuator",
         "state": {
-          "m_3_point": "M-3.Pkt.",
-          "m_abv": "M-ABV"
+          "gear_motor": "Gear motor (3-point)",
+          "thermal": "Thermal actuator (M-ABV)"
         },
         "state_attributes": {
           "ecl_name": {
@@ -1244,6 +1244,20 @@
           }
         }
       },
+      "disinfection_start": {
+        "name": "Disinfection start",
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
       "heating_pump_override": {
         "name": "Heating circuit pump override",
         "state": {
@@ -1269,6 +1283,24 @@
           "auto": "Automatic",
           "off": "Forced off",
           "on": "Forced on"
+        },
+        "state_attributes": {
+          "ecl_name": {
+            "name": "ECL menu"
+          },
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Terminal"
+          }
+        }
+      },
+      "optimisation_basis": {
+        "name": "Optimisation based on",
+        "state": {
+          "outdoor": "Outdoor temperature",
+          "room": "Room temperature"
         },
         "state_attributes": {
           "ecl_name": {
@@ -1341,9 +1373,6 @@
       }
     },
     "sensor": {
-      "actuator_type_raw": {
-        "name": "Actuator type (raw)"
-      },
       "desired_flow_temperature": {
         "name": "Desired flow temperature",
         "state_attributes": {
@@ -2070,20 +2099,6 @@
       }
     },
     "time": {
-      "disinfection_start": {
-        "name": "Disinfection start",
-        "state_attributes": {
-          "ecl_name": {
-            "name": "ECL menu"
-          },
-          "pnu": {
-            "name": "PNU"
-          },
-          "terminal": {
-            "name": "Terminal"
-          }
-        }
-      },
       "friday_start": {
         "name": "Friday period {period} start",
         "state_attributes": {

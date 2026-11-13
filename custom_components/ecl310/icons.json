@@ -52,22 +52,22 @@
         "default": "mdi:chart-bell-curve-cumulative"
       },
       "curve_at_minus_30": {
-        "default": "mdi:chart-line"
+        "default": "mdi:chart-bell-curve-cumulative"
       },
       "curve_at_minus_15": {
-        "default": "mdi:chart-line"
+        "default": "mdi:chart-bell-curve-cumulative"
       },
       "curve_at_minus_5": {
-        "default": "mdi:chart-line"
+        "default": "mdi:chart-bell-curve-cumulative"
       },
       "curve_at_0": {
-        "default": "mdi:chart-line"
+        "default": "mdi:chart-bell-curve-cumulative"
       },
       "curve_at_5": {
-        "default": "mdi:chart-line"
+        "default": "mdi:chart-bell-curve-cumulative"
       },
       "curve_at_15": {
-        "default": "mdi:chart-line"
+        "default": "mdi:chart-bell-curve-cumulative"
       },
       "heating_return_limit": {
         "default": "mdi:thermometer-chevron-down"
@@ -124,6 +124,15 @@
         "state": {
           "auto": "mdi:autorenew"
         }
+      },
+      "disinfection_start": {
+        "default": "mdi:bacteria-outline"
+      },
+      "actuator_type": {
+        "default": "mdi:valve"
+      },
+      "optimisation_basis": {
+        "default": "mdi:thermometer-auto"
       }
     },
     "sensor": {
@@ -211,9 +220,6 @@
       },
       "sunday_stop": {
         "default": "mdi:calendar-clock"
-      },
-      "disinfection_start": {
-        "default": "mdi:bacteria-outline"
       }
     }
   }

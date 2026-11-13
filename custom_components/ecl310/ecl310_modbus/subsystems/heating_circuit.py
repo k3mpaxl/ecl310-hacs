@@ -68,7 +68,8 @@ class HeatingCircuit(Ecl310Component):
     """The weather-compensated space heating circuit."""
     pump_exercise = parameter_switch(11022, writable=True)
     valve_exercise = parameter_switch(11023, writable=True)
-    actuator_type = parameter_switch(11024)
+    actuator_type = parameter_switch(11024, writable=True)
+    optimisation_basis = parameter_switch(11020, writable=True)
     pump_frost_threshold = installation_number(11077)
     pump_heat_threshold = installation_number(11078)
     valve_motor_protection = installation_number(11174)

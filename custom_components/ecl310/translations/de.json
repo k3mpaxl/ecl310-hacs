@@ -1322,10 +1322,42 @@
         }
       },
       "actuator_type": {
-        "name": "Regelventil Stellantriebstyp",
+        "name": "Regelventil Stellantrieb",
         "state": {
-          "m_abv": "M-ABV",
-          "m_3_point": "M-3.Pkt."
+          "thermal": "Thermischer Stellantrieb (M-ABV)",
+          "gear_motor": "Getriebemotor (3-Punkt)"
+        },
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "disinfection_start": {
+        "name": "Desinfektionsbeginn",
+        "state_attributes": {
+          "pnu": {
+            "name": "PNU"
+          },
+          "terminal": {
+            "name": "Klemme"
+          },
+          "ecl_name": {
+            "name": "ECL-Menü"
+          }
+        }
+      },
+      "optimisation_basis": {
+        "name": "Optimierung nach",
+        "state": {
+          "outdoor": "Außentemperatur",
+          "room": "Raumtemperatur"
         },
         "state_attributes": {
           "pnu": {
@@ -1341,9 +1373,6 @@
       }
     },
     "sensor": {
-      "actuator_type_raw": {
-        "name": "Stellantriebstyp (Rohwert)"
-      },
       "limiter_status": {
         "name": "Begrenzerstatus"
       },
@@ -2070,20 +2099,6 @@
       }
     },
     "time": {
-      "disinfection_start": {
-        "name": "Desinfektionsbeginn",
-        "state_attributes": {
-          "pnu": {
-            "name": "PNU"
-          },
-          "terminal": {
-            "name": "Klemme"
-          },
-          "ecl_name": {
-            "name": "ECL-Menü"
-          }
-        }
-      },
       "friday_start": {
         "name": "Freitag Zeitraum {period} Beginn",
         "state_attributes": {

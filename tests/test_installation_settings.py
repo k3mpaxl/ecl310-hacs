@@ -310,23 +310,106 @@ async def test_a266_control_valve_and_pump_threshold_are_circuit_specific(
 
 
 @pytest.mark.parametrize("application", ["a266_10_v03"])
-async def test_actuator_mode_is_read_only_until_mapping_is_verified(
+async def test_actuator_type_is_chosen_in_plain_text(
     hass: HomeAssistant, connections: list[MockModbusConnection]
 ) -> None:
-    """Unknown actuator labels must never offer a physical write."""
+    """0 is a thermal actuator, 1 a gear motor - offered as words, and writable."""
     entry = await setup_entry(hass, connections)
     eid = entity_ids(hass, entry)["hot_water_actuator_type"]
-    assert eid.startswith("sensor.")
+    assert eid.startswith("select.")
     registry = er.async_get(hass)
+    assert registry.async_get(eid).disabled_by is not None
     registry.async_update_entity(eid, disabled_by=None)
     await hass.async_block_till_done()
     await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
-    assert hass.states.get(eid).state == "1"
-    descriptor = type(entry.runtime_data.coordinator.device.hot_water).declared_fields[
-        "actuator_type"
-    ]
-    assert not descriptor.writable
+    state = hass.states.get(eid)
+    assert state.state == "gear_motor"
+    assert state.attributes["options"] == ["thermal", "gear_motor"]
+    assert state.attributes["pnu"] == 12024
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {"entity_id": eid, "option": "thermal"},
+        blocking=True,
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert unit.holding[12023] == 0
+    assert hass.states.get(eid).state == "thermal"
+
+
+@pytest.mark.parametrize("application", ["a237_1_v04"])
+async def test_minimum_pulse_is_shown_in_milliseconds(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The controller counts the pulse in steps of 20 ms: raw 3 reads 60 ms."""
+    entry = await setup_entry(hass, connections)
+    eid = entity_ids(hass, entry)["valve_minimum_pulse"]
+    er.async_get(hass).async_update_entity(eid, disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    state = hass.states.get(eid)
+    assert float(state.state) == 60
+    assert state.attributes["unit_of_measurement"] == "ms"
+    assert (state.attributes["min"], state.attributes["max"]) == (40, 1000)
+    assert state.attributes["step"] == 20
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    await hass.services.async_call(
+        "number", "set_value", {"entity_id": eid, "value": 100}, blocking=True
+    )
+    assert unit.holding[11188] == 5
+    # A value between two steps goes to the step the controller counts in.
+    await hass.services.async_call(
+        "number", "set_value", {"entity_id": eid, "value": 65}, blocking=True
+    )
+    assert unit.holding[11188] == 3
+
+
+@pytest.mark.parametrize("application", ["a237_1_v04"])
+async def test_optimisation_follows_outdoor_or_room_temperature(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """PNU 11020: 0 is the outdoor temperature, 1 the room temperature."""
+    entry = await setup_entry(hass, connections)
+    eid = entity_ids(hass, entry)["optimisation_basis"]
+    registry = er.async_get(hass)
+    assert registry.async_get(eid).disabled_by is not None
+    registry.async_update_entity(eid, disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    state = hass.states.get(eid)
+    assert state.state == "outdoor"
+    assert state.attributes["options"] == ["outdoor", "room"]
+    assert state.attributes["pnu"] == 11020
+    await hass.services.async_call(
+        "select", "select_option", {"entity_id": eid, "option": "room"}, blocking=True
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert connections[-1].for_unit(ENTRY_DATA["unit_id"]).holding[11019] == 1
+    assert hass.states.get(eid).state == "room"
+
+
+@pytest.mark.parametrize("application", sorted(PROFILES))
+async def test_optimisation_basis_follows_the_profile(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """Only a heating circuit whose profile has 1x020 offers the choice."""
+    entry = await setup_entry(hass, connections)
+    device = entry.runtime_data.coordinator.device
+    ids = entity_ids(hass, entry)
+    for circuit in device.circuits:
+        if circuit.kind != "heating":
+            continue
+        suffix = f"_circuit_{circuit.number}" if circuit.numbered else ""
+        pnu = 10000 + circuit.number * 1000 + 20
+        assert ("optimisation_basis" + suffix in ids) == (
+            pnu in device.application.parameters
+        )
 
 
 @pytest.mark.parametrize("application", ["a266_10_v03"])
