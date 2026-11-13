@@ -339,6 +339,24 @@ async def test_the_anti_bacteria_run(
     assert await unit.read_holding_registers(12122, 1) == [9]
 
 
+async def test_the_old_disinfection_start_time_entity_is_removed(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """The start used to be a time entity; an update must not leave it behind."""
+    entry = MockConfigEntry(
+        domain=DOMAIN, data=ENTRY_DATA, unique_id="192.168.1.100:502:1"
+    )
+    entry.add_to_hass(hass)
+    registry = er.async_get(hass)
+    old = registry.async_get_or_create(
+        "time", DOMAIN, f"{entry.entry_id}_disinfection_start", config_entry=entry
+    )
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert registry.async_get(old.entity_id) is None
+    assert entity_ids(hass, entry)["disinfection_start"].startswith("select.")
+
+
 async def test_the_heat_curve_and_its_points(
     hass: HomeAssistant, connections: list[MockModbusConnection]
 ) -> None:
