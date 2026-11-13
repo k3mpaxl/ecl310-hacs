@@ -26,7 +26,6 @@ from .boost import HotWaterBoost
 from .const import COMPONENT_HEATING, COMPONENT_HOT_WATER, COMPONENT_SENSORS
 from .coordinator import Ecl310ConfigEntry, Ecl310Coordinator
 from .ecl310_modbus import CircuitState, Ecl310, OperatingMode
-from .ecl310_modbus.subsystems.alarms import active_alarm_ids
 from .ecl310_modbus.subsystems.limiter import decode_limiter
 from .entity import (
     Ecl310Entity,
@@ -176,11 +175,6 @@ async def async_setup_entry(
                     )
                 ),
                 *(
-                    [Ecl310AlarmSensor(coordinator)]
-                    if coordinator.device.application is not None
-                    else []
-                ),
-                *(
                     Ecl310LimiterSensor(coordinator, circuit)
                     for circuit in coordinator.device.circuits
                     if coordinator.device.application is not None
@@ -286,42 +280,6 @@ class Ecl310Sensor(Ecl310Entity, SensorEntity):
         if isinstance(value, bool):
             return int(value)
         return value
-
-
-class Ecl310AlarmSensor(Ecl310Entity, SensorEntity):
-    """The number of active alarms and their raw, application-specific contexts."""
-
-    _attr_translation_key = "active_alarms"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_icon = "mdi:alert-circle-outline"
-
-    def __init__(self, coordinator: Ecl310Coordinator) -> None:
-        """Initialize the controller-wide diagnostic."""
-        super().__init__(
-            coordinator, "active_alarms", "alarms", ("mask_low", "mask_high")
-        )
-
-    @property
-    def native_value(self) -> int | None:
-        """Count the active alarm IDs when both masks are known."""
-        ids = active_alarm_ids(self._subsystem.mask_low, self._subsystem.mask_high)
-        return len(ids) if ids is not None else None
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Include active IDs and available raw contexts."""
-        attrs = super().extra_state_attributes or {}
-        ids = active_alarm_ids(self._subsystem.mask_low, self._subsystem.mask_high)
-        if ids is not None and self.available:
-            refused = self.coordinator.refused("alarms")
-            attrs["alarm_ids"] = ids
-            attrs["contexts"] = {
-                str(n): getattr(self._subsystem, f"context_{n}")
-                for n in ids
-                if f"context_{n}" not in refused
-                and getattr(self._subsystem, f"context_{n}") is not None
-            }
-        return attrs
 
 
 class Ecl310LimiterSensor(Ecl310Entity, SensorEntity):

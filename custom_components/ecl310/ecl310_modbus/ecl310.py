@@ -42,7 +42,6 @@ from .subsystems import (
     schedule_component,
 )
 from .system_info import SystemInformation, async_read_system_information
-from .subsystems.alarms import Alarms
 from .subsystems.limiter import limiter_component
 from .subsystems.installation_settings import (
     INSTALLER_NUMERIC_FIELDS,
@@ -177,8 +176,6 @@ class Ecl310:
         self.circuits = circuits_of(kinds)
         self.sensors = SensorInputs.for_assignment(self.sensor_assignment)(unit)
         self.outputs = Outputs(unit)
-        if application is not None:
-            self.alarms = Alarms(unit)
         for circuit in self.circuits:
             kind_type = circuit_component(
                 CIRCUIT_TYPES[circuit.kind],
@@ -207,7 +204,6 @@ class Ecl310:
             "sensors",
             *(circuit.component for circuit in self.circuits),
             "outputs",
-            *(("alarms",) if self.application is not None else ()),
             *(f"limiter_{c.number}" for c in self.circuits if self.application is not None),
         )
 
