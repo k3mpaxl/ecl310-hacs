@@ -54,3 +54,8 @@ SETTABLE_MODES: Final[tuple[OperatingMode, ...]] = (
     OperatingMode.SETBACK,
     OperatingMode.FROST_PROTECTION,
 )
+
+#: The two special values of the parallel operation setting besides its
+#: 1-99 K threshold: 0 is OFF, 100 is ON.
+PARALLEL_FULL_ON = 100
+PARALLEL_MAX_THRESHOLD = 99

@@ -110,7 +110,8 @@ async def test_building_factor_off_and_restored_value(
     unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
     assert unit.holding[11013] == 9
     assert hass.states.get(switch_id).state == "off"
-    assert hass.states.get(number_id).state == "unknown"
+    # Off with nothing remembered yet: the number shows the value it starts with.
+    assert float(hass.states.get(number_id).state) == 10
     await hass.services.async_call(
         "number", "set_value", {"entity_id": number_id, "value": 25}, blocking=True
     )
@@ -123,7 +124,9 @@ async def test_building_factor_off_and_restored_value(
     await entry.runtime_data.coordinator.async_refresh()
     await hass.async_block_till_done()
     assert unit.holding[11013] == 9
-    assert hass.states.get(number_id).state == "unknown"
+    # Off: the number keeps showing the last value, the switch says it is off.
+    assert float(hass.states.get(number_id).state) == 25
+    assert hass.states.get(switch_id).state == "off"
     await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     await hass.services.async_call(
@@ -170,7 +173,7 @@ async def test_optimisation_setting_can_represent_and_restore_off(
     await hass.async_block_till_done()
     unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
     assert unit.holding[address] == (off & 0xFFFF)
-    assert hass.states.get(number_id).state == "unknown"
+    assert float(hass.states.get(number_id).state) == active
     await hass.services.async_call(
         "switch", "turn_on", {"entity_id": switch_id}, blocking=True
     )
@@ -228,7 +231,8 @@ async def test_parallel_operation_modes_represent_sentinels(
     await entry.runtime_data.coordinator.async_refresh()
     await hass.async_block_till_done()
     assert unit.holding[11042] == 0
-    assert hass.states.get(threshold_id).state == "unknown"
+    # Nothing remembered: the number shows the lowest threshold.
+    assert float(hass.states.get(threshold_id).state) == 1
     await hass.services.async_call(
         "number", "set_value", {"entity_id": threshold_id, "value": 25}, blocking=True
     )
@@ -246,7 +250,7 @@ async def test_parallel_operation_modes_represent_sentinels(
         await entry.runtime_data.coordinator.async_refresh()
         await hass.async_block_till_done()
         assert unit.holding[11042] == 100
-        assert hass.states.get(threshold_id).state == "unknown"
+        assert float(hass.states.get(threshold_id).state) == 25
 
 
 @pytest.mark.parametrize("application", sorted(PROFILES))
@@ -354,7 +358,7 @@ async def test_seasonal_filter_can_reach_300_and_restore_off(
     await entry.runtime_data.coordinator.async_refresh()
     await hass.async_block_till_done()
     assert unit.holding[11394] == 0
-    assert hass.states.get(ids["summer_filter"]).state == "unknown"
+    assert float(hass.states.get(ids["summer_filter"]).state) == 300
     await hass.services.async_call(
         "switch", "turn_on", {"entity_id": ids["summer_filter_enabled"]}, blocking=True
     )
@@ -413,7 +417,7 @@ async def test_circuit_installer_off_values_round_trip(
     await hass.async_block_till_done()
     unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
     assert unit.holding[address] == (off & 0xFFFF)
-    assert hass.states.get(ids[name]).state == "unknown"
+    assert float(hass.states.get(ids[name]).state) == active
     await hass.services.async_call(
         "switch", "turn_on", {"entity_id": ids[name + "_enabled"]}, blocking=True
     )
@@ -508,3 +512,30 @@ async def test_slow_setting_reads_periodically_and_after_write(
     await coordinator.async_refresh()
     await hass.async_block_till_done()
     assert hass.states.get(eid).state == "60"
+
+
+@pytest.mark.parametrize("application", ["a266_10_v03"])
+async def test_off_setting_starts_at_its_factory_default(
+    hass: HomeAssistant, connections: list[MockModbusConnection]
+) -> None:
+    """With no history, an off setting shows - and switches on at - Danfoss' default."""
+    entry = await setup_entry(hass, connections)
+    ids = entity_ids(hass, entry)
+    registry = er.async_get(hass)
+    for key in ("summer_filter", "summer_filter_enabled"):
+        registry.async_update_entity(ids[key], disabled_by=None)
+    await hass.async_block_till_done()
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done()
+    unit = connections[-1].for_unit(ENTRY_DATA["unit_id"])
+    await hass.services.async_call(
+        "switch", "turn_off", {"entity_id": ids["summer_filter_enabled"]}, blocking=True
+    )
+    await entry.runtime_data.coordinator.async_refresh()
+    await hass.async_block_till_done()
+    assert unit.holding[11394] == 0
+    assert float(hass.states.get(ids["summer_filter"]).state) == 250
+    await hass.services.async_call(
+        "switch", "turn_on", {"entity_id": ids["summer_filter_enabled"]}, blocking=True
+    )
+    assert unit.holding[11394] == 250

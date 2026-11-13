@@ -129,17 +129,28 @@ def circuit_component(
             parameter = profile.parameters.get(metadata.parameter_id)
             if parameter is not None:
                 moved = copy.copy(moved)
-                minimum = parameter.minimum / parameter.scale
-                maximum = parameter.maximum / parameter.scale
+                factor = metadata.number.step or 1  # display units per raw count
+                minimum = parameter.minimum / parameter.scale * factor
+                maximum = parameter.maximum / parameter.scale * factor
                 off_value = metadata.number.off_value
                 if off_value is not None and off_value == minimum:
-                    minimum += 1 / parameter.scale
+                    minimum += factor / parameter.scale
+                default = (
+                    None
+                    if parameter.default is None
+                    else parameter.default / parameter.scale * factor
+                )
+                if default is not None and (
+                    default == off_value or not minimum <= default <= maximum
+                ):
+                    default = None  # the factory default is OFF, or no value
                 number = dataclasses.replace(
                     metadata.number,
                     min_value=minimum,
                     max_value=maximum,
                     raw_min=parameter.minimum,
                     raw_max=parameter.maximum,
+                    default_value=default,
                 )
                 moved.ecl_metadata = dataclasses.replace(metadata, number=number)
                 moved.writable = _number_validator(

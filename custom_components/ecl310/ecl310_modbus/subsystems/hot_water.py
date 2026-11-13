@@ -104,6 +104,7 @@ class HotWater(Ecl310Component):
         raw_min=DISINFECTION_OFF,
         raw_max=110,
         off_value=DISINFECTION_OFF,
+        default_value=DISINFECTION_DEFAULT_TEMPERATURE,
         writable=True,
         maker_key="Gew. Temp. (Desinfektion)",
         description=(

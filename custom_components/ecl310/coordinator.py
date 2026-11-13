@@ -14,6 +14,7 @@ from modbus_connection import (
 )
 
 from .const import DOMAIN, LOGGER, SCAN_INTERVAL, SCHEDULE_REFRESH_EVERY
+from .memory import SettingMemory
 from .ecl310_modbus import (
     Ecl310,
     Ecl310Component,
@@ -140,6 +141,8 @@ class Ecl310Coordinator(DataUpdateCoordinator[UpdateReport]):
         self._failed: frozenset[str] = frozenset()
         self._polls = 0
         self._installer_dirty = False
+        #: What settings with an OFF position were before they were switched off.
+        self.memory = SettingMemory()
         self._schedules: frozenset[str] = frozenset()
         self._refused: dict[str, frozenset[str]] = {}
         #: Held across a read-modify-write of a register that packs several

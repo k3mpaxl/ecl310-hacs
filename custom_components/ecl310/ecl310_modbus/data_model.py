@@ -129,6 +129,7 @@ def _number_metadata(
     raw_min: int | None,
     raw_max: int | None,
     off_value: float | int | None = None,
+    default_value: float | int | None = None,
 ) -> DatapointMetadata:
     """Build the neutral metadata for a numeric datapoint."""
     return DatapointMetadata(
@@ -148,6 +149,7 @@ def _number_metadata(
             raw_min=raw_min,
             raw_max=raw_max,
             off_value=off_value,
+            default_value=default_value,
         ),
     )
 
@@ -211,6 +213,7 @@ def register_gauge(
     raw_min: int | None = None,
     raw_max: int | None = None,
     off_value: float | int | None = None,
+    default_value: float | int | None = None,
     parameter_id: int | None = None,
     sensor_number: int | None = None,
     maker_key: str | None = None,
@@ -251,6 +254,7 @@ def register_gauge(
             raw_min=raw_min,
             raw_max=raw_max,
             off_value=off_value,
+            default_value=default_value,
         ),
     )
 

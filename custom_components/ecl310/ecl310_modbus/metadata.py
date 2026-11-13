@@ -30,6 +30,9 @@ class NumberMetadata:
     off_value: float | int | None = None
     """A value outside ``min_value``..``max_value`` the controller stores to
     mean "off" - shown as ``OFF`` on its display. ``None`` if there is none."""
+    default_value: float | int | None = None
+    """The value a setting gets when it is switched on without a history of
+    its own: the factory default, if that is a usable value."""
 
 
 @dataclass(frozen=True)
